@@ -1,3 +1,6 @@
 function [out] = mono(inputSignal)
-out = sum(inputSignal, 2) / size(inputSignal, 2);
+if size(inputSignal,2) == 1
+    out = inputSignal;
+else
+    out = sum(inputSignal, 2) / size(inputSignal, 2);
 end
