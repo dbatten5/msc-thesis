@@ -1,4 +1,4 @@
-function mrcgFeature = extractMrcgFeature(filterBank,signal,fs,cochleagramLength)
+function mrcgFeature = extractMrcg(filterBank,signal,fs,cochleagramLength)
 if nargin < 4
     cochleagramLength = 22;
 end
