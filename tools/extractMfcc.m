@@ -1,4 +1,4 @@
-function mfccFeature = extractMfcc(audio,fs,mfccLength)
+function mfccFeature = extractMfcc(audio,fs,mfccLength,bandEdges)
 sigLength = size(audio,1);
 winLength = fs*0.03;
 overlapLength = fs*0.02;
@@ -12,8 +12,11 @@ else
     paddedSignal = audio(1:paddedSignalLength);
 end
 
-[coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs);
+if bandEdges
+    [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs,"BandEdges",bandEdges);
+else
+    [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs);
+end
 
 mfccFeature = [reshape(coeffs',1,[]),reshape(delta',1,[]),reshape(ddelta',1,[])];
 end
-

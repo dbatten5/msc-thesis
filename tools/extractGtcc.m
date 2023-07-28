@@ -1,4 +1,8 @@
-function gtccFeature = extractGtcc(audio,fs,gtccLength)
+function gtccFeature = extractGtcc(audio,fs,gtccLength,freqRange)
+if nargin < 4
+    freqRange = [50 fs/2];
+end
+
 sigLength = size(audio,1);
 winLength = fs*0.03;
 overlapLength = fs*0.02;
@@ -12,7 +16,7 @@ else
     paddedSignal = audio(1:paddedSignalLength);
 end
 
-[coeffs,delta,ddelta,~] = gtcc(paddedSignal,fs);
+[coeffs,delta,ddelta,~] = gtcc(paddedSignal,fs,'FrequencyRange',freqRange);
 
 gtccFeature = [reshape(coeffs',1,[]),reshape(delta',1,[]),reshape(ddelta',1,[])];
 end
