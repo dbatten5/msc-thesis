@@ -1,7 +1,7 @@
 papers
 amtoolbox-full-1.2.0/
-variables
-backups/variables
+# variables
+# backups/variables
 samples
 
 .DS_Store
