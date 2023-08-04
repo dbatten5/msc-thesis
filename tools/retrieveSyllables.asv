@@ -1,0 +1,28 @@
+function syllables = retrieveSamples(birdID,type,nva)
+arguments
+birdID
+type = "train"
+nva.NumConcatSyllables = 1
+nva.MaxSamplesPerBird = inf
+end
+directoryPath = sprintf('samples/%s/syllables_new/%s',birdID,type);
+fileList = dir(fullfile(directoryPath, '*.wav'));   
+limit = numel(fileList);
+syllables = {};
+for ii = 1:limit
+    filePath = fullfile(directoryPath, fileList(ii).name);
+    [signal,~] = audioread(filePath);
+    signal = mono(signal);
+    if numel(signal) < 2.4e4
+        signals(size(signals,1)+1,:) = {signal};
+    end
+end
+end
+
+function birdIDs = getUniqueFilenames(birdType)
+directoryPath = sprintf('samples/%s/raw',birdType);
+fileList = dir(directoryPath);
+filenames = {fileList(~[fileList.isdir]).name};
+[~, filenames, ~] = cellfun(@fileparts, filenames, 'UniformOutput', false);
+birdIDs = unique(filenames);
+end

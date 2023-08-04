@@ -1,0 +1,87 @@
+\documentclass{report}
+\usepackage{setspace}
+%\usepackage{subfigure}
+
+\pagestyle{plain}
+\usepackage{amssymb,graphicx,color}
+\usepackage{amsfonts}
+\usepackage{latexsym}
+\usepackage{a4wide}
+\usepackage{amsmath}
+
+\newtheorem{theorem}{THEOREM}
+\newtheorem{lemma}[theorem]{LEMMA}
+\newtheorem{corollary}[theorem]{COROLLARY}
+\newtheorem{proposition}[theorem]{PROPOSITION}
+\newtheorem{remark}[theorem]{REMARK}
+\newtheorem{definition}[theorem]{DEFINITION}
+\newtheorem{fact}[theorem]{FACT}
+
+\newtheorem{problem}[theorem]{PROBLEM}
+\newtheorem{exercise}[theorem]{EXERCISE}
+\def \set#1{\{#1\} }
+
+\newenvironment{proof}{
+PROOF:
+\begin{quotation}}{
+$\Box$ \end{quotation}}
+
+
+
+\newcommand{\nats}{\mbox{\( \mathbb N \)}}
+\newcommand{\rat}{\mbox{\(\mathbb Q\)}}
+\newcommand{\rats}{\mbox{\(\mathbb Q\)}}
+\newcommand{\reals}{\mbox{\(\mathbb R\)}}
+\newcommand{\ints}{\mbox{\(\mathbb Z\)}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{  	{ \includegraphics[scale=.5]{ucl_logo.png}}\\
+{{\Huge Project Title}}\\
+{\large Optional Subtitle}\\}
+\date{Submission date: 11 September 2023}
+\author{Candidate Number: YPDR0\thanks{
+{\bf Disclaimer:}
+This report is submitted as part requirement for the MSc Data Science \& Machine
+Learning at UCL. It is substantially the result of my own work except where
+explicitly indicated in the text. The report may be freely copied and
+distributed provided the source is explicitly acknowledged
+}
+\\ \\
+MSc Data Science \& Machine Learning\\ \\
+Supervisor: Dr. Ifat Yasin}
+
+
+\begin{document}
+ 
+ \onehalfspacing
+\maketitle
+\begin{abstract}
+Summarise your report concisely.
+\end{abstract}
+\tableofcontents
+\setcounter{page}{1}
+
+
+\chapter{Introduction}
+\input{introduction.tex}
+
+\chapter{Background \& related work}
+\input{background.tex}
+
+\chapter{Methodology}
+\input{methodology.tex}
+
+\chapter{Extensions of methodology}
+\input{extensions.tex}
+
+\chapter{Conclusion}
+\input{conclusion.tex}
+
+\appendix
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

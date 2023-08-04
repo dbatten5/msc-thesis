@@ -1,8 +1,32 @@
 papers
 amtoolbox-full-1.2.0/
 variables/comparingModels.mat
+PhysionetData.mat
+example_reports
 # backups/variables
 samples
+training2017
+*.asv
+
+.*.swp
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.bst
+*.dtx
+*.ins
+*.bbx
+*.cbx
+*.dbx
+*.cls
 
 .DS_Store
 

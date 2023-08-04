@@ -13,8 +13,8 @@ else
 end
 
 if isstring(bandEdges) && bandEdges == "max"
-    [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs,"BandEdges",linspace(50,fs/2,42));
-elseif isvector(bandEdges)
+    [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs,"BandEdges",linspace(50,fs/2,120));
+elseif isvector(bandEdges) && size(bandEdges,2) >= 4
     [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs,"BandEdges",bandEdges);
 else
     [coeffs,delta,ddelta,~] = mfcc(paddedSignal,fs);
