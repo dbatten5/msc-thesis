@@ -75,9 +75,9 @@ figure~\ref{fig:wren_call_song_spectrogram}.
 Doupe et al~\cite{birdsongspeech} showed that there were striking similarities
 between birdsong and human language. Similar to human language, birdsong can be
 thought of as comprised of hierarchical levels of phrases, syllables, and
-elements~\cite{catchpole2003bird}. Raw recordings of birdsong often contain
-periods of silence that occur between phrases which are unlikely to provide
-useful information in order to train a machine learning model.
+elements~\cite{catchpole2003bird}. <Figure here>. Raw recordings of birdsong
+often contain periods of silence that occur between phrases which are unlikely
+to provide useful information in order to train a machine learning model.
 Fagerlund~\cite{fagerlund2007bird} showed that a good level of accuracy can be
 achieved by training models on features extracted from segmented syllables which
 were used as training samples. An algorithm for robust syllable segmentation was
@@ -88,8 +88,7 @@ algorithm is described in more detail in Section.
   \centering
   \includegraphics[width=\textwidth]{figures/wren_call_song_spectrogram.png}
   \caption{Spectrograms of the call and song of the Eurasian Wren
-    (\textit{Troglodytes troglodytes}). As can be seen, the song is much more
-  complex in terms of pitch and acoustic structure compared to the 
+    (\textit{Troglodytes troglodytes}). As can be seen, the song is much more complex in terms of pitch and acoustic structure compared to the
   call}\label{fig:wren_call_song_spectrogram}
 \end{figure}
 
@@ -101,7 +100,7 @@ tried on birdsong. Note that the following list is certainly not exhaustive and
 emphasis has been placed on feature representations that are relevant to this
 thesis.
 
-\subsection{Human inspired features}
+\subsection{Features inspired by the human auditory system}
 
 Research has shown that birdsong and human language share many similarities in
 terms of the neural mechanisms employed to form the language/song, the impact of
@@ -109,6 +108,80 @@ social contact in learning the language/song, and so on~\cite{birdsongspeech}.
 Give that the human auditory system has evolved other thousands of years to best
 process human speech, it seems reasonable to suggest that using features based
 on the human auditory system may be effective when it comes to birdsong.
+
+At a high level, the human auditory system works by translating changes in air
+pressure originating from a source and reaching the outer ear of a listener
+into vibrations that travel along an internal organ known as a cochlear. The
+vibrations trigger electric signals that move along auditory nerves to the
+brain, where they are interpreted as sounds. The physiology of the cochlear
+means that certain parts of the organ are more sensitive to certain frequencies
+of vibrations, so different frequencies will lead to different electrical
+signals moving to the brain. This allows the brain to learn to differentiate
+between frequencies.
+
+\subsubsection{Mel frequency cepstrum coefficients}
+
+The makeup of the human auditory system means that humans have a greater ability
+to differentiate pitch at lower frequencies then they do at higher frequencies.
+In other words, humans perceive pitch non-linearly. This has led to the
+development of a logarithmic scale, known as the mel scale, such that equal
+distances on the scale have the same \textit{perceptual} distance.
+
+The mel frequency cepstrum coefficients (MFCC) are part of a family of cepstrum
+coefficients that capture information about the rate of change in different
+spectrum bands. MFCC differs from other cepstrum coefficients in that it uses the
+mel scale to transform the spectrum of an input signal, thus utilising the human
+auditory system in the calculation of its coefficients.
+
+The $i$-th mel cepstral coefficient is computed as~\cite{davis1980comparison}
+\begin{equation}
+\text{MFCC}_i = \sum_{k=1}^{K} X_k \cos \left(
+  \frac{i(k-0.5)\pi}{K}
+\right)
+\end{equation}
+where $X_k$ is the logarithmic energy of the $k$-th mel-spectrum band, and $K$
+is the total number of the mel-spectrum bands. Usually 8--13 MFCC coefficients
+are used as the feature vector representing one time frame of the signal. The
+0$^{th}$ coefficient is often excluded as it represents the average log energy
+of the signal and is unlikely to carry any relevant information to help with
+classification.
+
+MFCCs are often presented with their delta ($\Delta$) and double-delta
+($\Delta\Delta$) values that capture the local temporal dynamics and temporal
+changes of the delta values respectively.
+
+MFCCs are used as feature representations since they are simple to compute and
+have been shown to have good performance in a wide range of audio classification
+tasks, such as speaker identification~\cite{muda2010voice} and emotion
+recognition~\cite{likitha2017speech}. MFCCs have also been shown to lead to good
+classification accuracy for birdsong identification problems
+(\cite{fagerlund2007bird} and~\cite{ramashini2022robust}).
+
+<include graph of filterbank>
+
+\subsubsection{Gammatone cepstrum coefficients}
+
+Gammatone cepstrum coefficients (GTCCs) are similar to MFCCs except their
+calculation  uses gammatone filterbanks instead of mel scale filterbanks.
+Gammatone filterbanks are designed to simulate the motion of the membrane inside
+the cochlear, known as the basilar membrane, when it is exposed to vibrations
+transmitted by the outer and middle ear~\cite{patterson1992complex}.
+
+A gammatone filter with a centre frequency $f_c$ is defined as
+\begin{equation}
+  g(t) = at^{n-1}e^{-2\pi b t} \cos(2\pi f_c + \psi)
+\end{equation}
+where $t$ is the time in seconds, $\psi$ is the phase in radians (usually set to
+0), $a \in \mathbb{R}$ controls the gain, $n$ is the filter's order and $b$ is
+the filter's bandwidth in Hz.
+
+Similar to MFCCs, GTCCs are typically used with their $\Delta$ and $\Delta\Delta$
+values and have also been shown to have a good performance in
+non-speech audio classification problems~\cite{valero2012gammatone}.
+
+<include graph of filterbank>
+
+\subsubsection{Multi resolution cochleagram}
 
 \subsection{Feature stacking}
 
