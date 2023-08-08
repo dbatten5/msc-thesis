@@ -1,0 +1,93 @@
+Describe here work that is connected to your thesis. This should include
+references to published work. There is no fixed rule, but I would expect a
+student to have read around 50 published research papers and reference them in a
+thesis.
+
+\section{Evaluation metrics}
+
+Since birdsong identification can be thought of as a classification problem, the
+evaluation metric typically used is the classification accuracy percentage 
+(\cite{ramashini2019bird},).
+This is calculated as the percentage of correctly identified samples from a set
+of labelled samples previously unseen by the model.
+
+Acevedo et al~\cite{acevedo2009automated} used true positive ($TP$) and false
+positive ($FP$) rates to evaluate their models used to classify bird and amphibian
+calls. This evaluation method is sometimes preferred when analysing long
+recordings which may include several different species to be classified. $TP$
+gives an indication as to how well the model correctly identifies species
+present in the recording. $FP$ indicates how often the model erroneously
+identifies species absent in the recording. A high performing model will have
+high values for $TP$ and low values for $FP$\@.
+
+Potamitis et al~\cite{potamitis2014automatic} used an alternative form of
+evaluation presented in terms of precision $(P)$ and recall $(R)$ which are
+defined as
+\begin{equation}
+  P = \frac{\text{TP}}{\text{TP}+\text{FP}}, \hspace{1em}
+  R = \frac{\text{TP}}{\text{TP}+\text{FN}}
+\end{equation}
+where $FN$ is the number of false negatives. Informally, $P$ and $R$ can be
+thought of as
+\begin{equation}
+  P = \frac{\text{relevant retrieved instances}}{\text{all \textbf{retrieved} instances}}, \hspace{1em}
+  R = \frac{\text{relevant retrieved instances}}{\text{all \textbf{relevant} instances}}
+\end{equation}
+It's well known that there is usually a trade-off between $P$ and $R$, so
+usually the $F$-score is reported along with the $P$ and $R$ metrics. The
+$F$-score is defined as
+\begin{equation}
+F = \frac{(1+\beta^2)PR}{\beta^2P + R}
+\end{equation}
+for some $\beta \in \mathbb{R}$.
+
+For binary classification problems, i.e.\ classifying a sample as one of two
+classes (bird species), the Area Under Curve (AUC) metric is often
+preferred~\cite{leng2014multi}.
+
+\section{Feature extraction}
+
+\begin{itemize}
+
+  \item Description of birdsong and why it exists
+
+  \item Difference between calls and songs, with example sonograph.
+
+  \item Include a discussion on segmentation?
+
+\end{itemize}
+
+\subsection{Human inspired features}
+
+Research has shown that birdsong and human language share many similarities in
+terms of the neural mechanisms employed to form the language/song, the impact of
+social contact in learning the language/song, and so on~\cite{birdsongspeech}.
+Give that the human auditory system has evolved other thousands of years to best
+process human speech, it seems reasonable to suggest that using features based
+on the human auditory system may be effective when it comes to birdsong.
+
+\subsection{Feature stacking}
+
+\section{Classification}
+
+\subsection{KNN}
+
+KNN used by~\cite{ramashini2019bird}
+
+\subsection{Decision trees}
+
+Description of decision trees. Used by~\cite{acevedo2009automated}.
+
+\subsection{Gaussian Mixture Models}
+
+\subsection{Hidden Markov Models}
+
+\subsection{SVMs}
+
+\subsection{Neural Networks}
+
+\subsubsection{Feedforward Neural Network}
+
+\subsubsection{Convolutional Neural Network}
+
+\subsubsection{Recurrent Neural Network}

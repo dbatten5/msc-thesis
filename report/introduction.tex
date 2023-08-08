@@ -13,22 +13,62 @@ those views on pages looking at bird identification. The Bird Bird Garden Watch,
 an annual event which encourages people to note bird sightings in their own
 residences, brought in 1 million participants in January 2021, more than double
 the previous year's tally. As such there is a growing commercial demand for
-easily accessible bird identification tools.
+accurate and easily accessible bird identification tools.
 
 Birds are typically shy and protective creatures and tend to reside out of
 harm's way in shrubs, trees and nests, and therefore are usually heard but not
-seen. The consequence of this is that birds are typically identified through
-their vocalizations, known as birdsong, rather than their visual sighting.
-Birdsong used for identification is usually recorded on microphones that may be
-running for a long time, so recordings may be corrupted from a wide range of
-sources, such as ambient background noise, changes in birdsong amplitude, long
-periods of silence, and vocalizations from other birds. There is therefore a
-need for robust birdsong identification tools that can handle these corruptions
-and that require minimal human intervention in order to classify unknown
-birdsong.
+seen. The majority of their communication is done through distinctive
+vocalizations, known as birdsong, that are usually unique to an individual
+species. The consequence of this is that birds are typically identified through
+their birdsong rather than their visual sighting. Birdsong used for
+identification is usually recorded on microphones that may be running for a long
+time and/or located in a place that isn't necessarily optimum to capture the
+vocalization. The recordings may be corrupted from a wide range of sources, such
+as ambient background noise, large changes in birdsong amplitude, long periods
+of silence, and vocalizations from other birds. Recordings captured by long
+running microphones may be several hours in duration so it would be impractical
+to have a human expert identify the birds manually. There is therefore a need
+for robust birdsong identification tools that can handle these corruptions and
+that require minimal human intervention in order to classify unknown birdsong.
 
 As with most machine learning classification problems, the work boils down to
 two key components. The first is feature extraction, that is, given an input
-signal usually in the form of an amplitude varying over time, how
+signal usually in the form of an amplitude varying over time, how can it be
+transformed to a vector or matrix representation that captures the key
+information of the signal. The second is classification, i.e.~given this
+representation in the feature space, how can it be used to train a model that
+can then perform classification on unseen samples of birdsong. There are further
+steps that can be taken to improve this process, such as pre-processing the
+signal in order to remove or reduce the influence of background
+noise~\cite{potamitis2014automatic}.
 
-There has been numerous research 
+There has been numerous research into audio classification problems both in
+birdsong and in other types of audio, such as speaker identification from human
+speech~\cite{KUDO19991103}. However, there remain novel methods that have been
+tested and have been shown to have good results in wider audio classification
+problems that have yet to be tried out in birdsong identification problems.
+These methods include both feature extraction and classification. The
+broad aim of this thesis is to attempt to evaluate these methods. In more
+detail, the aims of this thesis can be summarised as follows:
+
+\begin{enumerate}
+
+  \item Explore the birdsong classification performance of feature
+    representations shown to have promising results for non-birdsong related
+    audio classification problems using simple classification models such as
+    Support Vector Machines (SVM). The hypothesis is that feature
+    representations shown to have good results in audio classification problems
+    will have good results for birdsong identification.
+
+  \item Explore some of the hyperparameters available during the feature
+    extraction process. The hypothesis is that using hyperparameter values more
+    suited to birdsong classification problems will yield a higher classification
+    accuracy.
+
+  \item Explore the performance of deep learning architectures such as Recurrent
+    Neural Networks (RNN) and Convolutional Neural Networks (CNN) and compare
+    the results with simpler statistical models. The hypothesis is that more
+    complex and flexible architectures such as these will have superior
+    performance when compared to simpler statistical models, such as SVMs.
+
+\end{enumerate}
