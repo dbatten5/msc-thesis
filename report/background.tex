@@ -5,11 +5,12 @@ thesis.
 
 \section{Evaluation metrics}
 
-Since birdsong identification can be thought of as a classification problem, the
-evaluation metric typically used is the classification accuracy percentage 
-(\cite{ramashini2019bird},).
-This is calculated as the percentage of correctly identified samples from a set
-of labelled samples previously unseen by the model.
+For multiclass classification problems, e.g.\ identifying a sample as a
+particular bird species from a last of $n > 2$ species, a simple classification
+accuracy is often used as an evaluation metric
+(\cite{chakraborty2016bird},~\cite{ramashini2022robust}). This is calculated as
+the percentage of correctly identified samples from a set of labelled samples
+previously unseen by the model.
 
 Acevedo et al~\cite{acevedo2009automated} used true positive ($TP$) and false
 positive ($FP$) rates to evaluate their models used to classify bird and amphibian
@@ -42,20 +43,63 @@ F = \frac{(1+\beta^2)PR}{\beta^2P + R}
 for some $\beta \in \mathbb{R}$.
 
 For binary classification problems, i.e.\ classifying a sample as one of two
-classes (bird species), the Area Under Curve (AUC) metric is often
-preferred~\cite{leng2014multi}.
+classes (bird species), the Area Under Curve (AUC) metric is sometimes
+preferred~\cite{leng2014multi}. The AUC ranges from 0 to 1, with a higher value
+indicating a better performing model. The AUC is sometimes desirable because it
+is scale-invariant (it measures how well predictions are ranked, rather than
+their absolute values) and classification-threshold-invariant (it measures the
+quality of the model's predictions regardless of what classification threshold
+is chosen.)
 
 \section{Feature extraction}
 
-\begin{itemize}
+As mentioned in Chapter~\ref{cp:intro}, birds use vocalizations as a way to
+communicate with others. Birds have evolved over many thousands of years to
+make this form of communication very efficient in that it can travel long
+distances and cut through local ambient noise frequencies so that it can be
+received by other birds clearly. Some birds have even adapted their
+vocalizations so that they can be heard in local environments that have rapidly
+changed over the past decades, such as urban areas with increasing anthropogenic
+noise~\cite{luther2010urban}.
 
-  \item Description of birdsong and why it exists
+Bird vocalizations can be broadly divided into two main categories, calls and
+songs. Calls are typically short vocalizations that carry some specific
+function, such as warning others to the presence of a predator or calling others
+to flight~\cite{MARLER2004132}. Songs are usually longer and more acoustically
+complex and occur more spontaneously. Songs are typically employed as breeding
+calls or territorial defence. While all birds produce calls, in many species of
+birds only the males utilise songs and often only during breeding season. The
+song and call of a Eurasian Wren can be seen and contrasted in
+figure~\ref{fig:wren_call_song_spectrogram}.
 
-  \item Difference between calls and songs, with example sonograph.
+Doupe et al~\cite{birdsongspeech} showed that there were striking similarities
+between birdsong and human language. Similar to human language, birdsong can be
+thought of as comprised of hierarchical levels of phrases, syllables, and
+elements~\cite{catchpole2003bird}. Raw recordings of birdsong often contain
+periods of silence that occur between phrases which are unlikely to provide
+useful information in order to train a machine learning model.
+Fagerlund~\cite{fagerlund2007bird} showed that a good level of accuracy can be
+achieved by training models on features extracted from segmented syllables which
+were used as training samples. An algorithm for robust syllable segmentation was
+proposed in~\cite{fagerlund2004automatic} and is used in this thesis. The
+algorithm is described in more detail in Section.
 
-  \item Include a discussion on segmentation?
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/wren_call_song_spectrogram.png}
+  \caption{Spectrograms of the call and song of the Eurasian Wren
+    (\textit{Troglodytes troglodytes}). As can be seen, the song is much more
+  complex in terms of pitch and acoustic structure compared to the 
+  call}\label{fig:wren_call_song_spectrogram}
+\end{figure}
 
-\end{itemize}
+Once the syllables have been segmented, there exists an abundance of options to
+turn the raw syllable input signal into features that might be used as training
+samples. In the following sections some of the more popular feature
+representations are described, along with some novel methods that have yet to be
+tried on birdsong. Note that the following list is certainly not exhaustive and
+emphasis has been placed on feature representations that are relevant to this
+thesis.
 
 \subsection{Human inspired features}
 
