@@ -228,21 +228,23 @@ dimensionality is 24--39, depending on the number of the coefficients used.
 
 \subsection{Feature stacking}
 
-It has been shown that combining features to be used as training inputs can lead
-to improved classification accuracy. Ramashini et al~\cite{ramashini2022robust}
-showed that a combination of GTCC and MFCC yielded higher birdsong classification
-accuracy than MFCC alone. However, the combination did not improve on the
-accuracy of GTCC alone. Yan et al~\cite{yan2021birdsong} demonstrated that a
-combination of MFCC with two other feature types (Log-mel spectrogram and
-Chroma) yielded higher birdsong classification accuracy than combinations of two
-of the features alone. Fagerlund~\cite{fagerlund2007bird} showed that combining
-MFCC with spectral and temporal features, such as frequency range and zero
-crossing rate, can lead to higher birdsong classification accuracies.
+It has been shown that appropriate combining features to be used as training
+inputs can lead to improved classification accuracy in audio related problems
+such speech separation~\cite{wang2012exploring}. Ramashini et
+al~\cite{ramashini2022robust} showed that a combination of GTCC and MFCC yielded
+higher birdsong classification accuracy than MFCC alone. However, the
+combination did not improve on the accuracy of GTCC alone. Yan et
+al~\cite{yan2021birdsong} demonstrated that a combination of MFCC with two other
+feature types (Log-mel spectrogram and Chroma) yielded higher birdsong
+classification accuracy than combinations of two of the features alone.
+Fagerlund~\cite{fagerlund2007bird} showed that combining MFCC with spectral and
+temporal features, such as frequency range and zero crossing rate, can lead to
+higher birdsong classification accuracies.
 
 A consequence of feature stacking is that feature vectors will have increased
 size. This can lead to problems such as longer training times and overfitting,
 especially when used in conjunction with deep learning (DL) architectures. As a
-result, dimensionality reduction techniques, such as Principal Component
+result, dimensionality reduction techniques such as Principal Component
 Analysis (PCA) or Linear Discriminant Analysis (LDA)~\cite{ramashini2019bird},
 are often used to lower the dimensionality of the feature vectors while still
 capturing enough information to be able to train a model effectively.
@@ -371,6 +373,16 @@ positive semidefinite. Typical kernel functions include
 
 \end{itemize}
 
+\subsubsection{Multiclass classification}
+
+SVMs can easily be extended to work with multiclass classification using
+standard procedures. One procedure which is optimal with respect to the Hamming
+Loss, which relates to the number of false positives or false negatives, is the
+one-versus-all technique. Here, multiple SVMs are trained, each one learning the
+hyperplane for samples belonging to one class versus samples belonging to all
+the other classes. A new sample can then be tested against all the models and
+predictions are made using the model that is most confident.
+
 \subsection{Neural Networks}
 
 Although neural networks have existed in some form since the 1950s with
@@ -419,10 +431,83 @@ Although the architecture of DL tools for birdsong classification may vary
 widely, the final layer is typically the same. This consists of a fully
 connected layer of $n$ units, where $n$ is the number of classes, with a softmax
 activation so that the output of the network can be considered as a probability
-distribution over the classes.
+distribution over the classes. A classification of an unseen sample can then be
+performed by assigning the sample to the class with the highest corresponding
+probability.
 
 \subsubsection{Feedforward Neural Network}
 
+A feedforward neural network (FNN) consists of a system of connected nodes,
+organised in layers, where information flows in one direction only --- forward
+--- from the input nodes, through the hidden nodes (if any), and to the output
+nodes. This differs fundamentally from e.g.\ a RNN, where information can flow
+forward and backwards. However, both FNNs and its derivatives and RNNs share
+many similarities, such as learning using backpropagation, and using nonlinear
+activation functions in order to model nonlinear data.
+
+A FNN in perhaps its most basic form while still being able to solve non-trivial
+problems is known as a multilayer perceptron (MLP). An MLP consists of at least
+three layers of fully connected nodes with a nonlinear activation function.
+Since their inception in late 21$^{\text{st}}$ century MLPs have had extensive research
+conducted into their capabilities and efficiency (\cite{hornik1989multilayer}).
+
+<description of MLP with diagram>
+
+MLPs have largely been superseded by more modern DL architectures such as CNN and
+RNN when it comes to audio problems such as birdsong classification, however
+there have been examples of more vanilla neural networks being used. McIlraith
+and Card~\cite{mcilraith1997birdsong} used a two layer perceptron network using
+backpropagation to minimize a mean squared error loss to classify samples from 7
+birds. Murcia and Paniagua~\cite{murcia2013bird} used a simple FNN to classify
+birdsong from 35 different bird species, achieving 0.74 AUC and in doing so
+winning the International Conference on Machine Learning Bird Challenge 2013.
+
 \subsubsection{Convolutional Neural Network}
+
+CNNs have seen a huge surge in development and popularity over the last decade,
+largely thanks to huge strides being made in fields like machine vision and
+image classification using architectures such as
+AlexNet~\cite{krizhevsky2012imagenet}. Since image and audio share many
+conceptual similarities, it is reasonable to suggest that CNNs may enjoy similar
+success in the world of audio classification problems. This hypothesis is
+strengthened when one considers that many feature representations of audio
+signals can be displayed as images, such as spectrograms
+(figure~\ref{fig:wren_call_song_spectrogram}), MRCG outputs and MFCC outputs
+<add links to figures here>. Indeed, there has been significant progress in
+recent years thanks to CNNs in fields such as audio event
+recognition~\cite{takahashi2017aenet} and automatic speech
+recognition~\cite{sercu2016very}.
+
+A CNN is a feedforward neural network with at least one convolutional layer. A
+convolutional layer is so called because it performs a convolution on an input,
+usually an image, using a small matrix of weights, known as a filter or kernel.
+The output is considered as a matrix of activations. The activation is higher
+when the values in the corresponding area in the input are similar to those in
+the kernel, meaning that the activation output encodes the location of where the
+input matches certain features. Usually, several kernels are applied at each
+layer, and so the output takes the shape of a 3D matrix, or a volume. As with
+all neural nets, the output is passed through a nonlinear activation function in
+order to allow for the network to be able to learn from nonlinear data. The
+weights in the kernel are learned through backpropagation. Usually a max
+pooling layer is added in order to downsample the activation volume and reduce
+the number of weights, or parameters, needed by the network.
+
+<diagram of cnn>
+
+CNNs lend themselves well to image related problems since their structure
+allows them parse an image as a composition of meaningful elements rather than a
+collection of unrelated pixels~\cite{lecun2015deep}. This translates well to
+birdsong as e.g.\ a spectrogram of a sample of birdsong can conceptually be
+thought of as a composition of elements, or syllables.
+
+CNNs have been applied to birdsong classification challenges with great success.
+Kahl et al.~\cite{kahl2017large} achieved a remarkable mean average precision of
+0.605 for a dataset of 1500 different bird species using a CNN trained on
+spectrograms of 4 second samples. The spectrograms were pre-processed to reduce
+noise and augmented with a variety of augmentations, such as adding Gaussian
+noise and real noise samples from the original dataset. Ruff et
+al.~\cite{ruff2020automated} used CNNs to detect owl vocalizations in
+spectrograms from unprocessed field recordings, performing as well or better
+than human experts.
 
 \subsubsection{Recurrent Neural Network}
