@@ -498,7 +498,7 @@ CNNs lend themselves well to image related problems since their structure
 allows them parse an image as a composition of meaningful elements rather than a
 collection of unrelated pixels~\cite{lecun2015deep}. This translates well to
 birdsong as e.g.\ a spectrogram of a sample of birdsong can conceptually be
-thought of as a composition of elements, or syllables.
+thought of as a composition of syllables, i.e.\ elements.
 
 CNNs have been applied to birdsong classification challenges with great success.
 Kahl et al.~\cite{kahl2017large} achieved a remarkable mean average precision of
@@ -508,6 +508,27 @@ noise and augmented with a variety of augmentations, such as adding Gaussian
 noise and real noise samples from the original dataset. Ruff et
 al.~\cite{ruff2020automated} used CNNs to detect owl vocalizations in
 spectrograms from unprocessed field recordings, performing as well or better
-than human experts.
+than human experts. Narasimhan et al.~\cite{narasimhan2017simultaneous} used a
+CNN with encoder-decoder architecture based on
+Segnet~\cite{badrinarayanan2017segnet} to simultaneously segment and classify
+birdsong spectrograms. This approach benefits from the fact that segmentation
+and classification are intuitively strongly interrelated, since when comparing
+two different segmentations, the one that leads to a higher classification
+accuracy will likely be a better segmentation.
+
+Ruff~\cite{ruff2020automated} looks like a good paper for this.
+Kahl~\cite{kahl2017large} also.
 
 \subsubsection{Recurrent Neural Network}
+
+Since FNNs have a fixed size of input and output, they become unsuitable when
+the input size is variable and the output is fixed (e.g.\ with AI image
+generation tools like Dall-E~\cite{ramesh2021zero}), the input size fixed and
+the output is variable (e.g.\ image captioning) or both the input size and
+output size are variable (e.g.\ language translation).
+
+There are several examples of birdsong classification experiments where
+convolutional layers and recurrent layers have been combined to form a
+Convolutional Recurrent Neural Network (CRNN)
+(\cite{yan2021birdsong},~\cite{mukherjee2018convolutional}) in order to leverage
+the benefits of both architectures.
