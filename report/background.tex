@@ -241,7 +241,7 @@ crossing rate, can lead to higher birdsong classification accuracies.
 
 A consequence of feature stacking is that feature vectors will have increased
 size. This can lead to problems such as longer training times and overfitting,
-especially when used in conjunction with deep learning architectures. As a
+especially when used in conjunction with deep learning (DL) architectures. As a
 result, dimensionality reduction techniques, such as Principal Component
 Analysis (PCA) or Linear Discriminant Analysis (LDA)~\cite{ramashini2019bird},
 are often used to lower the dimensionality of the feature vectors while still
@@ -380,7 +380,7 @@ largely been due to remarkable progress being made thanks to deep neural
 networks in fields such as image classification~\cite{krizhevsky2012imagenet}
 and language models~\cite{mikolov2010recurrent}.
 
-Another reason for deep learning's increasing popularity in recent years is due
+Another reason for DL's increasing popularity in recent years is due
 to the availability of more performant hardware and software. The `deep' aspect
 to deep learning refers to the fact that the software architecture depends on
 large amounts of parameters and needs massive amounts of training data in order
@@ -393,10 +393,33 @@ neural networks. Hinton et al.~\cite{hinton2012deep} showed improved performance
 in speech recognition tasks using feed-forward neural networks when compared to
 more classical approaches like HMMs and GMMs. Speech
 enhancement~\cite{afouras2018conversation} and speech
-separation~\cite{ephrat2018looking} problems leveraging deep learning paradigms
-have also been shown to outperform more classical statistical models. The
-world of birdsong classification has also benefited from deep learning, but
-perhaps to a lesser extent than other audio related problems so far.
+separation~\cite{ephrat2018looking} problems leveraging DL paradigms
+have also been shown to outperform more classical statistical models. 
+
+The world of birdsong classification has also benefited from DL, but
+perhaps to a lesser extent than other audio related problems so far. Approaches
+have mainly focused on Convolutional Neural Networks (CNNs), applying
+convolutional layers to an image representation of an input signal, such as a
+(Mel-)spectrogram (\cite{berger2018bird},~\cite{mukherjee2018convolutional}).
+Further birdsong classification solutions have approached the problem in a
+similar fashion, but utilised transfer learning to fine-tune an existing model
+(\cite{disabato2021birdsong},~\cite{lasseck2018acoustic}), such as
+ResNet~\cite{he2016deep} and ImageNet~\cite{deng2009imagenet}. 
+
+Disabato et al.~\cite{disabato2021birdsong} went a step further with their
+research in that they considered the computational and memory demands of their
+proposed bird detection DL network, ToucaNet. As mentioned earlier, DL
+applications can be extremely demanding in terms of computational resources
+which can make them unsuitable for running on devices with limited resources,
+such as smartphones and autonomous recording units (ARUs). Their research showed
+that a level of accuracy in line with the literature can be achieved but with
+lower computational complexity and memory demands.
+
+Although the architecture of DL tools for birdsong classification may vary
+widely, the final layer is typically the same. This consists of a fully
+connected layer of $n$ units, where $n$ is the number of classes, with a softmax
+activation so that the output of the network can be considered as a probability
+distribution over the classes.
 
 \subsubsection{Feedforward Neural Network}
 
