@@ -71,6 +71,7 @@ calls or territorial defence. While all birds produce calls, in many species of
 birds only the males utilise songs and often only during breeding season. The
 song and call of a Eurasian Wren can be seen and contrasted in
 figure~\ref{fig:wren_call_song_spectrogram}.
+Check Crous~\cite{crous2019polyphonic} for references on call types etc.
 
 Doupe et al~\cite{birdsongspeech} showed that there were striking similarities
 between birdsong and human language. Similar to human language, birdsong can be
@@ -383,7 +384,7 @@ hyperplane for samples belonging to one class versus samples belonging to all
 the other classes. A new sample can then be tested against all the models and
 predictions are made using the model that is most confident.
 
-\subsection{Neural Networks}
+\subsection{Neural Networks}\label{ssec:nn}
 
 Although neural networks have existed in some form since the 1950s with
 inception of the perceptron algorithm~\cite{rosenblatt1958perceptron}, they have
@@ -406,7 +407,7 @@ in speech recognition tasks using feed-forward neural networks when compared to
 more classical approaches like HMMs and GMMs. Speech
 enhancement~\cite{afouras2018conversation} and speech
 separation~\cite{ephrat2018looking} problems leveraging DL paradigms
-have also been shown to outperform more classical statistical models. 
+have also been shown to outperform more classical statistical models.
 
 The world of birdsong classification has also benefited from DL, but
 perhaps to a lesser extent than other audio related problems so far. Approaches
@@ -416,7 +417,7 @@ convolutional layers to an image representation of an input signal, such as a
 Further birdsong classification solutions have approached the problem in a
 similar fashion, but utilised transfer learning to fine-tune an existing model
 (\cite{disabato2021birdsong},~\cite{lasseck2018acoustic}), such as
-ResNet~\cite{he2016deep} and ImageNet~\cite{deng2009imagenet}. 
+ResNet~\cite{he2016deep} and ImageNet~\cite{deng2009imagenet}.
 
 Disabato et al.~\cite{disabato2021birdsong} went a step further with their
 research in that they considered the computational and memory demands of their
@@ -431,9 +432,15 @@ Although the architecture of DL tools for birdsong classification may vary
 widely, the final layer is typically the same. This consists of a fully
 connected layer of $n$ units, where $n$ is the number of classes, with a softmax
 activation so that the output of the network can be considered as a probability
-distribution over the classes. A classification of an unseen sample can then be
-performed by assigning the sample to the class with the highest corresponding
-probability.
+distribution over the classes. The softmax function is defined as
+\begin{equation}
+\sigma{(\mathbf{z})}_i = \frac{e^{z_i}}
+  {\sum_{j=1}^{K} e^{z_j}}, \hspace{1em} i = 1,\ldots,K
+\end{equation}
+where $K$ is the number of classes.
+
+A classification of an unseen sample can then be performed by assigning the
+sample to the class with the highest corresponding probability.
 
 \subsubsection{Feedforward Neural Network}
 
@@ -522,13 +529,76 @@ Kahl~\cite{kahl2017large} also.
 \subsubsection{Recurrent Neural Network}
 
 Since FNNs have a fixed size of input and output, they become unsuitable when
-the input size is variable and the output is fixed (e.g.\ with AI image
-generation tools like Dall-E~\cite{ramesh2021zero}), the input size fixed and
+either the input size is variable and the output is fixed (e.g.\ with AI image
+generation tools like Dall-E~\cite{ramesh2021zero}), the input size is fixed and
 the output is variable (e.g.\ image captioning) or both the input size and
-output size are variable (e.g.\ language translation).
+output size are variable (e.g.\ language translation). RNNs solve this problem
+by allowing information in the network to flow in two different directions, both
+forward and backward, or more precisely, in directed cycles. This is done by
+feeding the output from a previous step as input to the current step, therefore
+the state of the hidden units depends on the previous state of the network. This
+gives the network the ability to learn long term dependencies thanks to an
+unbounded previous history. The architecture of a standard RNN is shown in
+figure
 
-There are several examples of birdsong classification experiments where
-convolutional layers and recurrent layers have been combined to form a
+<figure of rnn>
+
+Similar to FNNs, classification RNNs learn by minimizing a loss function,
+usually the cross-entropy loss~\cite{shore1980axiomatic}, by backpropagation.
+However, a slight variation on the algorithm is used to incorporate the
+sequential nature of the input data. The variation is known as backpropagation
+through time (BPTT). Here, in order to update the weights matrices, all weights
+are first treated as independent. The standard backpropagation algorithm is then
+run and all the corresponding gradients are averaged together. BPTT however
+suffers from a problem whereby gradients larger than $\mathbf{1}$ are multiplied
+together, which causes the gradient updates further back the network to
+exponentially increase, which may cause memory problems. This is known as the
+gradient exploding problem. The equivalent problem whereby gradients less than
+$\mathbf{1}$ vanish towards 0 is known as the gradient vanishing problem. This
+results in the model having no ability to learn long term dependencies. Both of
+these problems are compounded by RNNs learning from long sequences of inputs,
+causing longer multiplicative chains of updates. Two common approaches to
+dealing with these problems is to replace vanilla RNNs with long short-term
+memory (LSTM) units or gated recurrent units (GRU).
+
+\subsubsection{LSTM}
+
+\subsubsection{GRU}
+
+While the usage of plain RNNs for birdsong classification has been rare in the
+literature, there are several examples of birdsong classification experiments
+where convolutional layers and recurrent layers have been combined to form a
 Convolutional Recurrent Neural Network (CRNN)
 (\cite{yan2021birdsong},~\cite{mukherjee2018convolutional}) in order to leverage
-the benefits of both architectures.
+the benefits of both architectures. A typical approach using a CRNN with regards
+to birdsong classification might look something like the
+following~\cite{crous2019polyphonic}
+
+\begin{enumerate}
+
+  \item Convert an audio segment to a frequency domain representation to be
+    interpreted as an image, e.g.\ a spectrogram.
+
+  \item Apply a convolutional layer (or layers) to each time step of the
+    representation in order to extract local features. A time step is defined as
+    a single unit along the time axis of the spectrogram.
+
+  \item Apply a recurrent layer to spread the local features of a single time
+    step to its temporal surroundings. The spread features can then be processed
+    by a fully connected layer with softmax activation as described in
+    Section~\ref{ssec:nn} to make a prediction in the form of a distribution
+    over output classes for each time step.
+
+\end{enumerate}
+
+The recurrent layer provides two key advantages compared to a plain CNN\@.
+Firstly, the network will be able to learn from previous and future features in
+order to strengthen predictions. For example, if the current time step equally
+supports a blackbird or a nightingale prediction by itself, it will be skewed
+towards a blackbird if the previous time step and future time step both
+predicted a blackbird. Secondly, the network can learn to include moments of
+silence in a prediction. Note that this benefit is lost if just considering
+audio segments of isolated syllables as these segments should contain little or
+no silence.
+
+Check refs in the Narasimhan paper~\cite{narasimhan2017simultaneous}.
