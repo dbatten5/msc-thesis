@@ -7,3 +7,69 @@ Describe the results of your method here in this chapter.
 \section{Datasets}
 
 Crous~\cite{crous2019polyphonic} has some data on Xeno-canto.
+
+Since all the models described in Section~\ref{sec:classification} are trained
+in a supervised learning fashion, this requires a dataset of labelled training
+examples. The website xeno-canto.org (XC) houses the largest and most
+comprehensive publicly available collection of birdsong samples in the world. It
+has made an enormous impact in the field birdsong recognition since its
+inception in 2005 and has been source of the datasets for the annual BirdCLEF
+challenge since 2014~\cite{vellinga2015xeno}. All samples available on XC are
+labelled with the bird species and contain rich metadata, such as the time and
+location of the recording. Importantly, all samples have a crowd-sourced rating
+from A --- E which signifies how clear the recording sample is, where A denotes
+samples with the highest quality and clarity. This is especially important
+should we wish to experiment with different signal-to-noise ratios (SNR) as the
+noise can be manually added to a clean recording at precise SNR levels. 
+
+Due to its scale and reputation in the birdsong classification community, all
+samples used in this thesis have been downloaded from the XC repository. All
+samples downloaded have an A rating and have been labelled as a `song' rather
+than a `call'. The samples are stored in a directory labelled according to the
+first three letter of species' binomial name. For example, samples from the
+common blackbird (\textit{Turdus merula}) are stored in a directory called
+`TURMER'. This directory name acts as a label for training and test samples.
+
+In this work we are mostly concerned with testing relative improvements in model
+performance after tuning various components, such as novel feature
+representations. To this end, we select the most simple form of classification
+experiment: binary classification. The two bird classes selected for all
+experiments herein are the common blackbird and the common nightingale
+(\textit{Luscinia megarhynchos}) due to the two birds' vocalizations being
+acoustically similar and hence more difficult to distinguish resulting in more
+variable accuracy results, and the author's personal preference.
+
+\section{Segmentation}
+
+Recordings downloaded from XC were also chosen based on their length. Recordings
+of duration 40 seconds to 120 seconds were preferred since they were likely to
+be long enough to include enough variety of vocalizations from one individual
+bird, but not too long so as to take up too much space on disk. In this thesis
+it was preferred to have fewer samples from more individual as opposed to more
+samples from fewer individuals for each species. The intention of this was to
+introduce more variation in the training samples for each class, especially when
+considering that many birds of the same species but residing in different
+locations have demonstrated subtle variations in vocalizations, known as
+dialects~\cite{baker1985biology}. As a general rule of thumb, we tried to have
+roughly 50 training samples per individual.
+
+This leads to the question of how to generate samples. In the literature there
+seem to be two main ways of segmenting recordings into samples to be used for
+training. The first is segmenting a recording into overlapping segments of a
+certain length, typically in the range of 4 --- 11 seconds
+(\cite{yan2021birdsong},~\cite{crous2019polyphonic}). This has the advantage
+that all samples will be of fixed length and that the segmentation algorithm is
+very simple. However, it will likely mean that some samples will contain only
+background noise which, if used for training, will introduce noise into the
+system. These noise samples therefore may need to be removed, either
+manually~\cite{yan2021birdsong} or using an
+algorithm~\cite{narasimhan2017simultaneous}. The other method involves
+segmenting the recording into syllables
+(\cite{fagerlund2007bird},~\cite{ramashini2022robust}). This has the advantage
+that all training samples are likely to contain little or no noise. However the
+samples will be of variable length, so steps will be needed to be taken in order
+to compare the samples, such as padding or more advanced techniques like dynamic
+time warping~\cite{somervuo2006parametric}. Syllable segmentation also has the
+enticing prospect of being able to identify a bird species from a very short
+sample. This could be useful in situations where a recording is mostly corrupted
+by background noise but has a few small segments of clear birdsong.
