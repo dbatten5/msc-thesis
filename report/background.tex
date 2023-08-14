@@ -563,11 +563,78 @@ memory (LSTM) units or gated recurrent units (GRU).
 
 \subsubsection{LSTM}
 
+LSTM was first proposed by Hochreiter and Schmidhuber~\cite{hochreiter1997long}
+and has seen excellent results in fields such as speech
+recognition~\cite{he2016exploiting} and acoustic
+modelling~\cite{qu2017syllable}. LSTM describes an alternative structure for RNN
+whereby the hidden units are replaced with a memory cell which can store
+information for extended periods of time. The flow of information in and out of
+the cell is controlled by three boolean gates: a forget gate (\ref{eq:lstm_f})
+which controls how information is lost from memory, an
+input gate (\ref{eq:lstm_i}) which controls how new information is stored in
+memory, and an output gate (\ref{eq:lstm_o}) which controls which information in
+memory should be output to the next layer and for the next time step.
+
+\begin{align}
+  f_t &= \sigma(W_f \cdot \left[ h_{t-1},x_t \right] + b_f) \label{eq:lstm_f} \\[0.5em]
+  i_t &= \sigma(W_i \cdot \left[ h_{t-1},x_t \right] + b_i) \label{eq:lstm_i} \\[0.5em]
+  o_t &= \sigma(W_o \cdot \left[ h_{t-1},x_t \right] + b_o) \label{eq:lstm_o} \\[0.5em]
+  c_t &= f_t \odot c_{t-1} + i_t \odot \tanh \left( 
+    W_c \cdot \left[ h_{t-1},x_t \right] + b_c
+  \right)  \\[0.5em]
+  h_t &= o_t \odot \tanh (c_t)
+\end{align}
+
+Here, $\odot$ represents the Hadamard product (element-wise multiplication) and
+$W_{\{f,i,o,c\}}$ and $b_{\{f,i,o,c\}}$ are trained weights matrices and biases
+respectively. The above equations describe how an input vector $x_t$ at time
+step $t$, the previous output vector $h_{t-1}$ and cell state $c_{t-1}$ combine
+to compute the next output $h_t$ and cell state $c_t$. This process can be
+visualized in figure 
+
+<figure of lstm>
+Yu~\cite{yu2019review} has some nice diagrams
+
+The key conceptual difference between LSTM and RNN is that LSTM separates memory
+from the hidden state. LSTM deals with the gradient vanishing problem since the
+memory cells are additive with respect to time~\cite{daniluk2004automatic}. The
+gradient exploding problem can be tackled using strategies such as gradient
+clipping, whereby the gradient is reset to a small number after it exceeds a
+threshold value using \begin{equation} g = \frac{\text{threshold}}{\|g\|}g
+\end{equation}
+
+Yan et al.~\cite{yan2021birdsong} used LSTM with a CNN to achieve a mean average
+precision (MAP) of 0.979 in their classification experiment with 4 different
+species of birds.
+
 \subsubsection{GRU}
 
-While the usage of plain RNNs for birdsong classification has been rare in the
-literature, there are several examples of birdsong classification experiments
-where convolutional layers and recurrent layers have been combined to form a
+GRU was first proposed by Cho et al.~\cite{cho2014properties}. GRU shares many
+similarities with LSTM in that it replaces hidden units in a RNN with a memory
+cell, however it improves on LSTM in that it has few parameters, and therefore
+has lower computational burden. The reduction in parameters is achieved by
+combining the input gate and the forget gate of an LSTM to form an update gate,
+meaning that the GRU has only two gates, an update gate (\ref{eq:gru_z}) and a
+reset gate (\ref{eq:gru_r}).
+
+\begin{align}
+  r_t &= \sigma\left( W_{rh}h_{t-1} + W_{rx}x_t + b_r \right) \label{eq:gru_r} \\[0.5em]
+  z_t &= \sigma\left( W_{zh}h_{t-1} + W_{zx}x_t + b_z \right) \label{eq:gru_z} \\[0.5em]
+  \overline{h}_t &= \tanh\left( W_{hh}(r_t \odot h_{t-1}) + W_{hx}x_t + b_z \right) \\[0.5em]
+  h_t &= (1-z_t) \odot h_{t-1} + z_t \odot \overline{h}_t
+\end{align}
+
+<figure of GRU>
+
+The reduction in parameters and number of gates does mean that the GRU is less
+powerful than the LSTM and does not work for problems such as
+translation~\cite{britz2017massive}. However, it has been applied birdsong
+related problems with promising results
+(\cite{parrilla2022polyphonic},~\cite{adavanne2017stacked}).
+
+While the usage of RNNs, LSTMs or GRUs alone for birdsong classification has
+been rare in the literature, there are several examples of experiments where
+convolutional layers and recurrent layers have been combined to form a
 Convolutional Recurrent Neural Network (CRNN)
 (\cite{yan2021birdsong},~\cite{mukherjee2018convolutional}) in order to leverage
 the benefits of both architectures. A typical approach using a CRNN with regards
