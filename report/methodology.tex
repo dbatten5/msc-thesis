@@ -4,6 +4,9 @@ motivate your method.
 
 Describe the results of your method here in this chapter.
 
+All computational work for this thesis was performed in \textit{MATLAB vR2023a}
+unless stated otherwise.
+
 \section{Datasets}
 
 Crous~\cite{crous2019polyphonic} has some data on Xeno-canto.
@@ -39,6 +42,45 @@ experiments herein are the common blackbird and the common nightingale
 acoustically similar and hence more difficult to distinguish resulting in more
 variable accuracy results, and the author's personal preference.
 
+\section{Pre-processing}
+
+Some recordings available on XC are recorded in stereo sound, so in order to
+reduce dimensionality without losing too much information, all recordings are
+first converted to mono by taking a mean average of both channels. Leading and
+trailing sections of background noise are then stripped from the recording using
+the \textit{detectSpeech} function provided by \textit{MATLAB}. This function
+uses a thresholding algorithm to detect onset and offset indices of
+speech~\cite{giannakopoulos2009method}. The function works for birdsong since
+birdsong frequencies reside in a similar range to that of human speech. The
+function accepts various arguments to determine properties such as window length
+and threshold value, but from initial experiments, the function was shown to
+work well with birdsong with the defaults, see figure~\ref{fig:detected_speech}.
+The detected onset and offset of birdsong allows for the leading and trailing
+bits of background noise to be removed from the recording, thus reducing
+unnecessary computational time in segmenting the audio.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/detected_speech.png}
+  \caption{Output of the \textit{detectSpeech} function for a recording of
+  birdsong from a Eurasian wren. The highlighted section shows where the
+algorithm has detected `speech', or in this case,
+birdsong.}\label{fig:detected_speech}
+\end{figure}
+
+A highpass filter is then applied to the recording with a passband frequency of
+450Hz. This value was chosen as most birdsong sits in the range of 1KHz ---
+10Khz, and so lower frequencies can be attributed to background noise and
+therefore their removal should reduce noise in the system without losing
+important information. The reason why frequencies above 10Khz are note removed
+is that, as can be seen from figure~\ref{fig:wren_call_song_spectrogram}, birds
+typically produce higher frequency harmonics when vocalizing, shown as vertical
+bands moving upwards from where syllables are located on the spectrogram. These
+harmonics may capture useful information for the learning algorithm to utilise.
+
+After these pre-processing steps have been taken, the audio is ready for
+syllable segmentation.
+
 \section{Segmentation}
 
 Recordings downloaded from XC were also chosen based on their length. Recordings
@@ -73,3 +115,27 @@ time warping~\cite{somervuo2006parametric}. Syllable segmentation also has the
 enticing prospect of being able to identify a bird species from a very short
 sample. This could be useful in situations where a recording is mostly corrupted
 by background noise but has a few small segments of clear birdsong.
+
+In this work we attempt to combine the benefits of both approaches by first
+segmenting a recording to retrieve the syllables using a process described in
+Section~\ref{ssec:syllable_seg}. Then, for each syllable, the
+following syllables are appended until a fixed sample length is reached. If a
+syllable is added which pushes the sample length over the limit, then the sample
+is trimmed at the fixed length. This approach is motivated by Somervuo et al.'s
+work~\cite{somervuo2006parametric} in showing that training and classifying
+using single syllables returns suboptimal results, whereas using sequences of
+syllables gives much improved accuracy. Of course there is a tradeoff here
+between training with longer sequences, and hence more information, versus
+increased computational demand to perform training. With this tradeoff in mind,
+a fixed length of 13230 is chosen. Add figure of histogram here showing lengths
+of syllables. Typical syllable length is X, and so the fixed length should
+contain roughly Y syllables. This approach ensures the influence of background
+noise is kept to a minimum, while still maintaining information related to the
+temporal evolution of a particular birdsong.
+
+
+\subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
+
+This algorithm was first proposed by Fagerlund~\cite{fagerlund2004automatic}
+and has been used in various research papers since
+(\cite{somervuo2006parametric},~\cite{ramashini2022robust}). 
