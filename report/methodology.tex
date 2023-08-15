@@ -45,15 +45,15 @@ variable accuracy results, and the author's personal preference.
 \section{Pre-processing}
 
 Some recordings available on XC are recorded in stereo sound, so in order to
-reduce dimensionality without losing too much information, all recordings are
-first converted to mono by taking a mean average of both channels. Leading and
-trailing sections of background noise are then stripped from the recording using
-the \textit{detectSpeech} function provided by \textit{MATLAB}. This function
-uses a thresholding algorithm to detect onset and offset indices of
+reduce dimensionality without losing too much information, all stereo recordings
+are first converted to mono by taking a mean average of both channels. Leading
+and trailing sections of background noise are then stripped from the recording
+using the \textit{detectSpeech} function provided by \textit{MATLAB}. This
+function uses a thresholding algorithm to detect onset and offset indices of
 speech~\cite{giannakopoulos2009method}. The function works for birdsong since
 birdsong frequencies reside in a similar range to that of human speech. The
 function accepts various arguments to determine properties such as window length
-and threshold value, but from initial experiments, the function was shown to
+and threshold value, but from initial experiments the function was shown to
 work well with birdsong with the defaults, see figure~\ref{fig:detected_speech}.
 The detected onset and offset of birdsong allows for the leading and trailing
 bits of background noise to be removed from the recording, thus reducing
@@ -72,16 +72,17 @@ A highpass filter is then applied to the recording with a passband frequency of
 450Hz. This value was chosen as most birdsong sits in the range of 1KHz ---
 10Khz, and so lower frequencies can be attributed to background noise and
 therefore their removal should reduce noise in the system without losing
-important information. The reason why frequencies above 10Khz are note removed
+important information. The reason why frequencies above 10Khz are not removed
 is that, as can be seen from figure~\ref{fig:wren_call_song_spectrogram}, birds
 typically produce higher frequency harmonics when vocalizing, shown as vertical
 bands moving upwards from where syllables are located on the spectrogram. These
-harmonics may capture useful information for the learning algorithm to utilise.
+harmonics may capture useful information for the learning algorithm to utilise
+and should therefore not be filtered out.
 
 After these pre-processing steps have been taken, the audio is ready for
 syllable segmentation.
 
-\section{Segmentation}
+\section{Segmentation}\label{sec:segmentation}
 
 Recordings downloaded from XC were also chosen based on their length. Recordings
 of duration 40 seconds to 120 seconds were preferred since they were likely to
@@ -182,14 +183,15 @@ decibel scale for frame $i$ is calculated as
 \end{equation}
 where $x{(i)}_j$ is the $j^{\text{th}}$ input signal sample value in the
 $i^{\text{th}}$ frame and $K$ is the total number of samples in each frame, in
-this case 128. The maximum energy of the entire signal is normalized to 0dB.
-The initial noise level estimate is set to be equal to global minimum value of
-the energy envelope and the threshold for the onset and offset detection is set
-to half the noise estimate. The flow diagram for onset and offset detection can
-be seen in figure <figure of flow chart>. In essence, the algorithm moves
-through each frame and computes whether the frame should be assigned to a
-syllable or not. The noise estimate is updated as the average energy of frames
-already processed by the algorithm that are not assigned to a syllable.
+this case 128. The maximum energy of the entire signal is normalized to 0dB. The
+initial noise level estimate is set to be equal to global minimum value of the
+energy envelope and the threshold for the onset and offset detection is set to
+half the noise estimate. The flow diagram for onset and offset detection can be
+seen in figure <figure of flow chart>. In essence, the algorithm moves through
+each frame and computes whether the frame should be assigned to a syllable or
+not, updating noise and energy thresholds as it goes. The noise estimate is
+updated as the average energy of frames already processed by the algorithm that
+are not assigned to a syllable.
 
 \subsubsection{Merging syllable candidates}
 
@@ -199,3 +201,68 @@ constitute the same syllable, or it may be from the border effect. In both cases
 the candidates can be considered as belonging to the same syllable and so can be
 safely merged together. Candidates that are less than 15ms apart are selected
 for merging~\cite{fagerlund2004automatic}.
+
+<figures of segmentation>
+
+Each segmented syllable is then stored as an individual \textit{wav} file in the
+same directory as the original recording with a filename in the format 
+\textit{\{XCID\}\_i.wav} where \textit{XCID} is the XC id of the recording and
+\textit{i} is the index of the syllable.
+
+\section{Feature extraction}
+
+Once syllables have been extracted and stored as individual audio files, they
+are ready to be retrieved and converted to features. As mentioned in
+Section~\ref{sec:segmentation}, before feature extraction is performed,
+syllables are concatenated together until a minimum length is achieved.
+
+\subsection{Cepstral coefficients}
+
+The cepstral coefficients on which this thesis focuses are the MFCC and GTCC\@.
+Both features are extracted using builtin \textit{MATLAB} functions
+\textit{mfcc} and \textit{gtcc} respectively. The functions accept arguments
+which affect how the routine processes input signals. To the best of the
+author's knowledge, these arguments have not been explored in the field of
+birdsong classification problems.
+
+\subsubsection{MFCC}
+
+A potentially overlooked parameter of MFCC extraction with regards to birdsong
+classification using \textit{MATLAB} is the \textit{BandEdges} argument. This
+argument provides the basis of the half-overlapped triangular filters that
+\textit{mfcc} uses. By default, \textit{BandEdges} is a 42-element vector that
+results in a 40-band filter bank constructed using 13 linearly-spaced filters,
+with 133.3Hz separating their center frequencies, and 27 log-spaced filters,
+separated by a factor of 1.0711703 in frequency~\cite{slaney1998auditory}. This
+equates to a frequency range that spans approximately 133Hz to 6864Hz. This
+range is well suited to human speech, of which MFCC is often used as a feature,
+but may be less suitable for birdsong which can sometimes sit outside the normal
+frequency range of human speech.
+
+In this work we consider alternative constructions of the MFCC filter banks,
+such as extending the range and adding more filters and assess the performance
+of classifiers using the alternative MFCC filter banks in comparison with the
+default.
+
+\subsubsection{GTCC}
+
+Like MFCC, GTCC has a potentially overlooked argument in
+\textit{FrequencyRange}. This two-element row vector specifies the minimum and
+maximum values in Hz of the gammatone filter bank used by the \textit{gtcc}
+routine. The default value is \texttt{[50, fs/2]}, which could potentially be
+fine-tuned for birdsong related problems since birdsong frequencies do not
+typically go below 1Khz.
+
+In this work we consider alternative values for the maximum and minimum
+frequency of the gammatone filter bank and compare performance of classifiers
+trained using the alternative GTCC representations with the default.
+
+\subsection{MRCG}
+
+\section{Training}
+
+\subsection{SVMs}
+
+\subsection{Neural networks}
+
+\section{Evaluation}
