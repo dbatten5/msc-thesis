@@ -42,6 +42,9 @@ experiments herein are the common blackbird and the common nightingale
 acoustically similar and hence more difficult to distinguish resulting in more
 variable accuracy results, and the author's personal preference.
 
+38 individuals from each class were downloaded, with 28 used for training and
+the remaining 10 kept for testing.
+
 \section{Pre-processing}
 
 Some recordings available on XC are recorded in stereo sound, so in order to
@@ -259,10 +262,81 @@ trained using the alternative GTCC representations with the default.
 
 \subsection{MRCG}
 
+\textit{MATLAB} provides no builtin functions for computing an MRCG, or even a
+cochleagram, upon which the MRCG is based. To that end, custom code was
+developed based on the toolbox developed by Kim and Hahn~\cite{kim2018voice}
+which implements MRCG\@. The MRCG routine implemented in~\cite{kim2018voice}
+uses a gammatone filter bank with a frequency range of \texttt{[50, 8000]},
+which may not be suitable for birdsong problems. The work done in customising
+the toolbox for this thesis extends the implementation to work with alternative
+frequency ranges for the gammatone filter bank.
+
+It's recommended to include the $\Delta$ and $\Delta\Delta$ values along with
+the MRCG feature~\cite{chen2014feature}, so hereafter the term MRCG shall refer to
+the base MRCG along with its $\Delta$ and $\Delta\Delta$ values. The same
+applies to MFCC and GTCC\@.
+
+Due to the high dimensionality of the MRCG feature and considering the
+computational limitations of the machine upon which the training for this thesis
+was performed, the MRCG feature would be best suited to a classifier which is
+optimised for working with image data, such as CNNs\@. To that end, it won't
+be used with SVMs in this work.
+
 \section{Training}
 
+To create the training cell, syllables are retrieved and concatenated to form
+a training sample, hereafter referred to as a sequence. A maximum limit of 40
+sequences per individual is imposed to ensure enough variation while keeping
+training times to a minimum. The number of training sequences used for both
+classes can be seen in table~\ref{table:training_samples}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Class & Individuals & Sequences \\ [0.5ex]
+\midrule
+Common blackbird (\textit{TURMER}) & 28 & 1111 \\
+Common nightingale (\textit{LUSMEG}) & 28 & 1200 \\
+\bottomrule
+\end{tabular}
+\caption{Number of training sequences for used for both
+classes.}\label{table:training_samples}
+\end{center}
+\end{table}
+
+The training cell is formed by vertically concatenating the two cell arrays
+containing the training sequences to form a $2311 \times 1$ cell array. The
+training labels are contained in a $2311 \times 1$ categorical array with a
+\textit{TURMER} category labelling a blackbird sequence and \textit{LUSMEG}
+labelling a nightingale sequence.
+
+All training is performed on an Apple MacBook Pro (late 2013) running OSX
+11.5.2.
+
 \subsection{SVMs}
+
+All SVM models are implemented using \textit{MATLAB's} \texttt{fitcsvm}
+function provided in the Statistics and Machine Learning Toolbox.
+
+SVMs require each training sample to be a row vector. To convert the training
+cell array to the required matrix format, a function can be applied to each cell
+using the \texttt{cellfun} function to extract the desired feature and flatten
+the output to a row vector. The \texttt{cell2mat} function can then be
+applied to convert the cell array to a matrix of numerical data, the required
+format for \texttt{fitcsvm}. The training labels cell array mentioned in the
+previous section requires no transformation.
+
+\subsubsection{Linear}
+
+Linear models are trained by supplying a \textit{KernelFunction} argument set to
+\textit{linear} to the \texttt{fitcsvm} function. Linear models are simple to
+fit as they have no hyperparameters and therefore require no fine-tuning.
+
+\subsubsection{RBF}
 
 \subsection{Neural networks}
 
 \section{Evaluation}
+
+\section{Extensions of methodology}
