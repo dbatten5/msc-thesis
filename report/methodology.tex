@@ -92,8 +92,8 @@ samples from fewer individuals for each species. The intention of this was to
 introduce more variation in the training samples for each class, especially when
 considering that many birds of the same species but residing in different
 locations have demonstrated subtle variations in vocalizations, known as
-dialects~\cite{baker1985biology}. As a general rule of thumb, we tried to have
-roughly 50 training samples per individual.
+dialects~\cite{baker1985biology}. As a general rule of thumb, a target of
+roughly 50 training samples per individual was aimed for in this thesis.
 
 This leads to the question of how to generate samples. In the literature there
 seem to be two main ways of segmenting recordings into samples to be used for
@@ -110,11 +110,11 @@ segmenting the recording into syllables
 (\cite{fagerlund2007bird},~\cite{ramashini2022robust}). This has the advantage
 that all training samples are likely to contain little or no noise. However the
 samples will be of variable length, so steps will be needed to be taken in order
-to compare the samples, such as padding or more advanced techniques like dynamic
-time warping~\cite{somervuo2006parametric}. Syllable segmentation also has the
-enticing prospect of being able to identify a bird species from a very short
-sample. This could be useful in situations where a recording is mostly corrupted
-by background noise but has a few small segments of clear birdsong.
+to compare the samples, such as adding padding or more advanced techniques like
+dynamic time warping~\cite{somervuo2006parametric}. Syllable segmentation also
+has the enticing prospect of being able to identify a bird species from a very
+short sample. This could be useful in situations where a recording is mostly
+corrupted by background noise but has a few small segments of clear birdsong.
 
 In this work we attempt to combine the benefits of both approaches by first
 segmenting a recording to retrieve the syllables using a process described in
@@ -127,15 +127,75 @@ using single syllables returns suboptimal results, whereas using sequences of
 syllables gives much improved accuracy. Of course there is a tradeoff here
 between training with longer sequences, and hence more information, versus
 increased computational demand to perform training. With this tradeoff in mind,
-a fixed length of 13230 is chosen. Add figure of histogram here showing lengths
-of syllables. Typical syllable length is X, and so the fixed length should
+a fixed length of 13230 is chosen. <Add figure of histogram here showing lengths
+of syllables>. Typical syllable length is X, and so the fixed length should
 contain roughly Y syllables. This approach ensures the influence of background
 noise is kept to a minimum, while still maintaining information related to the
 temporal evolution of a particular birdsong.
-
 
 \subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
 
 This algorithm was first proposed by Fagerlund~\cite{fagerlund2004automatic}
 and has been used in various research papers since
-(\cite{somervuo2006parametric},~\cite{ramashini2022robust}). 
+(\cite{somervuo2006parametric},~\cite{ramashini2022robust}). Note that Fagerlund
+proposed two different segmentation methods in the paper. In this thesis we use
+the energy based segmentation method as it's relatively
+simple to implement and its performance can be superior to the other method
+proposed. The algorithm is computed in the following 3 phases:
+
+\begin{enumerate}
+
+  \item Determine the onsets and offsets of syllable candidates. Special
+    attention has to be paid to the border effect~\cite{li2001classification},
+    whereby the energy envelope near onsets and offsets fluctuates around a
+    threshold.
+
+  \item Syllable candidates that are within a certain temporal distance with
+    each other are merged into one. The initial separation of candidates can
+    likely be attributed to the border effect, and so the candidates can be
+    thought of as originating from one syllable in reality.
+
+  \item Syllable candidates that are shorter than a minimum threshold are
+    removed. These candidates are often caused by random fluctuations in the
+    signal energy and are unrelated to bird vocalizations.
+
+\end{enumerate}
+
+\subsubsection{Onset/offset detection}
+
+The first phase considers the energy of an input signal. The energy envelope is
+the key variable to use in determining the onset and offset of a syllable. The
+general idea is that when the energy increases past a threshold, this marks the
+start of a syllable candidate and when the energy then falls below the same
+threshold, this marks the end of a syllable candidate. To calculate the energy
+envelope, the recording is divided into overlapping frames.
+Fagerlund~\cite{fagerlund2004automatic} recommends a frame size of 128 samples
+and an overlap of 50\%. This corresponds to a frame length of roughly 3ms. Since
+distance between syllables can be as short as 20ms, the frame size needs to be
+small enough so that there are at least a few frames between candidates to be
+able to efficiently discriminate between syllables.
+
+Frames are first windowed using a Hanning window. The energy $E_i$ in the
+decibel scale for frame $i$ is calculated as
+\begin{equation}
+  E_i = 10 \log_{10} \sum_{j=1}^{K} x{(i)}_{j}^2
+\end{equation}
+where $x{(i)}_j$ is the $j^{\text{th}}$ input signal sample value in the
+$i^{\text{th}}$ frame and $K$ is the total number of samples in each frame, in
+this case 128. The maximum energy of the entire signal is normalized to 0dB.
+The initial noise level estimate is set to be equal to global minimum value of
+the energy envelope and the threshold for the onset and offset detection is set
+to half the noise estimate. The flow diagram for onset and offset detection can
+be seen in figure <figure of flow chart>. In essence, the algorithm moves
+through each frame and computes whether the frame should be assigned to a
+syllable or not. The noise estimate is updated as the average energy of frames
+already processed by the algorithm that are not assigned to a syllable.
+
+\subsubsection{Merging syllable candidates}
+
+The algorithm may produce syllable candidates that are very temporally close
+together. This may be from the bird producing short bursts of pulses that
+constitute the same syllable, or it may be from the border effect. In both cases
+the candidates can be considered as belonging to the same syllable and so can be
+safely merged together. Candidates that are less than 15ms apart are selected
+for merging~\cite{fagerlund2004automatic}.
