@@ -23,7 +23,7 @@ location of the recording. Importantly, all samples have a crowd-sourced rating
 from A --- E which signifies how clear the recording sample is, where A denotes
 samples with the highest quality and clarity. This is especially important
 should we wish to experiment with different signal-to-noise ratios (SNR) as the
-noise can be manually added to a clean recording at precise SNR levels. 
+noise can be manually added to a clean recording at precise SNR levels.
 
 Due to its scale and reputation in the birdsong classification community, all
 samples used in this thesis have been downloaded from the XC repository. All
@@ -42,8 +42,8 @@ experiments herein are the common blackbird and the common nightingale
 acoustically similar and hence more difficult to distinguish resulting in more
 variable accuracy results, and the author's personal preference.
 
-38 individuals from each class were downloaded, with 28 used for training and
-the remaining 10 kept for testing.
+Roughly 38 individuals from each class were downloaded, with 28 used for
+training and the remaining kept for testing.
 
 \section{Pre-processing}
 
@@ -130,12 +130,24 @@ work~\cite{somervuo2006parametric} in showing that training and classifying
 using single syllables returns suboptimal results, whereas using sequences of
 syllables gives much improved accuracy. Of course there is a tradeoff here
 between training with longer sequences, and hence more information, versus
-increased computational demand to perform training. With this tradeoff in mind,
-a fixed length of 13230 is chosen. <Add figure of histogram here showing lengths
-of syllables>. Typical syllable length is X, and so the fixed length should
-contain roughly Y syllables. This approach ensures the influence of background
-noise is kept to a minimum, while still maintaining information related to the
-temporal evolution of a particular birdsong.
+increased computational demand to perform training.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/syllable_sample_length.png}
+  \caption{Histogram showing the frequency of different sample lengths for all
+  training syllables. A candidate fixed sequence length is denoted by the red
+dashed line.}\label{fig:syllable_sample_lengths}
+\end{figure}
+
+From figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
+fall in the region $\left[ 200, 1236 \right]$ (the segmentation algorithm sets a
+minimum of 200 samples for candidate syllables). Therefore a sequence of fixed
+length about 14000 (denoted by the red dashed line) should contain between 10
+and 70 syllables. The fixed length, equating to about 3ms duration, also ensures
+that most sequences contain at least one full syllable. This approach ensures
+the influence of background noise is kept to a minimum, while still maintaining
+information related to the temporal evolution of a particular birdsong.
 
 \subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
 
@@ -208,7 +220,7 @@ for merging~\cite{fagerlund2004automatic}.
 <figures of segmentation>
 
 Each segmented syllable is then stored as an individual \textit{wav} file in the
-same directory as the original recording with a filename in the format 
+same directory as the original recording with a filename in the format
 \textit{\{XCID\}\_i.wav} where \textit{XCID} is the XC id of the recording and
 \textit{i} is the index of the syllable.
 
@@ -282,9 +294,9 @@ was performed, the MRCG feature would be best suited to a classifier which is
 optimised for working with image data, such as CNNs\@. To that end, it won't
 be used with SVMs in this work.
 
-\section{Training}
+\section{Training}\label{sec:training}
 
-To create the training cell, syllables are retrieved and concatenated to form
+To create the training cell array, syllables are retrieved and concatenated to form
 a training sample, hereafter referred to as a sequence. A maximum limit of 40
 sequences per individual is imposed to ensure enough variation while keeping
 training times to a minimum. The number of training sequences used for both
@@ -296,7 +308,7 @@ classes can be seen in table~\ref{table:training_samples}.
 \toprule
 Class & Individuals & Sequences \\ [0.5ex]
 \midrule
-Common blackbird (\textit{TURMER}) & 28 & 1111 \\
+Common blackbird (\textit{TURMER}) & 28 & 1107 \\
 Common nightingale (\textit{LUSMEG}) & 28 & 1200 \\
 \bottomrule
 \end{tabular}
@@ -322,21 +334,109 @@ function provided in the Statistics and Machine Learning Toolbox.
 SVMs require each training sample to be a row vector. To convert the training
 cell array to the required matrix format, a function can be applied to each cell
 using the \texttt{cellfun} function to extract the desired feature and flatten
-the output to a row vector. The \texttt{cell2mat} function can then be
-applied to convert the cell array to a matrix of numerical data, the required
-format for \texttt{fitcsvm}. The training labels cell array mentioned in the
-previous section requires no transformation.
+the output to a row vector. A simple routine can then be applied to convert the
+cell array to a matrix of numerical data, the required format for
+\texttt{fitcsvm}. The training labels cell array mentioned in the previous
+section requires no transformation.
 
 \subsubsection{Linear}
 
-Linear models are trained by supplying a \textit{KernelFunction} argument set to
-\textit{linear} to the \texttt{fitcsvm} function. Linear models are simple to
-fit as they have no hyperparameters and therefore require no fine-tuning.
+Linear SVMs are trained by supplying a \textit{KernelFunction} argument set to
+\textit{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
+simple to fit as they have fewer parameters than SVMs utilising other kernel
+functions. The key parameter to tune for here is the \textit{BoxConstraint},
+which controls the trade-off between maximizing the margin between classes and
+minimizing the classification error. This is the constant $C$ in Equation
+(\ref{eq:svm_nonlinear_mapping_slack}). The \textit{Standardize} parameter
+controls whether data is standardized before fitting, and can also affect the
+performance of the model. In this work, KFold cross-validation (KF) was selected
+to optimize the parameters, with $K=7$ folds. This is motivated by other
+research taking the same approach with promising
+results~\cite{ramashini2022robust}.
+
+Figure~\ref{fig:linear_optim} shows where the optimum values of
+\textit{BoxConstraint} and \textit{Standardize} lie for a linear SVM\@. As can
+be seen, the \textit{Standardize} parameter makes a slight difference on model
+performance, whereas \textit{BoxConstraint} makes a significant difference, with
+lower values preferred. A lower value means that the model has greater
+flexibility in misclassifying training samples for the benefit of better
+generalization.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/linear_optim.png}
+  \caption{Plot showing optimum values of the \textit{BoxConstraint} and
+  \textit{Standardize} parameters when fitting a linear SVM.\ The optimum values
+are located where the objective function is at a
+minimum.}\label{fig:linear_optim}
+\end{figure}
 
 \subsubsection{RBF}
+
+RBF SVMs are able to fit more complex decision boundaries by projecting data
+into a higher dimensional space, which is controlled by the hyperparameter
+\textit{KernelScale}. RBF SVMs are also sensitive to the \textit{BoxConstraint}
+parameter. 7-fold cross validation was performed using a \texttt{cvpartition}
+and supplying a \textit{OptimizeHyperparameters} argument set to \textit{auto}
+to \texttt{fitcsvm}. A value of \textit{auto} means that both
+\textit{KernelScale} and \textit{BoxConstraint} are optimised during training.
+
+Figure~\ref{fig:rbf_optim} shows where the optimum values of
+\textit{BoxConstraint} and \textit{KernelScale} lie for a RBF SVM\@. Both
+parameters are shown to have an impact on the model performance, with high
+values of \textit{BoxConstraint} and mid-range values of \textit{KernelScale}
+preferred. <what does kernel scale do?>
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/rbf_optim.png}
+  \caption{Plot showing optimum values of the \textit{BoxConstraint} and
+  \textit{KernelScale} parameters when fitting a RBF SVM.\ The optimum values
+are located where the objective function is at a
+minimum.}\label{fig:rbf_optim}
+\end{figure}
 
 \subsection{Neural networks}
 
 \section{Evaluation}
+
+After the recordings from each class reserved for testing have undergone
+pre-processing and segmentation, the segmented syllables undergo the same
+routine described in Section~\ref{sec:training} to generate the testing
+sequences. The number of testing sequences used for both classes can be seen in
+table~\ref{table:testing_samples}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Class & Individuals & Sequences \\ [0.5ex]
+\midrule
+Common blackbird (\textit{TURMER}) & 9 & 360 \\
+Common nightingale (\textit{LUSMEG}) & 10 & 400 \\
+\bottomrule
+\end{tabular}
+\caption{Number of testing sequences for used for both
+classes.}\label{table:testing_samples}
+\end{center}
+\end{table}
+
+A testing cell is created in the same way as the training cell and is used for
+evaluating all models in this thesis.
+
+\subsection{AUC}
+
+As mentioned in Section~\ref{sec:eval_metrics}, the AUC metric is commonly used
+for binary classification problems, and has been frequently used as a metric in
+birdsong classification problems. Further to the advantages listed in 
+previously, the AUC benefits from being unaffected from class imbalances.
+Although the positive and negative classes are only slightly imbalanced in this
+work (see Table~\ref{table:training_samples}), it makes sense to use a metric
+that is unaffected by class imbalance all the same.
+
+The AUC is calculated using the \texttt{perfcurve} function which checks the
+class prediction scores returned by the model against the true labels.
+
+\subsection{Classification accuracy}
 
 \section{Extensions of methodology}
