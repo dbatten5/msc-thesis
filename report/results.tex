@@ -1,4 +1,105 @@
-It is unlikely that everything you tried worked well, so in this chapter you may
-wish to describe a modified version of your method and the associated results.
-Explain why you were motivated to try this extension and how you think it might
-help to address some of the shortcomings of the method is Chapter 3.
+\section{Hypothesis 1}
+
+Hypothesis 1 (H1) is stated as follows:
+
+\begin{quote}
+Explore some of the hyperparameters available during the feature extraction
+process. The hypothesis is that using hyperparameter values more suited to
+birdsong classification problems will yield a higher classification accuracy.
+\end{quote}
+
+H1 was applied to two feature extraction processes that appear in some form
+widely in the literature related to birdsong classification: MFCC and GTCC\@.
+
+\subsection{MFCC}
+
+The key parameter under test in this work as mentioned in
+Section~\ref{sssec:mfcc} is the \textit{BandEdges} argument. 7 experiments were
+devised and evaluated in order to see if any improvements to binary bird
+classification models utilising MFCC could be made with adjusted
+\textit{BandEdges} arguments. The experiments are listed in
+Table~\ref{table:h1_mfcc_experiments}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c c}
+\toprule
+Number & Number of bands & Band type & Approximate frequency range (Hz) \\ [0.5ex]
+\midrule
+1 & 40 & Mel & 133 --- 6864 \\
+2 & 40 & Mel & 50 --- $\text{fs}/2$ \\
+3 & 80 & Mel & 50 --- $\text{fs}/2$ \\
+4 & 40 & Linear & 50 --- $\text{fs}/2$ \\
+5 & 40 & Linear & 133 --- 6864 \\
+6 & 40 & A-mel & 133 --- 6864 \\
+7 & 40 & Mel & 133 --- 10000 \\
+\bottomrule
+\end{tabular}
+\caption{Description of experiments used for testing H1 with
+MFCC.}\label{table:h1_mfcc_experiments}
+\end{center}
+\end{table}
+
+\subsubsection{Comments on experiment setup}
+
+In the table, `fs' refers to the frequency sampling rate for a given audio file,
+usually 44.1 KHz or 48 KHz. $\text{fs}/2$ is the maximum possible value for the
+\textit{BandEdges} argument. `A-mel', short for anti-mel, denotes a set of mel
+filterbanks that have been inverted, such that the center frequencies are closer
+together at higher frequencies and further apart at lower frequencies. `Linear'
+refers to a set of filterbanks that have been spaced linearly on the frequency
+scale. The different band types can be visualized in figure
+
+<figure of the different band types>
+
+The experiment design was motivated as follows:
+
+\begin{itemize}
+
+  \item [Exp 1:] These are the defaults provided with the \texttt{mfcc}
+    function and acts as a control experiment.
+
+  \item [Exp 2:] A wider frequency range may be able to make use of the
+    higher frequency harmonics produced by most birdsong.
+
+  \item [Exp 3:] A wider frequency range means the bands have a larger bandwidth
+    and may lose some distinguishing power. Increasing the number of bands may
+    help to alleviate this.
+
+  \item [Exp 4:] Since the human auditory system hasn't evolved specifically to be
+    able to distinguish birdsong, it's entirely possible that the mel scale
+    isn't the optimum scale to use. A linearly spaced set of filterbanks may
+    provide a good generalised attempt at distinguishing birdsong.
+
+  \item [Exp 5:] Similar to Experiment 4 but focused on a frequency range that
+    more tightly fits around the dominant frequencies produced by bird
+    vocalizations.
+
+  \item [Exp 6:] The anti-mel scale has been used with interesting results in
+    human speech recognition through telephones~\cite{lei2009mel}. It offers
+    more distinguishing power at higher frequencies, and since birdsong is
+    typically produced at higher frequencies than human speech, the anti-mel
+    scale may be able to better distinguish birdsong.
+
+  \item [Exp 7:] Similar to Experiment 2 but still focused on the main
+    frequencies emitted by birds.
+
+\end{itemize}
+
+\subsubsection{Results}
+
+A chart of both the AUC and the classification accuracy for MFCC can be seen in
+figure~\ref{fig:hyp1_mfcc}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/hyp1_mfcc.png}
+  \caption{The AUC and classification accuracy scores for linear and RBF models
+  for different experiments for MFCC.}\label{fig:hyp1_mfcc}
+\end{figure}
+
+As shown in the chart, both evaluation metrics are highest in the control
+experiment. Experiment 5 returns comparable metrics to the control experiment,
+with slight improvements made to the classification accuracy for the RBF model.
+The RBF model shows a clear reduction in performance for wider frequency ranges
+across both evaluation metrics.

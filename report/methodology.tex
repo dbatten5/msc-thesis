@@ -240,7 +240,7 @@ which affect how the routine processes input signals. To the best of the
 author's knowledge, these arguments have not been explored in the field of
 birdsong classification problems.
 
-\subsubsection{MFCC}
+\subsubsection{MFCC}\label{sssec:mfcc}
 
 A potentially overlooked parameter of MFCC extraction with regards to birdsong
 classification using \textit{MATLAB} is the \textit{BandEdges} argument. This
@@ -438,5 +438,14 @@ The AUC is calculated using the \texttt{perfcurve} function which checks the
 class prediction scores returned by the model against the true labels.
 
 \subsection{Classification accuracy}
+
+Since the classes are only slightly imbalanced, the classification accuracy
+provides a reasonably unbiased, quick, and easily interpretable snapshot at how
+well a model has performed. It is calculated as
+\begin{equation}
+A = \frac{1}{N}\sum_{i=1}^{N} \mathbb{I}[\bar{y}_i = y_i]
+\end{equation}
+where $N$ is the number of test samples, $\bar{y}$ is a predicted label, $y$
+is the groundtruth label, and $\mathbb{I}$ is the indicator function.
 
 \section{Extensions of methodology}
