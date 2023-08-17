@@ -48,7 +48,9 @@ usually 44.1 KHz or 48 KHz. $\text{fs}/2$ is the maximum possible value for the
 filterbanks that have been inverted, such that the center frequencies are closer
 together at higher frequencies and further apart at lower frequencies. `Linear'
 refers to a set of filterbanks that have been spaced linearly on the frequency
-scale. The different band types can be visualized in figure
+scale. This has the effect of transforming the MFCC coefficients to Linear
+Frequency Cepstral Coefficients (LFCC). The different band types can be
+visualized in figure
 
 <figure of the different band types>
 
@@ -88,8 +90,29 @@ The experiment design was motivated as follows:
 
 \subsubsection{Results}
 
-A chart of both the AUC and the classification accuracy for MFCC can be seen in
-figure~\ref{fig:hyp1_mfcc}.
+The results for the AUC and classification accuracy for MFCC can be seen in
+Table~\ref{table:hyp1_mfcc} and can be visualized in Figure~\ref{fig:hyp1_mfcc}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{cc c|c c}
+\toprule
+& \multicolumn{2}{c|}{AUC} & \multicolumn{2}{|c}{Accuracy} \\
+  Experiment number & Linear & RBF & Linear & RBF \\ [0.5ex]
+\midrule
+  1 & 0.887 & 0.958 & 0.825 & 0.872 \\
+  2 & 0.879 & 0.830 & 0.828 & 0.801 \\
+  3 & 0.868 & 0.860 & 0.802 & 0.789 \\
+  4 & 0.845 & 0.836 & 0.765 & 0.785 \\
+  5 & 0.873 & 0.953 & 0.813 & 0.880 \\
+  6 & 0.863 & 0.929 & 0.809 & 0.878 \\
+  7 & 0.879 & 0.905 & 0.827 & 0.823 \\
+\bottomrule
+\end{tabular}
+\caption{The AUC and classification accuracy scores for linear and RBF models
+for different experiments for MFCC.}\label{table:hyp1_mfcc}
+\end{center}
+\end{table}
 
 \begin{figure}[ht]
   \centering
@@ -98,8 +121,9 @@ figure~\ref{fig:hyp1_mfcc}.
   for different experiments for MFCC.}\label{fig:hyp1_mfcc}
 \end{figure}
 
-As shown in the chart, both evaluation metrics are highest in the control
-experiment. Experiment 5 returns comparable metrics to the control experiment,
-with slight improvements made to the classification accuracy for the RBF model.
-The RBF model shows a clear reduction in performance for wider frequency ranges
-across both evaluation metrics.
+As shown in the table and chart, both evaluation metrics are around their
+maximum in the control experiment (Experiment 1). Experiment 5 returns
+comparable metrics to the control experiment, with slight improvements made to
+the classification accuracy for the RBF model, but a slight reduction in the
+AUC\@. The RBF model shows a clear reduction in performance for wider frequency
+ranges across both evaluation metrics.
