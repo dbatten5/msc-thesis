@@ -52,7 +52,8 @@ scale. This has the effect of transforming the MFCC coefficients to Linear
 Frequency Cepstral Coefficients (LFCC). The different band types can be
 visualized in figure
 
-<figure of the different band types>
+<figure of the different band types>, good one in the Lei
+paper~\cite{lei2009mel}.
 
 The experiment design was motivated as follows:
 
@@ -97,20 +98,21 @@ Table~\ref{table:hyp1_mfcc} and can be visualized in Figure~\ref{fig:hyp1_mfcc}.
 \begin{center}
 \begin{tabular}{cc c|c c}
 \toprule
-& \multicolumn{2}{c|}{AUC} & \multicolumn{2}{|c}{Accuracy} \\
-  Experiment number & Linear & RBF & Linear & RBF \\ [0.5ex]
+& \multicolumn{2}{c|}{AUC} & \multicolumn{2}{c}{Accuracy} \\
+  Experiment & Linear & RBF & Linear & RBF \\ [0.5ex]
 \midrule
-  1 & 0.887 & 0.958 & 0.825 & 0.872 \\
-  2 & 0.879 & 0.830 & 0.828 & 0.801 \\
+  1 & \cellcolor{lightgray} 0.887 & \cellcolor{lightgray} 0.958 & 0.825 & 0.872 \\
+  2 & 0.879 & 0.830 & \cellcolor{lightgray} 0.828 & 0.801 \\
   3 & 0.868 & 0.860 & 0.802 & 0.789 \\
   4 & 0.845 & 0.836 & 0.765 & 0.785 \\
-  5 & 0.873 & 0.953 & 0.813 & 0.880 \\
+  5 & 0.873 & 0.953 & 0.813 & \cellcolor{lightgray} 0.880 \\
   6 & 0.863 & 0.929 & 0.809 & 0.878 \\
   7 & 0.879 & 0.905 & 0.827 & 0.823 \\
 \bottomrule
 \end{tabular}
 \caption{The AUC and classification accuracy scores for linear and RBF models
-for different experiments for MFCC.}\label{table:hyp1_mfcc}
+for different experiments for MFCC\@. The highest evaluation scores for each metric
+and for each model are highlighted in grey.}\label{table:hyp1_mfcc}
 \end{center}
 \end{table}
 
@@ -127,3 +129,95 @@ comparable metrics to the control experiment, with slight improvements made to
 the classification accuracy for the RBF model, but a slight reduction in the
 AUC\@. The RBF model shows a clear reduction in performance for wider frequency
 ranges across both evaluation metrics.
+
+\subsection{GTCC}
+
+The key parameter under test in this work as mentioned in
+Section~\ref{sssec:gtcc} is the \textit{FrequencyRange} argument. 4 experiments were
+devised and evaluated in order to see if any improvements to binary bird
+classification models utilising GTCC could be made with adjusted
+\textit{FrequencyRange} arguments. The experiments are listed in
+Table~\ref{table:h1_gtcc_experiments}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c}
+\toprule
+Number & Frequency range (Hz) \\ [0.5ex]
+\midrule
+1 & 50 --- $\text{fs}/2$ \\
+2 & 100 --- 7000 \\
+3 & 50 --- 10000 \\
+4 & 400 --- 6000 \\
+\bottomrule
+\end{tabular}
+\caption{Description of experiments used for testing H1 with
+GTCC.}\label{table:h1_gtcc_experiments}
+\end{center}
+\end{table}
+
+\subsubsection{Comments on experiment setup}
+
+As with the MFCC experiment, `fs' refers to the frequency sampling rate for a
+given audio file. $\text{fs}/2$ is the maximum possible value for the
+\textit{FrequencyRange} argument. By default the filter bank is a gammatone
+filter bank, which can be visualized in figure. Note that it's not possible to
+change the number of bands used by \texttt{gtcc}.
+
+<figure of gammatone filterbank>
+
+The experiment design was motivated as follows:
+
+\begin{itemize}
+
+  \item [Exp 1:] These are the defaults provided with the \texttt{gtcc} function
+    and acts as a control experiment.
+
+  \item [Exp 2:] This more closely matches the effective frequency range for the
+    control experiment for \texttt{mfcc}, which obtained the best evaluation
+    metrics. This range matches human speech and contains most birdsong
+    frequencies.
+
+  \item [Exp 3:] Similar to Experiment 2, but widens the range to account for
+    frequencies outside of Experiment 2's range.
+
+  \item [Exp 4:] Similar to Experiment 2, but tightens the range to achieve more
+    discriminatory power.
+
+\end{itemize}
+
+\subsubsection{Results}
+
+The results for the AUC and classification accuracy for GTCC can be seen in
+Table~\ref{table:hyp1_gtcc} and can be visualized in Figure~\ref{fig:hyp1_gtcc}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{cc c|c c}
+\toprule
+& \multicolumn{2}{c|}{AUC} & \multicolumn{2}{c}{Accuracy} \\
+  Experiment & Linear & RBF & Linear & RBF \\ [0.5ex]
+\midrule
+  1 & 0.884 & 0.895 & 0.844 & 0.802 \\
+  2 & 0.887 & 0.946 & 0.831 & 0.856 \\
+  3 & \cellcolor{lightgray} 0.891 & 0.933 & \cellcolor{lightgray} 0.852 & 0.850 \\
+  4 & 0.883 & \cellcolor{lightgray} 0.948 & 0.846 & \cellcolor{lightgray} 0.859 \\
+\bottomrule
+\end{tabular}
+\caption{The AUC and classification accuracy scores for linear and RBF models
+for different experiments for GTCC\@. The highest evaluation scores for each metric
+and for each model are highlighted in grey.}\label{table:hyp1_gtcc}
+\end{center}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/hyp1_gtcc.png}
+  \caption{The AUC and classification accuracy scores for linear and RBF models
+  for different experiments for MFCC.}\label{fig:hyp1_gtcc}
+\end{figure}
+
+As shown in the table and chart, there is a significant increase in both metrics
+for the RBF model when the frequency range is narrowed to be closer to the human
+and birdsong vocalization range. The evaluation metrics for the linear model
+remains largely similar across different frequency ranges.
