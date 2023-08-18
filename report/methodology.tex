@@ -1,9 +1,3 @@
-Describe your method in detail and with great clarity, distinguishing it from
-other works (if it is indeed a novel idea). It is very important to clearly
-motivate your method.
-
-Describe the results of your method here in this chapter.
-
 All computational work for this thesis was performed in \textit{MATLAB vR2023a}
 unless stated otherwise.
 
@@ -134,7 +128,7 @@ increased computational demand to perform training.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{figures/syllable_sample_length.png}
+  \includegraphics[width=0.95\textwidth]{figures/syllable_sample_length.png}
   \caption{Histogram showing the frequency of different sample lengths for all
   training syllables. A candidate fixed sequence length is denoted by the red
 dashed line.}\label{fig:syllable_sample_lengths}
@@ -144,10 +138,11 @@ From figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
 fall in the region $\left[ 200, 1236 \right]$ (the segmentation algorithm sets a
 minimum of 200 samples for candidate syllables). Therefore a sequence of fixed
 length about 14000 (denoted by the red dashed line) should contain between 10
-and 70 syllables. The fixed length, equating to about 3ms duration, also ensures
-that most sequences contain at least one full syllable. This approach ensures
-the influence of background noise is kept to a minimum, while still maintaining
-information related to the temporal evolution of a particular birdsong.
+and 70 syllables. The fixed length, equating to about 300ms duration, also
+ensures that most sequences contain at least one full syllable. This approach
+ensures the influence of background noise is kept to a minimum, while still
+maintaining information related to the temporal evolution of a particular
+birdsong.
 
 \subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
 
@@ -398,6 +393,69 @@ minimum.}\label{fig:rbf_optim}
 
 \subsection{Neural networks}
 
+All NN models are implemented using tools provided in \textit{MATLAB}'s Deep
+Learning Toolbox.
+
+Unlike SVMs, the training input for NN models can be supplied in a cell array
+format, so only a feature extraction routine needs to be applied to the training
+cell mentioned in Section~\ref{sec:training} via the \texttt{cellfun} function.
+
+\subsubsection{CNN}
+
+Unlike SVMs, which expect a training sample to be a row vector, CNNs can work
+directly on image data, i.e.\ a training sample in matrix format of dimensions
+$w \times h \times c$ where $w$ is the width, $h$ is the height, and $c$ is the
+number of channels, 1 for greyscale images and 3 for colour (RGB) images. The
+features used in this work therefore require no transformation to work with CNN
+since e.g.\ the MFCC representation of a signal can be interpreted as a
+greyscale image of dimensions $p \times n \times 1$ where $p$ is the number of
+frames and $n$ is the number of coefficients (including $\Delta$ and
+$\Delta\Delta$). For the fixed sequence length described in
+Section~\ref{sec:segmentation}, this equates to an input of dimensions $28
+\times 39 \times 1$ for the MFCC representation.
+
+The key hyperparameters regarding NNs relate to model architecture, such as
+number of hidden layers, and activation function. CNNs have further
+hyperparameters to tune, such as kernel size and stride, padding type, and
+initialization function. Optimising hyperparameters for CNNs can take a
+considerable amount of time and computational resources, so we look to the
+literature to best inform our model architecture.
+
+\begin{enumerate}
+
+  \item Kahl et al.~\cite{kahl2017large}. Although their work was focused on a
+    very large number of classes (1500), the concept should apply to binary
+    classification problems. In their work they tested 3 models with varying
+    numbers of hidden layers and kernel sizes. Their model number 3, comprised
+    of 8 layers of which 5 were convolutional, was shown to have superior
+    results for smaller number of classes, indeed they mention that shallow
+    models perform better on small class selections, so the first architecture
+    in this work will follow this thinking. All of their proposed models use
+    batch normalization~\cite{ioffe2015batch}, exponential linear units
+    (ELU)~\cite{clevert2015fast} as the activation function, and
+    He-initialization~\cite{he2015delving} for their weighted layers. In order
+    to avoid overfitting, a dropout layer~\cite{srivastava2014dropout} with
+    $p=0.5$ was added to each weighted layer before the final dense layer.
+
+  \item Ruff et al.~\cite{ruff2020automated} proposed a simpler CNN, likely
+    due to the significantly lower number of classes (7). Their model contained
+    6 layers, of which 4 were convolutional. They used the rectified linear unit
+    (ReLU) as an activation function and dropout layers with $p=0.2$ for
+    convolutional layers and $p=0.5$ for the fully connected layers.
+
+  \item Berger et al.~\cite{berger2018bird} also proposed a simple CNN for their
+    work in bird detection. Although bird detection and binary bird
+    classification have their differences, they are both binary classification
+    problems and so a successful architecture for bird detection may be
+    effective for binary bird classification too. Their architecture consists of
+    a 7 layer network, of which 4 are convolutional. They use LeakyReLu as
+    an activation function for all layers
+
+\end{enumerate}
+
+These architectures provide the motivation for the CNN architectures tested in
+this work. 
+
 \section{Evaluation}
 
 After the recordings from each class reserved for testing have undergone
@@ -449,3 +507,13 @@ where $N$ is the number of test samples, $\bar{y}$ is a predicted label, $y$
 is the groundtruth label, and $\mathbb{I}$ is the indicator function.
 
 \section{Extensions of methodology}
+
+\begin{enumerate}
+
+  \item data augmentation
+
+  \item multiclass
+
+  \item pretrained model
+
+\end{enumerate}
