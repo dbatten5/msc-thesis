@@ -400,7 +400,7 @@ Unlike SVMs, the training input for NN models can be supplied in a cell array
 format, so only a feature extraction routine needs to be applied to the training
 cell mentioned in Section~\ref{sec:training} via the \texttt{cellfun} function.
 
-\subsubsection{CNN}
+\subsubsection{CNN}\label{sssec:method:cnn}
 
 Unlike SVMs, which expect a training sample to be a row vector, CNNs can work
 directly on image data, i.e.\ a training sample in matrix format of dimensions
@@ -419,9 +419,17 @@ number of hidden layers, and activation function. CNNs have further
 hyperparameters to tune, such as kernel size and stride, padding type, and
 initialization function. Optimising hyperparameters for CNNs can take a
 considerable amount of time and computational resources, so we look to the
-literature to best inform our model architecture.
+literature to best inform our model architecture. The following architectures are
+shown to have promising results and/or are related to the problem at hand. They
+provide the motivation for the CNN architectures tested in this work.
 
 \begin{enumerate}
+
+  \item Ruff et al.~\cite{ruff2020automated} proposed a simpler CNN, likely
+    due to the significantly lower number of classes (7). Their model contained
+    6 layers, of which 4 were convolutional. They used the rectified linear unit
+    (ReLU) as an activation function and dropout layers with $p=0.2$ for
+    convolutional layers and $p=0.5$ for the fully connected layers.
 
   \item Kahl et al.~\cite{kahl2017large}. Although their work was focused on a
     very large number of classes (1500), the concept should apply to binary
@@ -437,24 +445,18 @@ literature to best inform our model architecture.
     to avoid overfitting, a dropout layer~\cite{srivastava2014dropout} with
     $p=0.5$ was added to each weighted layer before the final dense layer.
 
-  \item Ruff et al.~\cite{ruff2020automated} proposed a simpler CNN, likely
-    due to the significantly lower number of classes (7). Their model contained
-    6 layers, of which 4 were convolutional. They used the rectified linear unit
-    (ReLU) as an activation function and dropout layers with $p=0.2$ for
-    convolutional layers and $p=0.5$ for the fully connected layers.
-
-  \item Berger et al.~\cite{berger2018bird} also proposed a simple CNN for their
-    work in bird detection. Although bird detection and binary bird
-    classification have their differences, they are both binary classification
-    problems and so a successful architecture for bird detection may be
-    effective for binary bird classification too. Their architecture consists of
-    a 7 layer network, of which 4 are convolutional. They use LeakyReLu as
-    an activation function for all layers
+  % \item Berger et al.~\cite{berger2018bird} also proposed a simple CNN for their
+  %   work in bird detection. Although bird detection and binary bird
+  %   classification have their differences, they are both binary classification
+  %   problems and so a successful architecture for bird detection may be
+  %   effective for binary bird classification too. Their architecture consists of
+  %   a 7 layer network, of which 4 are convolutional. They use LeakyReLu as
+  %   an activation function for all layers
 
 \end{enumerate}
 
-These architectures provide the motivation for the CNN architectures tested in
-this work. 
+In order to test against baseline, a highly simplistic CNN architecture will be
+implemented and tested against these more complex designs.
 
 \section{Evaluation}
 

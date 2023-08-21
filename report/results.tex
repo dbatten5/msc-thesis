@@ -234,4 +234,53 @@ flexible architectures such as these will have superior performance when
 compared to simpler statistical models, such as SVMs.
 \end{quote}
 
+\subsection{CNN}
 
+From the literature review described in Section~\ref{sssec:method:cnn}, we
+propose the CNN architectures listed in Table~\ref{table:cnn_architectures} to
+be tested and their performance evaluated against the baseline: the highest
+performing models from H1.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+Model 0 & Model 1~\cite{ruff2020automated} & Model 2~\cite{kahl2017large} \\[0.5ex]
+2 weighted layers & 6 weighted layers & 8 weighted layers \\[0.5ex]
+ReLU activation & ReLU activation & ELU activation \\[0.5ex]
+Glorot initialization & Glorot initialization & He initialization \\[0.5ex]
+$\sim$3s per epoch & $\sim$60s per epoch & $\sim$165s per epoch \\[0.5ex]
+\midrule
+\textbf{Conv1, $20 \times 5 \times 5$} &
+\textbf{Conv1, $32 \times 3 \times 3$} &
+\textbf{Conv1, $32 \times 7 \times 7$, Stride 2} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+\textbf{DenseLayer, 2 Units} &
+\textbf{Conv2, $32 \times 3 \times 3$} &
+\textbf{Conv2, $128 \times 5 \times 5$, Stride 1} \\
+Softmax Output & MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{Conv3, $64 \times 3 \times 3$} &
+\textbf{Conv3, $256 \times 3 \times 3$, Stride 1} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{Conv4, $64 \times 3 \times 3$} &
+\textbf{Conv4, $512 \times 3 \times 3$, Stride 1} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{DenseLayer, 64 Units} &
+\textbf{Conv4, $512 \times 3 \times 3$, Stride 1} \\
+& Dropout, $p=0.5$ & MaxPooling, Size 2 \\[1ex]
+& \textbf{DenseLayer, 2 Units} &
+\textbf{DenseLayer, 512 Units} \\
+& Softmax output & Dropout, $p=0.5$ \\[1ex]
+& & \textbf{DenseLayer, 512 Units} \\
+& & Dropout, $p=0.5$ \\[1ex]
+& & \textbf{DenseLayer, 2 Units} \\
+& & Softmax output \\[1ex]
+\bottomrule
+\end{tabular}
+\caption{Candidate CNN architectures.}\label{table:cnn_architectures}
+\end{center}
+\end{table}
