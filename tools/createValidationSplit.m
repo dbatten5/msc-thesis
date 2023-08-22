@@ -2,12 +2,12 @@ function [XTrain, YTrain, XValidation, YValidation] = createValidationSplit(X, Y
 arguments
 X
 Y
-nva.split = 0.3
+nva.Split = 0.3
 end
 
 numSamples = size(X, 1);
 
-cv = cvpartition(numSamples, 'HoldOut', nva.split);
+cv = cvpartition(numSamples, 'HoldOut', nva.Split);
 trainIndices = training(cv);
 validationIndices = test(cv);
 
