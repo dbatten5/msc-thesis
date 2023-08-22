@@ -3,21 +3,20 @@ unless stated otherwise.
 
 \section{Datasets}
 
-Crous~\cite{crous2019polyphonic} has some data on Xeno-canto.
-
 Since all the models described in Section~\ref{sec:classification} are trained
 in a supervised learning fashion, this requires a dataset of labelled training
 examples. The website xeno-canto.org (XC) houses the largest and most
 comprehensive publicly available collection of birdsong samples in the world. It
 has made an enormous impact in the field birdsong recognition since its
-inception in 2005 and has been source of the datasets for the annual BirdCLEF
-challenge since 2014~\cite{vellinga2015xeno}. All samples available on XC are
-labelled with the bird species and contain rich metadata, such as the time and
-location of the recording. Importantly, all samples have a crowd-sourced rating
-from A --- E which signifies how clear the recording sample is, where A denotes
-samples with the highest quality and clarity. This is especially important
-should we wish to experiment with different signal-to-noise ratios (SNR) as the
-noise can be manually added to a clean recording at precise SNR levels.
+inception in 2005 and has been the source of the datasets for the annual
+BirdCLEF challenge since 2014~\cite{vellinga2015xeno}. All samples available on
+XC are labelled with the bird species and contain rich metadata, such as the
+time and location of the recording. Importantly, all samples have a
+crowd-sourced rating from A --- E which signifies how clear the recording sample
+is, where A denotes samples with the highest quality and clarity and E denotes
+the lowest. This is especially important should we wish to experiment with
+different signal-to-noise ratios (SNR) as the noise can be manually added to a
+clean recording at precise SNR levels.
 
 Due to its scale and reputation in the birdsong classification community, all
 samples used in this thesis have been downloaded from the XC repository. All
@@ -45,13 +44,13 @@ Some recordings available on XC are recorded in stereo sound, so in order to
 reduce dimensionality without losing too much information, all stereo recordings
 are first converted to mono by taking a mean average of both channels. Leading
 and trailing sections of background noise are then stripped from the recording
-using the \textit{detectSpeech} function provided by \textit{MATLAB}. This
+using the \texttt{detectSpeech} function provided by \textit{MATLAB}. This
 function uses a thresholding algorithm to detect onset and offset indices of
 speech~\cite{giannakopoulos2009method}. The function works for birdsong since
 birdsong frequencies reside in a similar range to that of human speech. The
 function accepts various arguments to determine properties such as window length
 and threshold value, but from initial experiments the function was shown to
-work well with birdsong with the defaults, see figure~\ref{fig:detected_speech}.
+work well with birdsong using the defaults, see Figure~\ref{fig:detected_speech}.
 The detected onset and offset of birdsong allows for the leading and trailing
 bits of background noise to be removed from the recording, thus reducing
 unnecessary computational time in segmenting the audio.
@@ -59,7 +58,7 @@ unnecessary computational time in segmenting the audio.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/detected_speech.png}
-  \caption{Output of the \textit{detectSpeech} function for a recording of
+  \caption{Output of the \texttt{detectSpeech} function for a recording of
   birdsong from a Eurasian wren. The highlighted section shows where the
 algorithm has detected `speech', or in this case,
 birdsong.}\label{fig:detected_speech}
@@ -73,7 +72,7 @@ important information. The reason why frequencies above 10Khz are not removed
 is that, as can be seen from figure~\ref{fig:wren_call_song_spectrogram}, birds
 typically produce higher frequency harmonics when vocalizing, shown as vertical
 bands moving upwards from where syllables are located on the spectrogram. These
-harmonics may capture useful information for the learning algorithm to utilise
+harmonics may capture useful information for the model to utilise
 and should therefore not be filtered out.
 
 After these pre-processing steps have been taken, the audio is ready for
@@ -116,10 +115,12 @@ corrupted by background noise but has a few small segments of clear birdsong.
 
 In this work we attempt to combine the benefits of both approaches by first
 segmenting a recording to retrieve the syllables using a process described in
-Section~\ref{ssec:syllable_seg}. Then, for each syllable, the
-following syllables are appended until a fixed sample length is reached. If a
-syllable is added which pushes the sample length over the limit, then the sample
-is trimmed at the fixed length. This approach is motivated by Somervuo et al.'s
+Section~\ref{ssec:syllable_seg}. Then, for each syllable, the following
+syllables are appended until a fixed sample length is reached. <include figure
+to demonstrate this process>. If a syllable is
+added which pushes the sample length over the limit, then the sample is trimmed
+at the fixed length. If there aren't enough syllables to reach the fixed length,
+then the sample is discarded. This approach is motivated by Somervuo et al.'s
 work~\cite{somervuo2006parametric} in showing that training and classifying
 using single syllables returns suboptimal results, whereas using sequences of
 syllables gives much improved accuracy. Of course there is a tradeoff here
@@ -134,7 +135,7 @@ increased computational demand to perform training.
 dashed line.}\label{fig:syllable_sample_lengths}
 \end{figure}
 
-From figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
+From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
 fall in the region $\left[ 200, 1236 \right]$ (the segmentation algorithm sets a
 minimum of 200 samples for candidate syllables). Therefore a sequence of fixed
 length about 14000 (denoted by the red dashed line) should contain between 10
@@ -194,14 +195,23 @@ decibel scale for frame $i$ is calculated as
 where $x{(i)}_j$ is the $j^{\text{th}}$ input signal sample value in the
 $i^{\text{th}}$ frame and $K$ is the total number of samples in each frame, in
 this case 128. The maximum energy of the entire signal is normalized to 0dB. The
-initial noise level estimate is set to be equal to global minimum value of the
+initial noise level estimate is set to be equal to the global minimum value of the
 energy envelope and the threshold for the onset and offset detection is set to
 half the noise estimate. The flow diagram for onset and offset detection can be
-seen in figure <figure of flow chart>. In essence, the algorithm moves through
-each frame and computes whether the frame should be assigned to a syllable or
-not, updating noise and energy thresholds as it goes. The noise estimate is
-updated as the average energy of frames already processed by the algorithm that
-are not assigned to a syllable.
+seen in Figure~\ref{fig:syllable_segmentation_flow}. 
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/syllable_segmentation_flow.png}
+  \caption{Flow chart of the syllable segmentation onset and offset detection
+  algorithm. Figure taken
+from~\cite{fagerlund2004automatic}.}\label{fig:syllable_segmentation_flow}
+\end{figure}
+
+In essence, the algorithm moves through each frame and computes whether the
+frame should be assigned to a syllable or not, updating noise and energy
+thresholds as it goes. The noise estimate is updated as the average energy of
+frames already processed by the algorithm that are not assigned to a syllable.
 
 \subsubsection{Merging syllable candidates}
 
@@ -210,9 +220,32 @@ together. This may be from the bird producing short bursts of pulses that
 constitute the same syllable, or it may be from the border effect. In both cases
 the candidates can be considered as belonging to the same syllable and so can be
 safely merged together. Candidates that are less than 15ms apart are selected
-for merging~\cite{fagerlund2004automatic}.
+for merging~\cite{fagerlund2004automatic}. The process of onset/offset detection
+and merging can be seen in Figure~\ref{fig:syllable_segmentation_flow}.
 
-<figures of segmentation>
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/syllable_segmentation.png}
+  \caption{Figure showing the syllable detection algorithm. Top left shows the
+    amplitude varying over time for a sample of Eurasian wren birdsong. Top
+    right shows the detected onset (green triangle) and offset (red triangle)
+    markers before merging overlayed on the energy envelope in the decibel scale
+    of the sample. The magenta line shows the final threshold for syllable
+    detection. Bottom left shows the markers after merging has been performed.
+    Bottom right shows the detected syllables, labelled from A --- G. Note that
+  the next step, removing syllables less than a minimum duration, would remove
+syllable candidate B since it is less than the minimum duration
+threshold.}\label{fig:syllable_segmentation}
+\end{figure}
+
+One thing to note about the algorithm is that the energy threshold is updated
+iteratively as the algorithm moves through the signal. This means that
+candidates detected near the start of the sample may not get detected if they
+were nearer the end of the signal. This is the case in
+Figure~\ref{fig:syllable_segmentation} with syllable candidate B, since its
+energy peak is below the final energy threshold, shown in the top right panel of
+the figure. This shouldn't pose an issue since candidates less than the minimum
+duration threshold are removed, as is the case with candidate B.
 
 Each segmented syllable is then stored as an individual \textit{wav} file in the
 same directory as the original recording with a filename in the format
@@ -230,7 +263,7 @@ syllables are concatenated together until a minimum length is achieved.
 
 The cepstral coefficients on which this thesis focuses are the MFCC and GTCC\@.
 Both features are extracted using builtin \textit{MATLAB} functions
-\textit{mfcc} and \textit{gtcc} respectively. The functions accept arguments
+\texttt{mfcc} and \texttt{gtcc} respectively. The functions accept arguments
 which affect how the routine processes input signals. To the best of the
 author's knowledge, these arguments have not been explored in the field of
 birdsong classification problems.
@@ -238,9 +271,9 @@ birdsong classification problems.
 \subsubsection{MFCC}\label{sssec:mfcc}
 
 A potentially overlooked parameter of MFCC extraction with regards to birdsong
-classification using \textit{MATLAB} is the \textit{BandEdges} argument. This
+classification using \textit{MATLAB} is the \texttt{BandEdges} argument. This
 argument provides the basis of the half-overlapped triangular filters that
-\textit{mfcc} uses. By default, \textit{BandEdges} is a 42-element vector that
+\texttt{mfcc} uses. By default, \texttt{BandEdges} is a 42-element vector that
 results in a 40-band filter bank constructed using 13 linearly-spaced filters,
 with 133.3Hz separating their center frequencies, and 27 log-spaced filters,
 separated by a factor of 1.0711703 in frequency~\cite{slaney1998auditory}. This
@@ -249,23 +282,150 @@ range is well suited to human speech, of which MFCC is often used as a feature,
 but may be less suitable for birdsong which can sometimes sit outside the normal
 frequency range of human speech.
 
-In this work we consider alternative constructions of the MFCC filter banks,
-such as extending the range and adding more filters and assess the performance
-of classifiers using the alternative MFCC filter banks in comparison with the
-default.
+To test the \texttt{BandEdges} argument, 7 experiments were devised and
+evaluated in order to see if any improvements to binary bird classification
+models utilising MFCC could be made. The experiments are listed in
+Table~\ref{table:h1_mfcc_experiments}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c c}
+\toprule
+Number & Number of bands & Band type & Approximate frequency range (Hz) \\ [0.5ex]
+\midrule
+1 & 40 & Mel & 133 --- 6864 \\
+2 & 40 & Mel & 50 --- $\text{fs}/2$ \\
+3 & 80 & Mel & 50 --- $\text{fs}/2$ \\
+4 & 40 & Linear & 50 --- $\text{fs}/2$ \\
+5 & 40 & Linear & 133 --- 6864 \\
+6 & 40 & A-mel & 133 --- 6864 \\
+7 & 40 & Mel & 133 --- 10000 \\
+\bottomrule
+\end{tabular}
+\caption{Description of experiments used for testing H1 with
+MFCC.}\label{table:h1_mfcc_experiments}
+\end{center}
+\end{table}
+
+\subsubsection{Comments on experiment setup}
+
+In the table, `fs' refers to the frequency sampling rate for a given audio file,
+usually 44.1 KHz or 48 KHz. $\text{fs}/2$ is the maximum possible value for the
+\texttt{BandEdges} argument. `A-mel', short for anti-mel, denotes a set of mel
+filterbanks that have been inverted, such that the center frequencies are closer
+together at higher frequencies and further apart at lower frequencies. `Linear'
+refers to a set of filterbanks that have been spaced linearly on the frequency
+scale. This has the effect of transforming the MFCC coefficients to Linear
+Frequency Cepstral Coefficients (LFCC). The different band types can be
+visualized in Figure~\ref{fig:filterbanks}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/filterbanks.png}
+  \caption{Illustration of the mel-, linear-, and antimel- frequency
+  filterbanks. Figure taken from~\cite{lei2009mel}.}\label{fig:filterbanks}
+\end{figure}
+
+The experiment design was motivated as follows:
+
+\begin{itemize}
+
+  \item [Exp 1:] These are the defaults provided with the \texttt{mfcc}
+    function and acts as a control experiment.
+
+  \item [Exp 2:] A wider frequency range may be able to make use of the
+    higher frequency harmonics produced by most birdsong.
+
+  \item [Exp 3:] A wider frequency range means the bands have a larger bandwidth
+    and may lose some distinguishing power. Increasing the number of bands may
+    help to alleviate this.
+
+  \item [Exp 4:] Since the human auditory system hasn't evolved specifically to be
+    able to distinguish birdsong, it's entirely possible that the mel scale
+    isn't the optimum scale to use. A linearly spaced set of filterbanks may
+    provide a good generalised attempt at distinguishing birdsong.
+
+  \item [Exp 5:] Similar to Experiment 4 but focused on a frequency range that
+    more tightly fits around the dominant frequencies produced by bird
+    vocalizations.
+
+  \item [Exp 6:] The anti-mel scale has been used with interesting results in
+    human speech recognition through telephones~\cite{lei2009mel}. It offers
+    more distinguishing power at higher frequencies, and since birdsong is
+    typically produced at higher frequencies than human speech, the anti-mel
+    scale may be able to better distinguish birdsong.
+
+  \item [Exp 7:] Similar to Experiment 2 but still focused on the main
+    frequencies emitted by birds.
+
+\end{itemize}
 
 \subsubsection{GTCC}\label{sssec:gtcc}
 
 Like MFCC, GTCC has a potentially overlooked argument in
-\textit{FrequencyRange}. This two-element row vector specifies the minimum and
-maximum values in Hz of the gammatone filter bank used by the \textit{gtcc}
+\texttt{FrequencyRange}. This two-element row vector specifies the minimum and
+maximum values in Hz of the gammatone filter bank used by the \texttt{gtcc}
 routine. The default value is \texttt{[50, fs/2]}, which could potentially be
 fine-tuned for birdsong related problems since birdsong frequencies do not
 typically go below 1Khz.
 
-In this work we consider alternative values for the maximum and minimum
-frequency of the gammatone filter bank and compare performance of classifiers
-trained using the alternative GTCC representations with the default.
+To test the \texttt{FrequencyRange} argument, 4 experiments were devised and
+evaluated in order to see if any improvements to binary bird classification
+models utilising GTCC could be made. The experiments are listed in
+Table~\ref{table:h1_gtcc_experiments}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c}
+\toprule
+Number & Frequency range (Hz) \\ [0.5ex]
+\midrule
+1 & 50 --- $\text{fs}/2$ \\
+2 & 100 --- 7000 \\
+3 & 50 --- 10000 \\
+4 & 400 --- 6000 \\
+\bottomrule
+\end{tabular}
+\caption{Description of experiments used for testing H1 with
+GTCC.}\label{table:h1_gtcc_experiments}
+\end{center}
+\end{table}
+
+\subsubsection{Comments on experiment setup}
+
+As with the MFCC experiment, `fs' refers to the frequency sampling rate for a
+given audio file. $\text{fs}/2$ is the maximum possible value for the
+\texttt{FrequencyRange} argument. By default the filter bank is a gammatone
+filter bank, which can be visualized in Figure~\ref{fig:gammatone_filterbank}.
+Note that it's not possible to change the number of bands used by \texttt{gtcc}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/gammatone_filterbank.png}
+  \caption{Illustration of a typical gammatone
+  filterbank.}\label{fig:gammatone_filterbank}
+\end{figure}
+
+The experiment design was motivated as follows:
+
+\begin{itemize}
+
+  \item [Exp 1:] These are the defaults provided with the \texttt{gtcc} function
+    and acts as a control experiment.
+
+  \item [Exp 2:] This more closely matches the effective frequency range for the
+    control experiment for \texttt{mfcc}, which obtained the best evaluation
+    metrics. This range matches human speech and contains most birdsong
+    frequencies.
+
+  \item [Exp 3:] Similar to Experiment 2, but widens the range to account for
+    frequencies outside of Experiment 2's range.
+
+  \item [Exp 4:] Similar to Experiment 2, but tightens the range to achieve more
+    discriminatory power.
+
+\end{itemize}
+
 
 \subsection{MRCG}
 
@@ -295,7 +455,7 @@ To create the training cell array, syllables are retrieved and concatenated to f
 a training sample, hereafter referred to as a sequence. A maximum limit of 40
 sequences per individual is imposed to ensure enough variation while keeping
 training times to a minimum. The number of training sequences used for both
-classes can be seen in table~\ref{table:training_samples}.
+classes can be seen in Table~\ref{table:training_samples}.
 
 \begin{table}[h!t]
 \begin{center}
@@ -336,13 +496,13 @@ section requires no transformation.
 
 \subsubsection{Linear}
 
-Linear SVMs are trained by supplying a \textit{KernelFunction} argument set to
-\textit{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
+Linear SVMs are trained by supplying a \texttt{KernelFunction} argument set to
+\texttt{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
 simple to fit as they have fewer parameters than SVMs utilising other kernel
-functions. The key parameter to tune for here is the \textit{BoxConstraint},
+functions. The key parameter to tune for here is the \texttt{BoxConstraint},
 which controls the trade-off between maximizing the margin between classes and
 minimizing the classification error. This is the constant $C$ in Equation
-(\ref{eq:svm_nonlinear_mapping_slack}). The \textit{Standardize} parameter
+(\ref{eq:svm_nonlinear_mapping_slack}). The \texttt{Standardize} parameter
 controls whether data is standardized before fitting, and can also affect the
 performance of the model. In this work, KFold cross-validation (KF) was selected
 to optimize the parameters, with $K=7$ folds. This is motivated by other
@@ -350,9 +510,9 @@ research taking the same approach with promising
 results~\cite{ramashini2022robust}.
 
 Figure~\ref{fig:linear_optim} shows where the optimum values of
-\textit{BoxConstraint} and \textit{Standardize} lie for a linear SVM\@. As can
-be seen, the \textit{Standardize} parameter makes a slight difference on model
-performance, whereas \textit{BoxConstraint} makes a significant difference, with
+\texttt{BoxConstraint} and \texttt{Standardize} lie for a linear SVM\@. As can
+be seen, the \texttt{Standardize} parameter makes a slight difference on model
+performance, whereas \texttt{BoxConstraint} makes a significant difference, with
 lower values preferred. A lower value means that the model has greater
 flexibility in misclassifying training samples for the benefit of better
 generalization.
@@ -360,8 +520,8 @@ generalization.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/linear_optim.png}
-  \caption{Plot showing optimum values of the \textit{BoxConstraint} and
-  \textit{Standardize} parameters when fitting a linear SVM.\ The optimum values
+  \caption{Plot showing optimum values of the \texttt{BoxConstraint} and
+  \texttt{Standardize} parameters when fitting a linear SVM.\ The optimum values
 are located where the objective function is at a
 minimum.}\label{fig:linear_optim}
 \end{figure}
@@ -370,23 +530,28 @@ minimum.}\label{fig:linear_optim}
 
 RBF SVMs are able to fit more complex decision boundaries by projecting data
 into a higher dimensional space, which is controlled by the hyperparameter
-\textit{KernelScale}. RBF SVMs are also sensitive to the \textit{BoxConstraint}
+\texttt{KernelScale}. RBF SVMs are also sensitive to the \texttt{BoxConstraint}
 parameter. 7-fold cross validation was performed using a \texttt{cvpartition}
-and supplying a \textit{OptimizeHyperparameters} argument set to \textit{auto}
-to \texttt{fitcsvm}. A value of \textit{auto} means that both
-\textit{KernelScale} and \textit{BoxConstraint} are optimised during training.
+and supplying a \texttt{OptimizeHyperparameters} argument set to \texttt{auto}
+to \texttt{fitcsvm}. A value of \texttt{auto} means that both
+\texttt{KernelScale} and \texttt{BoxConstraint} are optimised during training.
 
 Figure~\ref{fig:rbf_optim} shows where the optimum values of
-\textit{BoxConstraint} and \textit{KernelScale} lie for a RBF SVM\@. Both
+\texttt{BoxConstraint} and \texttt{KernelScale} lie for a RBF SVM\@. Both
 parameters are shown to have an impact on the model performance, with high
-values of \textit{BoxConstraint} and mid-range values of \textit{KernelScale}
-preferred. <what does kernel scale do?>
+values of \texttt{BoxConstraint} and mid-range values of \texttt{KernelScale}
+preferred. The \texttt{KernelScale} controls the width of the kernel, with a
+lower value resulting in a narrow kernel which can be interpreted as a more
+`wiggly' decision boundary. Higher values of \texttt{KernelScale} correspond to
+a smoother decision boundary. This corresponds exactly to the bias-variance
+tradeoff, whereby training fit and generalization directly compete with each
+other.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/rbf_optim.png}
-  \caption{Plot showing optimum values of the \textit{BoxConstraint} and
-  \textit{KernelScale} parameters when fitting a RBF SVM.\ The optimum values
+  \caption{Plot showing optimum values of the \texttt{BoxConstraint} and
+  \texttt{KernelScale} parameters when fitting a RBF SVM.\ The optimum values
 are located where the objective function is at a
 minimum.}\label{fig:rbf_optim}
 \end{figure}
@@ -396,14 +561,14 @@ minimum.}\label{fig:rbf_optim}
 All NN models are implemented using tools provided in \textit{MATLAB}'s Deep
 Learning Toolbox.
 
-Unlike SVMs, the training input for NN models can be supplied in a cell array
-format, so only a feature extraction routine needs to be applied to the training
-cell mentioned in Section~\ref{sec:training} via the \texttt{cellfun} function.
+The training input for NN models depends on the type of NN\@. Some can work
+directly on cell arrays whereas others require training data in numerical matrix
+format.
 
 \subsubsection{CNN}\label{sssec:method:cnn}
 
 Unlike SVMs, which expect a training sample to be a row vector, CNNs can work
-directly on image data, i.e.\ a training sample in matrix format of dimensions
+directly on image data e.g.\ a training sample in matrix format of dimensions
 $w \times h \times c$ where $w$ is the width, $h$ is the height, and $c$ is the
 number of channels, 1 for greyscale images and 3 for colour (RGB) images. The
 features used in this work therefore require no transformation to work with CNN
@@ -425,25 +590,26 @@ provide the motivation for the CNN architectures tested in this work.
 
 \begin{enumerate}
 
-  \item Ruff et al.~\cite{ruff2020automated} proposed a simpler CNN, likely
-    due to the significantly lower number of classes (7). Their model contained
+  \item Ruff et al.~\cite{ruff2020automated} proposed a  CNN, for their birdsong
+    classification research with 7 classes. Their model contained
     6 layers, of which 4 were convolutional. They used the rectified linear unit
-    (ReLU) as an activation function and dropout layers with $p=0.2$ for
+    (ReLU) as an activation function. To avoid overfitting, they used dropout
+    layers~\cite{srivastava2014dropout} with $p=0.2$ for
     convolutional layers and $p=0.5$ for the fully connected layers.
 
-  \item Kahl et al.~\cite{kahl2017large}. Although their work was focused on a
-    very large number of classes (1500), the concept should apply to binary
-    classification problems. In their work they tested 3 models with varying
-    numbers of hidden layers and kernel sizes. Their model number 3, comprised
-    of 8 layers of which 5 were convolutional, was shown to have superior
-    results for smaller number of classes, indeed they mention that shallow
-    models perform better on small class selections, so the first architecture
-    in this work will follow this thinking. All of their proposed models use
-    batch normalization~\cite{ioffe2015batch}, exponential linear units
-    (ELU)~\cite{clevert2015fast} as the activation function, and
-    He-initialization~\cite{he2015delving} for their weighted layers. In order
-    to avoid overfitting, a dropout layer~\cite{srivastava2014dropout} with
-    $p=0.5$ was added to each weighted layer before the final dense layer.
+  \item Kahl et al.~\cite{kahl2017large} proposed a CNN for their work focused
+    on a very large number of classes (1500). Although the difference in numbers
+    of classes between their work and this work is significant, the concepts
+    should apply to binary classification problems too. In their work they
+    tested 3 models with varying numbers of hidden layers and kernel sizes.
+    Their model number 3, comprised of 8 layers of which 5 were convolutional,
+    was shown to have superior results for smaller number of classes, indeed
+    they mention that shallow models perform better on small class selections.
+    All of their proposed models use batch normalization~\cite{ioffe2015batch},
+    exponential linear units (ELU)~\cite{clevert2015fast} as the activation
+    function, and He-initialization~\cite{he2015delving} for their weighted
+    layers. Dropout layers with $p=0.5$ were added to each weighted layer before
+    the final dense layer.
 
   % \item Berger et al.~\cite{berger2018bird} also proposed a simple CNN for their
   %   work in bird detection. Although bird detection and binary bird
@@ -456,7 +622,57 @@ provide the motivation for the CNN architectures tested in this work.
 \end{enumerate}
 
 In order to test against baseline, a highly simplistic CNN architecture will be
-implemented and tested against these more complex designs.
+implemented and tested against these more complex designs. 
+
+The proposed CNN architectures are listed in in
+Table~\ref{table:cnn_architectures}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+Model 0 (Simple) & Model 1 (Ruff~\cite{ruff2020automated}) & Model 2 (Kahl~\cite{kahl2017large}) \\[0.5ex]
+2 weighted layers & 6 weighted layers & 8 weighted layers \\[0.5ex]
+ReLU activation & ReLU activation & ELU activation \\[0.5ex]
+Glorot initialization & Glorot initialization & He initialization \\[0.5ex]
+$\sim$3s per epoch & $\sim$60s per epoch & $\sim$165s per epoch \\[0.5ex]
+\midrule
+\textbf{Conv1, $20 \times 5 \times 5$} &
+\textbf{Conv1, $32 \times 3 \times 3$} &
+\textbf{Conv1, $32 \times 7 \times 7$, Stride 2} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+\textbf{DenseLayer, 2 Units} &
+\textbf{Conv2, $32 \times 3 \times 3$} &
+\textbf{Conv2, $128 \times 5 \times 5$, Stride 1} \\
+Softmax Output & MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{Conv3, $64 \times 3 \times 3$} &
+\textbf{Conv3, $256 \times 3 \times 3$, Stride 1} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{Conv4, $64 \times 3 \times 3$} &
+\textbf{Conv4, $512 \times 3 \times 3$, Stride 1} \\
+& MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & \\[1ex]
+& \textbf{DenseLayer, 64 Units} &
+\textbf{Conv4, $512 \times 3 \times 3$, Stride 1} \\
+& Dropout, $p=0.5$ & MaxPooling, Size 2 \\[1ex]
+& \textbf{DenseLayer, 2 Units} &
+\textbf{DenseLayer, 512 Units} \\
+& Softmax output & Dropout, $p=0.5$ \\[1ex]
+& & \textbf{DenseLayer, 512 Units} \\
+& & Dropout, $p=0.5$ \\[1ex]
+& & \textbf{DenseLayer, 2 Units} \\
+& & Softmax output \\[1ex]
+\bottomrule
+\end{tabular}
+\caption{Candidate CNN architectures. All models use batch normalization after
+each weighted layer and all convolutional layers use shape preserving
+padding. All models use the `Adam' optimizer with an $l_2$ regularization of
+$0.0001$.}\label{table:cnn_architectures}
+\end{center}
+\end{table}
 
 \section{Evaluation}
 
@@ -464,9 +680,9 @@ After the recordings from each class reserved for testing have undergone
 pre-processing and segmentation, the segmented syllables undergo the same
 routine described in Section~\ref{sec:training} to generate the testing
 sequences. The number of testing sequences used for both classes can be seen in
-table~\ref{table:testing_samples}.
+Table~\ref{table:testing_samples}.
 
-\begin{table}[h!t]
+\begin{table}[ht]
 \begin{center}
 \begin{tabular}{c c c}
 \toprule
@@ -476,7 +692,7 @@ Common blackbird (\textit{TURMER}) & 9 & 360 \\
 Common nightingale (\textit{LUSMEG}) & 10 & 400 \\
 \bottomrule
 \end{tabular}
-\caption{Number of testing sequences for used for both
+\caption{Number of testing sequences used for both
 classes.}\label{table:testing_samples}
 \end{center}
 \end{table}
@@ -488,11 +704,11 @@ evaluating all models in this thesis.
 
 As mentioned in Section~\ref{sec:eval_metrics}, the AUC metric is commonly used
 for binary classification problems, and has been frequently used as a metric in
-birdsong classification problems. Further to the advantages listed in 
-previously, the AUC benefits from being unaffected from class imbalances.
-Although the positive and negative classes are only slightly imbalanced in this
-work (see Table~\ref{table:training_samples}), it makes sense to use a metric
-that is unaffected by class imbalance all the same.
+birdsong classification problems. Further to the advantages listed previously,
+the AUC benefits from being unaffected from class imbalances. Although the
+positive and negative classes are only slightly imbalanced in this work (see
+Table~\ref{table:training_samples}), it makes sense to use a metric that is
+unaffected by class imbalance all the same.
 
 The AUC is calculated using the \texttt{perfcurve} function which checks the
 class prediction scores returned by the model against the true labels.
