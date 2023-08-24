@@ -125,11 +125,25 @@ corrupted by background noise but has a few small segments of clear birdsong.
 In this work we attempt to combine the benefits of both approaches by first
 segmenting a recording to retrieve the syllables using a process described in
 Section~\ref{ssec:syllable_seg}. Then, for each syllable, the following
-syllables are appended until a fixed sample length is reached. <include figure
-to demonstrate this process>. If a syllable is
+syllables are appended until a fixed sample length is reached. If a syllable is
 added which pushes the sample length over the limit, then the sample is trimmed
 at the fixed length. If there aren't enough syllables to reach the fixed length,
-then the sample is discarded. This approach is motivated by Somervuo et al.'s
+then the sample is discarded. This process can be visualized in
+Figure~\ref{fig:sequence_building}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/sequence_building.png}
+  \caption{Figure demonstrating building sequences out of an input signals. The
+    top panel shows the input signal with syllables discovered during
+    segmentation highlighted in colours. The bottom 3 panels show the first 3
+    sequences generated from the input signal. The red dashed line indicates the
+  fixed length, in this case $10,000$ samples. Syllable segments that have been
+trimmed as they push the sequence over the fixed length are shown in
+grey.}\label{fig:sequence_building}
+\end{figure}
+
+This approach is motivated by Somervuo et al.'s
 work~\cite{somervuo2006parametric} in showing that training and classifying
 using single syllables returns suboptimal results, whereas using sequences of
 syllables gives much improved accuracy. Of course there is a tradeoff here
