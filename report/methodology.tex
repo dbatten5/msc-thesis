@@ -123,50 +123,9 @@ short sample. This could be useful in situations where a recording is mostly
 corrupted by background noise but has a few small segments of clear birdsong.
 
 In this work we attempt to combine the benefits of both approaches by first
-segmenting a recording to retrieve the syllables using a process described in
-Section~\ref{ssec:syllable_seg}. Then, for each syllable, the following
-syllables are appended until a fixed sample length is reached. If a syllable is
-added which pushes the sample length over the limit, then the sample is trimmed
-at the fixed length. If there aren't enough syllables to reach the fixed length,
-then the sample is discarded. This process can be visualized in
-Figure~\ref{fig:sequence_building}.
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\textwidth]{figures/sequence_building.png}
-  \caption{Figure demonstrating building sequences out of an input signals. The
-    top panel shows the input signal with syllables discovered during
-    segmentation highlighted in colours. The bottom 3 panels show the first 3
-    sequences generated from the input signal. The red dashed line indicates the
-  fixed length, in this case $10,000$ samples. Syllable segments that have been
-trimmed as they push the sequence over the fixed length are shown in
-grey.}\label{fig:sequence_building}
-\end{figure}
-
-This approach is motivated by Somervuo et al.'s
-work~\cite{somervuo2006parametric} in showing that training and classifying
-using single syllables returns suboptimal results, whereas using sequences of
-syllables gives much improved accuracy. Of course there is a tradeoff here
-between training with longer sequences, and hence more information, versus
-increased computational demand to perform training.
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.95\textwidth]{figures/syllable_sample_length.png}
-  \caption{Histogram showing the frequency of different sample lengths for all
-  training syllables. A candidate fixed sequence length is denoted by the red
-dashed line.}\label{fig:syllable_sample_lengths}
-\end{figure}
-
-From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
-fall in the region $\left[ 265, 1236 \right]$ (the segmentation algorithm sets a
-minimum of 265 samples for candidate syllables). Therefore a sequence of fixed
-length about 14000 (denoted by the red dashed line) should contain between 10
-and 70 syllables. The fixed length, equating to about 300ms duration, also
-ensures that most sequences contain at least one full syllable. This approach
-ensures the influence of background noise is kept to a minimum, while still
-maintaining information related to the temporal evolution of a particular
-birdsong.
+segmenting a recording to retrieve the syllables, then combining the syllables
+to form a sequence. The following sections will describe both processes in
+detail.
 
 \subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
 
@@ -275,12 +234,63 @@ same directory as the original recording with a filename in the format
 \textit{\{XCID\}\_i.wav} where \textit{XCID} is the XC id of the recording and
 \textit{i} is the index of the syllable.
 
+\subsection{Sequence generation}\label{ssec:sequence_gen}
+
+Once the syllables have been extracted, they are ready to be combined to form a
+sequence. This style of sequence generation will be used for all training in
+this work unless otherwise stated.
+
+We first start by grouping syllables by \textit{XCID}. Then, for each syllable
+in each group, the following syllables are appended until a fixed sample length
+is reached. If a syllable is added which pushes the sample length over the
+limit then the sample is trimmed at the fixed length. If there aren't enough
+syllables to reach the fixed length, then the sample is discarded. This process
+can be visualized in Figure~\ref{fig:sequence_building}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/sequence_building.png}
+  \caption{Figure demonstrating building sequences out of an input signals. The
+    top panel shows the input signal with syllables discovered during
+    segmentation highlighted in colours. The bottom 3 panels show the first 3
+    sequences generated from the input signal. The red dashed line indicates the
+    fixed length, in this case $10,000$ samples. Syllable segments that have
+    been trimmed as they push the sequence over the fixed length are shown in
+    grey. Note that for Sequence 3 its constituent syllables make up exactly
+    10,000 samples, and so no trimming was
+  necessary.}\label{fig:sequence_building}
+\end{figure}
+
+This approach is motivated by Somervuo et al.'s
+work~\cite{somervuo2006parametric} in showing that training and classifying
+using single syllables returns suboptimal results, whereas using sequences of
+syllables gives much improved accuracy. Of course there is a tradeoff here
+between training with longer sequences, and hence more information, versus
+increased computational demand to perform training.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.95\textwidth]{figures/syllable_sample_length.png}
+  \caption{Histogram showing the frequency of different sample lengths for all
+  training syllables. A candidate fixed sequence length is denoted by the red
+dashed line.}\label{fig:syllable_sample_lengths}
+\end{figure}
+
+From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
+fall in the region $\left[ 265, 1236 \right]$ (the segmentation algorithm sets a
+minimum of 265 samples for candidate syllables). Therefore a sequence of fixed
+length about 14000 (denoted by the red dashed line) should contain between 10
+and 70 syllables. The fixed length, equating to about 300ms duration, also
+ensures that most sequences contain at least one full syllable. This approach
+ensures that the influence of background noise is kept to a minimum, while still
+maintaining information related to the temporal evolution of a particular
+birdsong.
+
 \section{Feature extraction}\label{sec:method:feat_extraction}
 
-Once syllables have been extracted and stored as individual audio files, they
-are ready to be retrieved and converted to features. As mentioned in
-Section~\ref{sec:segmentation}, before feature extraction is performed,
-syllables are concatenated together until a minimum length is achieved.
+Once the sequences have been generated, they are ready to be converted to
+features. The following sections describe the feature extraction processes used
+in this work.
 
 \subsection{Cepstral coefficients}
 
@@ -474,11 +484,11 @@ be used with SVMs in this work.
 
 \section{Training}\label{sec:training}
 
-To create the training cell array, syllables are retrieved and concatenated to form
-a training sample, hereafter referred to as a sequence. A maximum limit of 40
-sequences per individual is imposed to ensure enough variation while keeping
-training times to a minimum. The number of training sequences used for both
-classes can be seen in Table~\ref{table:training_samples}.
+To create the training \textit{MATLAB} cell array, sequences for each class are
+generated and stored in a cell array. A maximum limit of 40 sequences per
+individual is imposed to ensure enough variation while keeping training times to
+a minimum. The number of training sequences used for both classes can be seen in
+Table~\ref{table:training_samples}.
 
 \begin{table}[h!t]
 \begin{center}
@@ -605,7 +615,7 @@ Section~\ref{sec:segmentation}, this equates to an input of dimensions $28
 The key hyperparameters regarding NNs relate to model architecture, such as
 number of hidden layers, and activation function. CNNs have further
 hyperparameters to tune, such as kernel size and stride, padding type, and
-initialization function. Optimising hyperparameters for CNNs can take a
+pooling size. Optimising hyperparameters for CNNs can take a
 considerable amount of time and computational resources, so we look to the
 literature to best inform our model architecture. The following architectures are
 shown to have promising results and/or are related to the problem at hand. They
@@ -697,6 +707,99 @@ padding. All models use the `Adam' optimizer with an $l_2$ regularization of
 $0.0001$.}\label{table:cnn_architectures}
 \end{center}
 \end{table}
+
+\subsubsection{RNN}
+
+Unlike CNNs, RNNs can work with variable sized inputs. This makes them ideal for
+working with sequential data such as videos (comprised of sequential frames) and
+potentially birdsong (comprised of sequential syllables). Since we don't need
+fixed length inputs as training samples, we can utilise a simplified form of the
+sequence generation method described in Section~\ref{ssec:sequence_gen} for
+fixed length sequences (FLS) by simply concatenating $n$ syllables together to
+form a variable length sequence (VLS). We select $n$ by choosing a value such
+that a VLS has a 50\% chance of being shorter than the FLS\@.
+Figure~\ref{fig:vls_lengths} shows a histogram of the sample lengths for the VLS
+for $n=5$. The proportion of VLS with a length less than 14,000 is 0.5044, i.e.\
+the probability that a VLS is shorter than the FLS is 50\%, as desired.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/vls_lengths.png}
+  \caption{Histogram showing the frequency of different sample lengths for VLS
+  with $n=5$. The red dashed line shows the length of the
+FLS.}\label{fig:vls_lengths}
+\end{figure}
+
+With this form of sequence generation, the number of training samples for
+each class is shown in Table~\ref{table:vls_training_samples}. Note that these
+samples are only used for RNN\@.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Class & Individuals & Sequences \\ [0.5ex]
+\midrule
+Common blackbird (\textit{TURMER}) & 28 & 1062 \\
+Common nightingale (\textit{LUSMEG}) & 28 & 1200 \\
+\bottomrule
+\end{tabular}
+\caption{Number of training sequences for used for both
+classes for VLS used for RNN.}\label{table:vls_training_samples}
+\end{center}
+\end{table}
+
+This leads to the question of how to represent these sequences as sequential
+data. We propose the following two methods and discuss their implications. We
+will concern ourselves only with MFCC in the following list, but the concepts
+can easily be applied to other representations in the frequency domain where
+each element can be thought of as a T-F unit, such as GTCC and MRCG\@.
+
+\begin{enumerate}
+
+  \item \textbf{Sequential vectors}. Here, the MFCC for an entire sequence is
+    first extracted. Supposing we extract 13 MFCC coefficients (ignoring
+    $\Delta$ and $\Delta\Delta$ values for now), then entire sequence can then
+    be though of as a sequence of 13 dimensional vectors, evolving through time.
+    This can be visualized in Figure~\ref{fig:mfcc_vector_sequence}.
+
+    \begin{figure}[ht]
+      \centering
+      \includegraphics[width=\textwidth]{figures/mfcc_vector_sequence_labelled.png}
+      \caption{MFCC representation of a VLS showing sequential vectors. The $13
+      \times 12$ matrix can be thought of as a sequence of length 12 of 13
+    dimensional vectors. The first two vectors are shown in the figure using
+  dashed lines}\label{fig:mfcc_vector_sequence}
+    \end{figure}
+
+    This approach has the benefit that the training cell needs little
+    manipulation to be compatible with \textit{MATLAB's} \texttt{trainNetwork}
+    function used to train a NN\@. The function can accept a training cell array
+    where each cell is a $p \times s$ numerical matrix, where $s$ is the number
+    of timesteps in the sequence, and $p$ is the number of features. In the
+    example shown in Figure~\ref{fig:mfcc_vector_sequence}, $s=12$ and $p=13$.
+    However, this method will treat the dimensions as independent of each other
+    which will mean that the network isn't able to learn cross dimensional
+    features. This may mean that the network misses out on learning from
+    potentially useful patterns in the signal.
+
+  \item \textbf{Sequential images}. Here, the MFCC representation is extracted
+    for each of the 5 syllables in the sequence separately. They are then
+    stacked together to form a sequence of 5 2D `images' (MFCC representations).
+    This sequence can then be fed as input to the network. 
+
+\end{enumerate}
+
+One thing to note with RNN in \textit{MATLAB} is that although the sequences can
+be of varying length, the lengths of each sequence in each mini-batch provided
+to the training routine need to be the same length. Padding is automatically
+added by the software to each sequence in a mini-batch so that they are all of
+the same length, usually by padding sequences so that they are the same length
+as the longest sequence in the mini-batch. To that end, it's recommended to sort
+the sequences by length before passing them to the training routine and ensuring
+that the software doesn't shuffle the samples. This ensure that the amount of
+padding is kept to a minimum which is preferable since padding introduces noise
+to the network.
 
 \section{Evaluation}
 
