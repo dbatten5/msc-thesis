@@ -749,46 +749,101 @@ classes for VLS used for RNN.}\label{table:vls_training_samples}
 \end{center}
 \end{table}
 
-This leads to the question of how to represent these sequences as sequential
-data. We propose the following two methods and discuss their implications. We
-will concern ourselves only with MFCC in the following list, but the concepts
-can easily be applied to other representations in the frequency domain where
-each element can be thought of as a T-F unit, such as GTCC and MRCG\@.
+\textit{MATLAB} can receive sequential data in different input formats, such as
+vector sequences and 2D image sequences. The formulation of the VLS lends itself
+well to the vector sequence input format. To illustrate this, we will concern
+ourselves only with MFCC, but the concepts can easily be applied to other
+representations in the frequency domain where each element can be thought of as
+a T-F unit, such as GTCC and MRCG\@.
 
-\begin{enumerate}
+The MFCC for an entire sequence is first extracted. Supposing we extract 13 MFCC
+coefficients (ignoring $\Delta$ and $\Delta\Delta$ values for now), then the
+entire sequence can then be though of as a sequence of 13 dimensional vectors,
+evolving through time. This can be visualized in
+Figure~\ref{fig:mfcc_vector_sequence}.
 
-  \item \textbf{Sequential vectors}. Here, the MFCC for an entire sequence is
-    first extracted. Supposing we extract 13 MFCC coefficients (ignoring
-    $\Delta$ and $\Delta\Delta$ values for now), then entire sequence can then
-    be though of as a sequence of 13 dimensional vectors, evolving through time.
-    This can be visualized in Figure~\ref{fig:mfcc_vector_sequence}.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/mfcc_vector_sequence_labelled.png}
+  \caption{MFCC representation of a VLS showing sequential vectors. The $13
+  \times 12$ matrix can be thought of as a sequence of length 12 of 13
+dimensional vectors. The first two vectors are shown in the figure using
+dashed lines.}\label{fig:mfcc_vector_sequence}
+\end{figure}
 
-    \begin{figure}[ht]
-      \centering
-      \includegraphics[width=\textwidth]{figures/mfcc_vector_sequence_labelled.png}
-      \caption{MFCC representation of a VLS showing sequential vectors. The $13
-      \times 12$ matrix can be thought of as a sequence of length 12 of 13
-    dimensional vectors. The first two vectors are shown in the figure using
-  dashed lines}\label{fig:mfcc_vector_sequence}
-    \end{figure}
+This approach has the benefit that the training cell needs little
+manipulation to be compatible with \textit{MATLAB's} \texttt{trainNetwork}
+function used to train a NN\@. The function can accept a training cell array
+where each cell is a $p \times s$ numerical matrix, where $s$ is the number
+of timesteps in the sequence, and $p$ is the number of features. In the
+example shown in Figure~\ref{fig:mfcc_vector_sequence}, $s=12$ and $p=13$.
+However, this method will treat the dimensions as independent of each other
+which will mean that the network isn't able to learn cross dimensional
+features. In other words, only 1 dimensional convolutions may be applied.
+This may mean that the network misses out on learning from potentially
+useful patterns in the signal.
 
-    This approach has the benefit that the training cell needs little
-    manipulation to be compatible with \textit{MATLAB's} \texttt{trainNetwork}
-    function used to train a NN\@. The function can accept a training cell array
-    where each cell is a $p \times s$ numerical matrix, where $s$ is the number
-    of timesteps in the sequence, and $p$ is the number of features. In the
-    example shown in Figure~\ref{fig:mfcc_vector_sequence}, $s=12$ and $p=13$.
-    However, this method will treat the dimensions as independent of each other
-    which will mean that the network isn't able to learn cross dimensional
-    features. This may mean that the network misses out on learning from
-    potentially useful patterns in the signal.
+An alternative formulation would be to consider sequences of 2D images.
+Here, the MFCC representation is extracted for each of $n$ syllables in a
+sequence separately. They are then stacked together to form a sequence of $n
+\times$ 2D `images' (MFCC representations). This sequence can then be fed as
+input to the network. For this approach, the network expects a training input as
+a $h \times w \times c \times s$ numerical array where $h$, $w$, and $c$
+correspond to the height, width, and number of channels of the images,
+respectively, and $s$ is the sequence length. Here, $s=n$, $c=1$ since the
+images can be though of as greyscale and $h$ will be the number of MFCC
+coefficients. The big drawback of this method is that $w$ will need to be
+consistent across all images in the training input. In other words, all syllables
+will need to be the same length. This can be achieved with rudimentary processes
+like padding or looping a syllable until it is of a desired length, but to achieve
+less noisy results it's likely that this would require more advanced techniques
+like dynamic time warping. The large scope of this approach means that it will
+have to be tackled in future work. A big benefit of this approach is that the
+network will be able to learn cross dimensional features by applying 2D
+convolutions. This would complement the temporal features learned by
+recurrent layers of the network well.
 
-  \item \textbf{Sequential images}. Here, the MFCC representation is extracted
-    for each of the 5 syllables in the sequence separately. They are then
-    stacked together to form a sequence of 5 2D `images' (MFCC representations).
-    This sequence can then be fed as input to the network. 
+\subsubsection{Bidirectionality}
 
-\end{enumerate}
+If the full sequences are known at prediction time, as is the case in this work,
+then the network can benefit from employing bidirectional RNN layers. This means
+that information can flow backward and forward through the network, meaning that
+predictions at a certain timestep can be influenced by future predictions. At
+the time of writing this work, bidirectional LSTM layers exist in
+\textit{MATLAB}, but bidirectional GRU layers do not.
+
+In order to test RNN architectures for sequential vectors, we propose 3 models.
+Given that the literature is reasonably thin in terms implementing RNN for
+birdsong classification problems, we propose 3 simple models to establish a
+baseline. The models can be seen in Table~\ref{table:rnn_seq_vector}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+Model 1 & Model 2 & Model 3 \\ [0.5ex]
+2 weighted layers & 4 weighted layers & 4 weighted layers \\[0.5ex]
+$\sim$16s per epoch & $\sim$3s per epoch & $\sim$3s per epoch \\[0.5ex]
+\midrule
+\textbf{BiLSTM, 100 Units} & \textbf{Conv1}, $32 \times 3$ & \textbf{Conv1}, $32 \times 3$ \\
+Dropout, $p=0.2$ & MaxPooling, Size 2 & MaxPooling, Size 2 \\
+& Dropout, $p=0.2$ & Dropout, $p=0.2$ \\[1ex]
+\textbf{DenseLayer, 2 Units} & \textbf{Conv2}, $64 \times 3$ & \textbf{Conv2}, $64 \times 3$ \\
+Softmax Output & Global Average Pooling & Global Average Pooling \\
+& Dropout, $p=0.5$ & Dropout, $p=0.5$ \\[1ex]
+& \textbf{BiLSTM, 100 Units} & \textbf{GRU, 100 Units} \\
+& Dropout, $p=0.5$  & Dropout, $p=0.5$  \\[1ex]
+& \textbf{DenseLayer, 2 Units} & \textbf{DenseLayer, 2 Units} \\
+& Softmax Output & Softmax Output \\
+\bottomrule
+\end{tabular}
+\caption{Candidate RNN and CRNN architectures for sequential vector sequences.
+  All models use batch normalization after each weighted layer and all
+convolutional layers use shape preserving padding. All models use the `Adam'
+optimizer with an $l_2$ regularization of $0.0001$, with Glorot initialization
+and ReLU activation.}\label{table:rnn_seq_vector}
+\end{center}
+\end{table}
 
 One thing to note with RNN in \textit{MATLAB} is that although the sequences can
 be of varying length, the lengths of each sequence in each mini-batch provided
@@ -805,7 +860,7 @@ to the network.
 
 After the recordings from each class reserved for testing have undergone
 pre-processing and segmentation, the segmented syllables undergo the same
-routine described in Section~\ref{sec:training} to generate the testing
+routine described in Section~\ref{ssec:sequence_gen} to generate the testing
 sequences. The number of testing sequences used for both classes can be seen in
 Table~\ref{table:testing_samples}.
 
