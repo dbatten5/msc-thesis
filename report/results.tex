@@ -64,7 +64,7 @@ Table~\ref{table:hyp1_gtcc} and can be visualized in Figure~\ref{fig:hyp1_gtcc}.
 
 \begin{table}[h!t]
 \begin{center}
-\begin{tabular}{cc c|c c}
+\begin{tabular}{c c c|c c}
 \toprule
 & \multicolumn{2}{c|}{AUC} & \multicolumn{2}{c}{Accuracy} \\
   Experiment & Linear & RBF & Linear & RBF \\ [0.5ex]
@@ -106,8 +106,9 @@ compared to simpler statistical models, such as SVMs.
 \end{quote}
 
 For all experiments related to H2 we use the highest performing feature
-representation from H1: an MFCC representation with the \texttt{BandEdges}
-argument set to the range from Experiment 1.
+representations from H1: an MFCC representation with the \texttt{BandEdges}
+argument set to the range from Experiment 1 and GTCC representation with the
+\texttt{FrequencyRange} set to the range from Experiment 4.
 
 \subsection{CNN}
 
@@ -118,51 +119,52 @@ performing models from H1.
 \subsubsection{Results}
 
 The results for the AUC and classification accuracy for a CNN trained on a MFCC
-representation of training sequences can be seen in
+and GTCC representation of training sequences can be seen in
 Table~\ref{table:cnn_mfcc_results} and can be visualized in
 Figure~\ref{fig:cnn_mfcc_results}.
 
 \begin{table}[h!t]
 \begin{center}
-\begin{tabular}{c c c}
+\begin{tabular}{c c c|c c}
 \toprule
-Model & AUC & Accuracy \\ [0.5ex]
+& \multicolumn{2}{c|}{AUC} & \multicolumn{2}{c}{Accuracy} \\
+  Experiment & MFCC & GTCC & MFCC & GTCC \\ [0.5ex]
 \midrule
-0 & 0.976 & 0.912 \\
-1 & 0.971 & 0.865 \\
-2 & \cellcolor{lightgray} 0.988 & \cellcolor{lightgray} 0.929 \\
+  0 & 0.976 & 0.976 & 0.912 & 0.900 \\
+  1 & 0.971 & 0.952  & 0.865 & 0.882  \\
+  2 & \cellcolor{lightgray} 0.988 & \cellcolor{lightgray} 0.984 & \cellcolor{lightgray} 0.929 & \cellcolor{lightgray} 0.928 \\
 \bottomrule
 \end{tabular}
 \caption{The AUC and classification accuracy for different CNN architectures
-trained on MFCC feature representations. The highest evaluation scores for each
-metric and are highlighted in grey.}\label{table:cnn_mfcc_results}
+trained on MFCC and GTCC feature representations. The highest evaluation scores
+for each metric and are highlighted in grey.}\label{table:cnn_mfcc_results}
 \end{center}
 \end{table}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/hyp2_cnn_mfcc_results.png}
+  \includegraphics[width=\textwidth]{figures/hyp2_cnn_bar.png}
   \caption{The AUC and classification accuracy for different CNN architectures
-  trained on MFCC feature representations}\label{fig:cnn_mfcc_results}
+  trained on MFCC and GTCC feature representations}\label{fig:cnn_mfcc_results}
 \end{figure}
 
 As can be seen, even the simplest CNN model (model 0) significantly outperforms
-the most accurate SVM model in both AUC and accuracy. The highest performing of
-the CNN models is model 3, but it should be noted that it takes significantly
-longer to train model 3 compared to model 0 and its evaluation metrics are only
-slightly better.
+the most accurate SVM model in both AUC and accuracy for both feature
+representations. The highest performing of the CNN models is model 3, but it
+should be noted that it takes significantly longer to train model 3 compared to
+model 0 and its evaluation metrics are only slightly better.
 
 \section{Hypothesis 3}
 
 Hypothesis 3 (H3) is stated as follows:
 
-\begin{quote}
-Explore the birdsong classification performance of feature representations
-shown to have promising results for non-birdsong related audio classification
-problems. The hypothesis is that feature representations shown to have good
-results in audio classification problems will have good results for birdsong
-identification.
-\end{quote}
+% \begin{quote}
+% Explore the birdsong classification performance of feature representations
+% shown to have promising results for non-birdsong related audio classification
+% problems. The hypothesis is that feature representations shown to have good
+% results in audio classification problems will have good results for birdsong
+% identification.
+% \end{quote}
 
 H3 was applied to a relatively novel feature representation, the MRCG, using
 CNN\@. To the author's knowledge, this experiment has not been performed before

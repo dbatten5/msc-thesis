@@ -5,13 +5,13 @@ unless stated otherwise.
 
 Since all the models described in Section~\ref{sec:classification} are trained
 in a supervised learning fashion, this requires a dataset of labelled training
-examples. The website xeno-canto.org (XC) houses the largest and most
-comprehensive publicly available collection of birdsong samples in the world. It
-has made an enormous impact in the field birdsong recognition since its
-inception in 2005 and has been the source of the datasets for the annual
-BirdCLEF challenge since 2014~\cite{vellinga2015xeno}. All samples available on
-XC are labelled with the bird species and contain rich metadata, such as the
-time and location of the recording. Importantly, all samples have a
+examples. The website xeno-canto\footnote{\url{http://xeno-canto.org}} (XC) houses the
+largest and most comprehensive publicly available collection of birdsong samples
+in the world. It has made an enormous impact in the field birdsong recognition
+since its inception in 2005 and has been the source of the datasets for the
+annual BirdCLEF challenge since 2014~\cite{vellinga2015xeno}. All samples
+available on XC are labelled with the bird species and contain rich metadata,
+such as the time and location of the recording. Importantly, all samples have a
 crowd-sourced rating from A --- E which signifies how clear the recording sample
 is, where A denotes samples with the highest quality and clarity and E denotes
 the lowest. This is especially important should we wish to experiment with
@@ -136,8 +136,8 @@ dashed line.}\label{fig:syllable_sample_lengths}
 \end{figure}
 
 From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
-fall in the region $\left[ 200, 1236 \right]$ (the segmentation algorithm sets a
-minimum of 200 samples for candidate syllables). Therefore a sequence of fixed
+fall in the region $\left[ 265, 1236 \right]$ (the segmentation algorithm sets a
+minimum of 265 samples for candidate syllables). Therefore a sequence of fixed
 length about 14000 (denoted by the red dashed line) should contain between 10
 and 70 syllables. The fixed length, equating to about 300ms duration, also
 ensures that most sequences contain at least one full syllable. This approach
@@ -609,7 +609,8 @@ provide the motivation for the CNN architectures tested in this work.
     exponential linear units (ELU)~\cite{clevert2015fast} as the activation
     function, and He-initialization~\cite{he2015delving} for their weighted
     layers. Dropout layers with $p=0.5$ were added to each weighted layer before
-    the final dense layer.
+    the final dense layer. An initial learning rate of 0.1 is set, which
+    decreases linearly after each epoch to a final value of 0.0001.
 
   % \item Berger et al.~\cite{berger2018bird} also proposed a simple CNN for their
   %   work in bird detection. Although bird detection and binary bird
