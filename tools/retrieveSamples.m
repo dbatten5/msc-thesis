@@ -28,15 +28,25 @@ for id = sampleIDs
         continue
     end
 
-    for jj = 1:nva.NumConcatSyllables:numel(matchingSyllableFilenames)
-        if jj + nva.NumConcatSyllables - 1 > numel(matchingSyllableFilenames)
+    exhausted = false;
+    for jj = 1:numel(matchingSyllableFilenames)
+        if exhausted
             break
         end
         fullSignal = [];
-        for kk = 0:nva.NumConcatSyllables-1
+        kk = 0;
+        while true
+            if jj+kk > numel(matchingSyllableFilenames)
+                exhausted = true;
+                break
+            end
             filePath = fullfile(syllableDirectoryPath, matchingSyllableFilenames{jj+kk});
             [syllable, fs] = audioread(filePath);
             fullSignal = [fullSignal;syllable];
+            kk = kk+1;
+            if kk > nva.NumConcatSyllables-1
+                break
+            end
         end
         sampleSyllables = [sampleSyllables;{fullSignal}];
         sampleFs = [sampleFs;{fs}];

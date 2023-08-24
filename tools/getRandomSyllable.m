@@ -10,6 +10,8 @@ allTypes = {"test","train"};
 
 if nva.BirdID == "all"
     birdID = allBirds{randperm(numel(allBirds), 1)};
+else
+    birdID = nva.BirdID;
 end
 
 directoryPath = sprintf('samples/%s/syllables/%s',birdID,nva.Type);

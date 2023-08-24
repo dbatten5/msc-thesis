@@ -1,4 +1,4 @@
-function [syllables, maxSyllableLength] = segmentSyllables(inputSignal,fs,frameSizeMs,mergeThreshMs,minimumSyllableThreshMs)
+function [syllables, maxSyllableLength, varargout] = segmentSyllables(inputSignal,fs,frameSizeMs,mergeThreshMs,minimumSyllableThreshMs)
 %SEGMENTSYLLABLES Summary of this function goes here
 %   Detailed explanation goes here
 if size(inputSignal,2) > 1
@@ -110,6 +110,10 @@ for ii = 1:2:numel(syllableBoundaries)
         maxSyllableLength = en-st;
     end
     syllables = [syllables;{inputSignal(st:en)}];
+end
+
+if nargout == 3
+    varargout{1} = syllableBoundaries;
 end
 
 end

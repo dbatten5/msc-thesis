@@ -1,3 +1,12 @@
+In this chapter we first discuss the data collection and processing steps
+involved to generate a database of samples to be used for training and testing.
+In Section~\ref{sec:method:feat_extraction} we explore the different options for
+feature representation and lay out some experiments to be conducted. In
+Section~\ref{sec:training} we explore the structure of the models used for
+classification and discuss how training and/or optimization will be performed.
+We finish the chapter by commenting how the models will be evaluated and
+potential extensions of this work that could be performed in the future.
+
 All computational work for this thesis was performed in \textit{MATLAB vR2023a}
 unless stated otherwise.
 
@@ -252,7 +261,7 @@ same directory as the original recording with a filename in the format
 \textit{\{XCID\}\_i.wav} where \textit{XCID} is the XC id of the recording and
 \textit{i} is the index of the syllable.
 
-\section{Feature extraction}
+\section{Feature extraction}\label{sec:method:feat_extraction}
 
 Once syllables have been extracted and stored as individual audio files, they
 are ready to be retrieved and converted to features. As mentioned in
