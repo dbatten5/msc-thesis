@@ -136,7 +136,7 @@ Figure~\ref{fig:cnn_mfcc_results}.
 \end{tabular}
 \caption{The AUC and classification accuracy for different CNN architectures
 trained on MFCC and GTCC feature representations. The highest evaluation scores
-for each metric and are highlighted in grey.}\label{table:cnn_mfcc_results}
+for each metric are highlighted in grey.}\label{table:cnn_mfcc_results}
 \end{center}
 \end{table}
 
@@ -201,13 +201,13 @@ comes at a cost of limited capacity to learn.
 
 Hypothesis 3 (H3) is stated as follows:
 
-% \begin{quote}
-% Explore the birdsong classification performance of feature representations
-% shown to have promising results for non-birdsong related audio classification
-% problems. The hypothesis is that feature representations shown to have good
-% results in audio classification problems will have good results for birdsong
-% identification.
-% \end{quote}
+\begin{quote}
+Explore the birdsong classification performance of feature representations
+\\shown to have promising results for non-birdsong related audio classification
+problems. The hypothesis is that feature representations shown to have good
+results in audio classification problems will have good results for birdsong
+identification.
+\end{quote}
 
 H3 was applied to a relatively novel feature representation, the MRCG, using
 CNN, RNN and CRNN\@. To the author's knowledge, this experiment has not been
@@ -215,7 +215,42 @@ performed before with regards to birdsong classification.
 
 Due to the high dimensionality of the MRCG representation and considering the
 limited computational resources of the machine upon which training is performed,
-we select simple NN models to evaluate the MRCG feature.
+we select simple NN models to evaluate the MRCG feature. The models chosen here
+are Model 0 from Table~\ref{table:cnn_architectures}, and Models 1 and 2 from
+Table~\ref{table:rnn_seq_vector}.
+
+\subsubsection{Results}
+
+The AUC and accuracy results for NN models trained on MRCG representation are
+shown in Table~\ref{table:rnn_mrcg_results}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Model & AUC & Accuracy \\ [0.5ex]
+\midrule
+1 & \cellcolor{lightgray} 0.968 & \cellcolor{lightgray} 0.889 \\
+2 & 0.188 & 0.283 \\
+3 & 0.138 & 0.205 \\
+\bottomrule
+\end{tabular}
+\caption{The AUC and classification accuracy for different RNN and CRNN
+architectures trained on MFCC\@. The highest evaluation scores for each metric
+and are highlighted in grey.}\label{table:rnn_mrcg_results}
+\end{center}
+\end{table}
+
+The CNN model performs well but the RNN based models perform very poorly. The
+training curve for the RNN models was still converging by the time that the
+maximum number of epochs (100) was reached so it's possible that the model may
+just need a longer time to train. However, during training the validation curve
+fluctuated around 50\% and so it's also possible that the sequential vector
+representation is inappropriate for an MRCG and so RNN with this type of
+sequence input for MRCG will never post good results. Since the CNN results are
+much better, it may be worthwhile exploring more complicated CNN model
+architectures with MRCG\@. Due to the high dimensionality of MRCG I was not able
+to perform training with more complicated models on my machine.
 
 \section{Comparison}
 
@@ -266,9 +301,10 @@ Table~\ref{table:h1_gtcc_experiments} for GTCC models.}\label{table:svm_models}
 
 \begin{sidewaystable}
 \begin{center}
-\begin{tabular}{c c c c c}
+\begin{tabular}{c c l c c}
 \toprule
-Model ID & Feature & Description & \# Parameters & Training time/epoch (s) \\ [0.5ex]
+Model ID & Feature & Description & \# Learnable parameters & Training time/epoch (s) \\ [0.5ex]
+\midrule
 CNN\_M\_1 & MFCC & Simple 2 layer CNN & 32.5K & 3 \\
 CNN\_G\_1 & GTCC & As above & 32.5K & 3 \\
 CNN\_M\_2 & MFCC & 6 layer CNN based on~\cite{ruff2020automated} & 3.3M & 60 \\
@@ -281,7 +317,6 @@ CRNN\_M\_2 & MFCC & 4 layer CRNN with GRU layer & 59.8K & 3 \\
 CNN\_C\_1 & MRCG & Simple 2 layer CNN & 795.1K & 3 \\
 RNN\_C\_1 & MRCG & Simple 2 layer RNN & 695.6K & 30 \\
 CRNN\_C\_1 & MRCG & 4 layer CRNN with BiLSTM layer & 212.5K & 9 \\
-\midrule
 \bottomrule
 \end{tabular}
 \caption{Table listing the different NN models used in this work. More details
@@ -291,9 +326,9 @@ Table~\ref{table:rnn_seq_vector} for RNN and CRNN models.}\label{table:nn_models
 \end{sidewaystable}
 
 A combined table of evaluation metrics can be seen in
-Table~\ref{table:all_results}.
+Table~\ref{table:all_results} and visualized in Figure~\ref{fig:all_bar}.
 
-\begin{table}[h!t]
+\begin{table}[ht]
 \begin{center}
 \begin{tabular}{c c c|c c c}
 \toprule
@@ -324,4 +359,25 @@ grey.}\label{table:all_results}
 \end{center}
 \end{table}
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/all_bar.png}
+  \caption{Figure showing the AUC and accuracy for all models tested in this
+  thesis.}\label{fig:all_bar}
+\end{figure}
+
 \section{Discussion}
+
+
+
+\section{Further work \& extensions of methodology}
+
+\begin{enumerate}
+
+  \item data augmentation
+
+  \item multiclass
+
+  \item pretrained model
+
+\end{enumerate}
