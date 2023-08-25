@@ -596,7 +596,9 @@ Learning Toolbox.
 
 The training input for NN models depends on the type of NN\@. Some can work
 directly on cell arrays whereas others require training data in numerical matrix
-format.
+format. For all NN training runs, 5\% of the training set was set aside for
+validation. If the validation accuracy was seen to plateau during training then
+this was considered grounds for early stopping of training.
 
 \subsubsection{CNN}\label{sssec:method:cnn}
 
@@ -760,7 +762,8 @@ The MFCC for an entire sequence is first extracted. Supposing we extract 13 MFCC
 coefficients (ignoring $\Delta$ and $\Delta\Delta$ values for now), then the
 entire sequence can then be though of as a sequence of 13 dimensional vectors,
 evolving through time. This can be visualized in
-Figure~\ref{fig:mfcc_vector_sequence}.
+Figure~\ref{fig:mfcc_vector_sequence}. An alternative way to visualize the MFCC
+as sequential vectors is presented in Figure~\ref{fig:mfcc_vector_sequence_2}.
 
 \begin{figure}[ht]
   \centering
@@ -769,6 +772,13 @@ Figure~\ref{fig:mfcc_vector_sequence}.
   \times 12$ matrix can be thought of as a sequence of length 12 of 13
 dimensional vectors. The first two vectors are shown in the figure using
 dashed lines.}\label{fig:mfcc_vector_sequence}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/mfcc_vector_sequence_2.png}
+  \caption{Plot of the last 6 MFCC coefficients of a VLS changing with each
+  timestep.}\label{fig:mfcc_vector_sequence_2}
 \end{figure}
 
 This approach has the benefit that the training cell needs little
@@ -830,7 +840,7 @@ Dropout, $p=0.2$ & MaxPooling, Size 2 & MaxPooling, Size 2 \\
 & Dropout, $p=0.2$ & Dropout, $p=0.2$ \\[1ex]
 \textbf{DenseLayer, 2 Units} & \textbf{Conv2}, $64 \times 3$ & \textbf{Conv2}, $64 \times 3$ \\
 Softmax Output & Global Average Pooling & Global Average Pooling \\
-& Dropout, $p=0.5$ & Dropout, $p=0.5$ \\[1ex]
+& Dropout, $p=0.2$ & Dropout, $p=0.2$ \\[1ex]
 & \textbf{BiLSTM, 100 Units} & \textbf{GRU, 100 Units} \\
 & Dropout, $p=0.5$  & Dropout, $p=0.5$  \\[1ex]
 & \textbf{DenseLayer, 2 Units} & \textbf{DenseLayer, 2 Units} \\

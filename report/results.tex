@@ -112,9 +112,8 @@ argument set to the range from Experiment 1 and GTCC representation with the
 
 \subsection{CNN}
 
-The CNN architectures listed in Table~\ref{table:cnn_architectures} will
-be tested and their performance evaluated against the baseline: the highest
-performing models from H1.
+The CNN architectures listed in Table~\ref{table:cnn_architectures} were tested
+and their performance evaluated. The following section details the results.
 
 \subsubsection{Results}
 
@@ -128,10 +127,10 @@ Figure~\ref{fig:cnn_mfcc_results}.
 \begin{tabular}{c c c|c c}
 \toprule
 & \multicolumn{2}{c|}{AUC} & \multicolumn{2}{c}{Accuracy} \\
-  Experiment & MFCC & GTCC & MFCC & GTCC \\ [0.5ex]
+  Model & MFCC & GTCC & MFCC & GTCC \\ [0.5ex]
 \midrule
   0 & 0.976 & 0.976 & 0.912 & 0.900 \\
-  1 & 0.971 & 0.952  & 0.865 & 0.882  \\
+  1 & 0.971 & 0.952 & 0.865 & 0.882 \\
   2 & \cellcolor{lightgray} 0.988 & \cellcolor{lightgray} 0.984 & \cellcolor{lightgray} 0.929 & \cellcolor{lightgray} 0.928 \\
 \bottomrule
 \end{tabular}
@@ -145,14 +144,58 @@ for each metric and are highlighted in grey.}\label{table:cnn_mfcc_results}
   \centering
   \includegraphics[width=\textwidth]{figures/hyp2_cnn_bar.png}
   \caption{The AUC and classification accuracy for different CNN architectures
-  trained on MFCC and GTCC feature representations}\label{fig:cnn_mfcc_results}
+  trained on MFCC and GTCC feature representations.}\label{fig:cnn_mfcc_results}
 \end{figure}
 
-As can be seen, even the simplest CNN model (model 0) significantly outperforms
-the most accurate SVM model in both AUC and accuracy for both feature
-representations. The highest performing of the CNN models is model 3, but it
-should be noted that it takes significantly longer to train model 3 compared to
+We can see that the CNN models all deliver very promising results, especially
+models 0 and 2. The highest performing of the CNN models is model 2, but it
+should be noted that it takes significantly longer to train model 2 compared to
 model 0 and its evaluation metrics are only slightly better.
+
+\subsection{RNN \& CRNN}
+
+The RNN and CRNN architectures listed in Table~\ref{table:rnn_seq_vector} were
+tested and their performance evaluated. The following section details the
+results.
+
+\subsubsection{Results}
+
+The results for the AUC and classification accuracy for a RNN and CRNN trained
+on a MFCC representation of training sequences can be seen in
+Table~\ref{table:rnn_mfcc_results} and can be visualized in
+Figure~\ref{fig:rnn_mfcc_results}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Model & AUC & Accuracy \\ [0.5ex]
+\midrule
+1 & \cellcolor{lightgray} 0.957 & \cellcolor{lightgray} 0.892 \\
+2 & 0.912 & 0.860 \\
+3 & 0.887 & 0.840 \\
+\bottomrule
+\end{tabular}
+\caption{The AUC and classification accuracy for different RNN and CRNN
+architectures trained on MFCC\@. The highest evaluation scores for each metric
+and are highlighted in grey.}\label{table:rnn_mfcc_results}
+\end{center}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/hyp2_rnn_mfcc_results.png}
+  \caption{The AUC and classification accuracy for different RNN and CRNN architectures
+  trained on MFCC.}\label{fig:rnn_mfcc_results}
+\end{figure}
+
+From the results we can see that model 1 performs the best across both metrics.
+It should be noted though that model 1 takes the longest to train, about 5 times
+longer per epoch compared to models 2 and 3. We can also see a clear drop in
+performance comparing model 3 (a GRU model) to model 2 (a bidirectional LSTM
+model). This is may be from the fact that the GRU layer cannot learn in both
+directions, or it may be that the decrease in parameters that the GRU offers
+comes at a cost of limited capacity to learn.
 
 \section{Hypothesis 3}
 
@@ -171,5 +214,105 @@ CNN\@. To the author's knowledge, this experiment has not been performed before
 with regards to birdsong classification.
 
 \section{Comparison}
+
+In this section we collect the results from all experiments and compare them to
+get a snapshot of the highest performing models. This may help to identify
+patterns or trends in model structure or feature representation which boost
+birdsong binary classification performance.
+
+We start by listing all models used in this work. The SVM models used in this
+work are listed in Table~\ref{table:svm_models}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+Model ID & Feature & Description \\ [0.5ex]
+\midrule
+SVM\_M\_L\_1 & MFCC & Linear SVM with 40 mel bands, default range \\
+SVM\_M\_R\_1 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_2 & MFCC & Linear SVM with 40 mel bands, extended range \\
+SVM\_M\_R\_2 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_3 & MFCC & Linear SVM with 80 mel bands, extended range \\
+SVM\_M\_R\_3 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_4 & MFCC & Linear SVM with 40 linear bands, extended range \\
+SVM\_M\_R\_4 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_5 & MFCC & Linear SVM with 40 linear bands, default range \\
+SVM\_M\_R\_5 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_6 & MFCC & Linear SVM with 40 anti-mel bands, default range \\
+SVM\_M\_R\_6 & MFCC & As above, but RBF SVM \\
+SVM\_M\_L\_7 & MFCC & Linear SVM with 40 mel bands, slightly extended range \\
+SVM\_M\_R\_7 & MFCC & As above, but RBF SVM \\
+SVM\_G\_L\_1 & GTCC & Linear SVM with default (widest) gammatone range \\
+SVM\_G\_R\_1 & GTCC & As above, but RBF SVM \\
+SVM\_G\_L\_2 & GTCC & Linear SVM with narrowed gammatone range \\
+SVM\_G\_R\_2 & GTCC & As above, but RBF SVM \\
+SVM\_G\_L\_3 & GTCC & Linear SVM with less narrow gammatone range \\
+SVM\_G\_R\_3 & GTCC & As above, but RBF SVM \\
+SVM\_G\_L\_4 & GTCC & Linear SVM with more narrow gammatone range \\
+SVM\_G\_R\_4 & GTCC & As above, but RBF SVM \\
+\bottomrule
+\end{tabular}
+\caption{Table listing the different SVM models used in this work. More details
+for the MFCC models can be seen in Table~\ref{table:h1_mfcc_experiments} and
+Table~\ref{table:h1_gtcc_experiments} for GTCC models.}\label{table:svm_models}
+\end{center}
+\end{table}
+
+\begin{sidewaystable}
+\begin{center}
+\begin{tabular}{c c c c c}
+\toprule
+Model ID & Feature & Description & \# Parameters (000s) & Training time/epoch (s) \\ [0.5ex]
+CNN\_M\_1 & MFCC & Simple 2 layer CNN & & 3 \\
+CNN\_G\_1 & GTCC & As above & & 3 \\
+CNN\_M\_2 & MFCC & 6 layer CNN based on~\cite{ruff2020automated} & & 60 \\
+CNN\_G\_2 & GTCC & As above & & 60 \\
+CNN\_M\_3 & MFCC & 8 layer CNN based on~\cite{kahl2017large} & & 165 \\
+CNN\_G\_3 & GTCC & As above & & 165 \\
+RNN\_M\_1 & MFCC & Simple 2 layer RNN & 112.4 & 16 \\
+CRNN\_M\_1 & MFCC & 4 layer CRNN with BiLSTM layer & & 3 \\
+CRNN\_M\_2 & MFCC & 4 layer CRNN with GRU layer & & 3 \\
+\midrule
+\bottomrule
+\end{tabular}
+\caption{Table listing the different NN models used in this work. More details
+for the CNN models can be seen in Table~\ref{table:cnn_architectures} and
+Table~\ref{table:rnn_seq_vector} for RNN and CRNN models.}\label{table:nn_models}
+\end{center}
+\end{sidewaystable}
+
+A combined table of evaluation metrics can be seen in
+Table~\ref{table:all_results}.
+
+\begin{table}[h!t]
+\begin{center}
+\begin{tabular}{c c c|c c c}
+\toprule
+Model ID & AUC & Accuracy & Model ID & AUC & Accuracy \\ [0.5ex]
+\midrule
+SVM\_M\_L\_1 & 0.887 & 0.825 & SVM\_G\_R\_1 & 0.895 & 0.802 \\
+SVM\_M\_R\_1 & 0.958 & 0.872 & SVM\_G\_L\_2 & 0.887 & 0.831 \\
+SVM\_M\_L\_2 & 0.879 & 0.828 & SVM\_G\_R\_2 & 0.946 & 0.856 \\
+SVM\_M\_R\_2 & 0.830 & 0.801 & SVM\_G\_L\_3 & 0.891 & 0.852 \\
+SVM\_M\_L\_3 & 0.868 & 0.802 & SVM\_G\_R\_3 & 0.933 & 0.850 \\
+SVM\_M\_R\_3 & 0.860 & 0.789 & SVM\_G\_L\_4 & 0.883 & 0.846 \\
+SVM\_M\_L\_4 & 0.845 & 0.765 & SVM\_G\_R\_4 & 0.948 & 0.859 \\
+SVM\_M\_R\_4 & 0.836 & 0.785 & CNN\_M\_1 & 0.976 & 0.912 \\
+SVM\_M\_L\_5 & 0.873 & 0.813 & CNN\_G\_1 & 0.976 & 0.900 \\
+SVM\_M\_R\_5 & 0.953 & 0.880 & CNN\_M\_2 & 0.971 & 0.865 \\
+SVM\_M\_L\_6 & 0.863 & 0.809 & CNN\_G\_2 & 0.952 & 0.882 \\
+SVM\_M\_R\_6 & 0.929 & 0.878 & CNN\_M\_3 & 0.988 & 0.929 \\
+SVM\_M\_L\_7 & 0.879 & 0.827 & CNN\_G\_3 & 0.984 & 0.928 \\
+SVM\_M\_R\_7 & 0.905 & 0.823 & RNN\_M\_1 & 0.957 & 0.892 \\
+SVM\_G\_L\_1 & 0.884 & 0.844 & CRNN\_M\_1 & 0.912 & 0.860 \\
+& & & CRNN\_M\_2 & 0.887 & 0.840 \\
+\bottomrule
+\end{tabular}
+\caption{The AUC and classification accuracy for all models. The highest
+evaluation scores for each metric across all models are highlighted in
+grey.}\label{table:all_results}
+\end{center}
+\end{table}
 
 \section{Discussion}
