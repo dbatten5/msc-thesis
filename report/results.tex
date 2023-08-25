@@ -210,8 +210,12 @@ Hypothesis 3 (H3) is stated as follows:
 % \end{quote}
 
 H3 was applied to a relatively novel feature representation, the MRCG, using
-CNN\@. To the author's knowledge, this experiment has not been performed before
-with regards to birdsong classification.
+CNN, RNN and CRNN\@. To the author's knowledge, this experiment has not been
+performed before with regards to birdsong classification.
+
+Due to the high dimensionality of the MRCG representation and considering the
+limited computational resources of the machine upon which training is performed,
+we select simple NN models to evaluate the MRCG feature.
 
 \section{Comparison}
 
@@ -221,7 +225,8 @@ patterns or trends in model structure or feature representation which boost
 birdsong binary classification performance.
 
 We start by listing all models used in this work. The SVM models used in this
-work are listed in Table~\ref{table:svm_models}.
+work are listed in Table~\ref{table:svm_models} and the NN models are listed in
+Table~\ref{table:nn_models}.
 
 \begin{table}
 \begin{center}
@@ -263,16 +268,19 @@ Table~\ref{table:h1_gtcc_experiments} for GTCC models.}\label{table:svm_models}
 \begin{center}
 \begin{tabular}{c c c c c}
 \toprule
-Model ID & Feature & Description & \# Parameters (000s) & Training time/epoch (s) \\ [0.5ex]
-CNN\_M\_1 & MFCC & Simple 2 layer CNN & & 3 \\
-CNN\_G\_1 & GTCC & As above & & 3 \\
-CNN\_M\_2 & MFCC & 6 layer CNN based on~\cite{ruff2020automated} & & 60 \\
-CNN\_G\_2 & GTCC & As above & & 60 \\
-CNN\_M\_3 & MFCC & 8 layer CNN based on~\cite{kahl2017large} & & 165 \\
-CNN\_G\_3 & GTCC & As above & & 165 \\
-RNN\_M\_1 & MFCC & Simple 2 layer RNN & 112.4 & 16 \\
-CRNN\_M\_1 & MFCC & 4 layer CRNN with BiLSTM layer & & 3 \\
-CRNN\_M\_2 & MFCC & 4 layer CRNN with GRU layer & & 3 \\
+Model ID & Feature & Description & \# Parameters & Training time/epoch (s) \\ [0.5ex]
+CNN\_M\_1 & MFCC & Simple 2 layer CNN & 32.5K & 3 \\
+CNN\_G\_1 & GTCC & As above & 32.5K & 3 \\
+CNN\_M\_2 & MFCC & 6 layer CNN based on~\cite{ruff2020automated} & 3.3M & 60 \\
+CNN\_G\_2 & GTCC & As above & 3.3M & 60 \\
+CNN\_M\_3 & MFCC & 8 layer CNN based on~\cite{kahl2017large} & 23.6M & 165 \\
+CNN\_G\_3 & GTCC & As above & 23.6M & 165 \\
+RNN\_M\_1 & MFCC & Simple 2 layer RNN & 112.4K & 16 \\
+CRNN\_M\_1 & MFCC & 4 layer CRNN with BiLSTM layer & 142.5K & 3 \\
+CRNN\_M\_2 & MFCC & 4 layer CRNN with GRU layer & 59.8K & 3 \\
+CNN\_C\_1 & MRCG & Simple 2 layer CNN & 795.1K & 3 \\
+RNN\_C\_1 & MRCG & Simple 2 layer RNN & 695.6K & 30 \\
+CRNN\_C\_1 & MRCG & 4 layer CRNN with BiLSTM layer & 212.5K & 9 \\
 \midrule
 \bottomrule
 \end{tabular}
@@ -291,22 +299,23 @@ Table~\ref{table:all_results}.
 \toprule
 Model ID & AUC & Accuracy & Model ID & AUC & Accuracy \\ [0.5ex]
 \midrule
-SVM\_M\_L\_1 & 0.887 & 0.825 & SVM\_G\_R\_1 & 0.895 & 0.802 \\
-SVM\_M\_R\_1 & 0.958 & 0.872 & SVM\_G\_L\_2 & 0.887 & 0.831 \\
-SVM\_M\_L\_2 & 0.879 & 0.828 & SVM\_G\_R\_2 & 0.946 & 0.856 \\
-SVM\_M\_R\_2 & 0.830 & 0.801 & SVM\_G\_L\_3 & 0.891 & 0.852 \\
-SVM\_M\_L\_3 & 0.868 & 0.802 & SVM\_G\_R\_3 & 0.933 & 0.850 \\
-SVM\_M\_R\_3 & 0.860 & 0.789 & SVM\_G\_L\_4 & 0.883 & 0.846 \\
-SVM\_M\_L\_4 & 0.845 & 0.765 & SVM\_G\_R\_4 & 0.948 & 0.859 \\
-SVM\_M\_R\_4 & 0.836 & 0.785 & CNN\_M\_1 & 0.976 & 0.912 \\
-SVM\_M\_L\_5 & 0.873 & 0.813 & CNN\_G\_1 & 0.976 & 0.900 \\
-SVM\_M\_R\_5 & 0.953 & 0.880 & CNN\_M\_2 & 0.971 & 0.865 \\
-SVM\_M\_L\_6 & 0.863 & 0.809 & CNN\_G\_2 & 0.952 & 0.882 \\
-SVM\_M\_R\_6 & 0.929 & 0.878 & CNN\_M\_3 & 0.988 & 0.929 \\
-SVM\_M\_L\_7 & 0.879 & 0.827 & CNN\_G\_3 & 0.984 & 0.928 \\
-SVM\_M\_R\_7 & 0.905 & 0.823 & RNN\_M\_1 & 0.957 & 0.892 \\
-SVM\_G\_L\_1 & 0.884 & 0.844 & CRNN\_M\_1 & 0.912 & 0.860 \\
-& & & CRNN\_M\_2 & 0.887 & 0.840 \\
+SVM\_M\_L\_1 & 0.887 & 0.825 & SVM\_G\_R\_2 & 0.946 & 0.856 \\
+SVM\_M\_R\_1 & 0.958 & 0.872 & SVM\_G\_L\_3 & 0.891 & 0.852 \\
+SVM\_M\_L\_2 & 0.879 & 0.828 & SVM\_G\_R\_3 & 0.933 & 0.850 \\
+SVM\_M\_R\_2 & 0.830 & 0.801 & SVM\_G\_L\_4 & 0.883 & 0.846 \\
+SVM\_M\_L\_3 & 0.868 & 0.802 & SVM\_G\_R\_4 & 0.948 & 0.859 \\
+SVM\_M\_R\_3 & 0.860 & 0.789 & CNN\_M\_1 & 0.976 & 0.912 \\
+SVM\_M\_L\_4 & 0.845 & 0.765 & CNN\_G\_1 & 0.976 & 0.900 \\
+SVM\_M\_R\_4 & 0.836 & 0.785 & CNN\_M\_2 & 0.971 & 0.865 \\
+SVM\_M\_L\_5 & 0.873 & 0.813 & CNN\_G\_2 & 0.952 & 0.882 \\
+SVM\_M\_R\_5 & 0.953 & 0.880 & CNN\_M\_3 & \cellcolor{lightgray} 0.988 & \cellcolor{lightgray} 0.929 \\
+SVM\_M\_L\_6 & 0.863 & 0.809 & CNN\_G\_3 & 0.984 & 0.928 \\
+SVM\_M\_R\_6 & 0.929 & 0.878 & RNN\_M\_1 & 0.957 & 0.892 \\
+SVM\_M\_L\_7 & 0.879 & 0.827 & CRNN\_M\_1 & 0.912 & 0.860 \\
+SVM\_M\_R\_7 & 0.905 & 0.823 & CRNN\_M\_2 & 0.887 & 0.840 \\
+SVM\_G\_L\_1 & 0.884 & 0.844 & CNN\_C\_1 & 0.968 & 0.889 \\
+SVM\_G\_R\_1 & 0.895 & 0.802 & RNN\_C\_1 & 0.188 & 0.283 \\
+SVM\_G\_L\_2 & 0.887 & 0.831 & CRNN\_C\_1 & 0.138 & 0.205 \\
 \bottomrule
 \end{tabular}
 \caption{The AUC and classification accuracy for all models. The highest
