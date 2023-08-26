@@ -254,15 +254,39 @@ to perform training with more complicated models on my machine.
 
 \section{Further work \& extensions of methodology}
 
-\begin{enumerate}
+The work carried out in this thesis is merely scratching the surface of birdsong
+binary classification problems. There is enormous scope for extending the
+methodologies used here in pre-processing, training and classification in order
+to improve results and broaden the problem. The following list is certainly not
+exhaustive but is intended to provide a quick overview of some key techniques
+and concepts that could be incorporated in future work.
 
-  \item data augmentation
+\subsubsection{Pre-processing}
 
-  \item multiclass
+Data augmentation.
 
-  \item pretrained model
+\subsubsection{Training}
 
-\end{enumerate}
+Pre-trained models.
+
+\subsubsection{Classification}
+
+Binary classification is a highly simplified version of the problem. In reality,
+birdsong classification systems would likely need to classify birdsong into
+hundreds or even thousands of classes. This could take the form of one sample
+being assigned to one of many classes, or one sample which contains
+vocalizations from different birds being able to accurately identify all the
+classes contained therein. The former can be easily tackled using SVMs by
+turning the problem into a one-versus-all classification, as mentioned in
+Section~\ref{sssec:multiclass}. For NN models the modification is more simple.
+The final dense layer can be modified to have the same number of output neurons
+as classes and the softmax output layer will take care of outputting a
+distribution over the classes. Identifying multiple birds within one sample
+poses more challenges but there has already been some interesting research
+conducted into it using encoder-decoder
+architectures~\cite{narasimhan2017simultaneous}. Indeed, in their paper they
+mention that future work includes adding recurrent layers to their network in
+order to take into account the temporal relation between bird syllables.
 
 \section{Comparison}
 
