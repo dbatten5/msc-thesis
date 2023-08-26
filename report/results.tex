@@ -252,6 +252,18 @@ much better, it may be worthwhile exploring more complicated CNN model
 architectures with MRCG\@. Due to the high dimensionality of MRCG I was not able
 to perform training with more complicated models on my machine.
 
+\section{Further work \& extensions of methodology}
+
+\begin{enumerate}
+
+  \item data augmentation
+
+  \item multiclass
+
+  \item pretrained model
+
+\end{enumerate}
+
 \section{Comparison}
 
 In this section we collect the results from all experiments and compare them to
@@ -368,16 +380,70 @@ grey.}\label{table:all_results}
 
 \section{Discussion}
 
-
-
-\section{Further work \& extensions of methodology}
+From the evaluation results obtained across the different experiments, the
+following discussion points arise:
 
 \begin{enumerate}
 
-  \item data augmentation
+  \item A filterbank frequency range for feature representation that fits
+    tightly around the dominant frequencies produced by birdsong performs better
+    than one that is wider. This is strengthened by the results obtained from
+    the experiments in H1. The initial assumption was that since birds produce
+    higher frequency harmonics above the normal birdsong frequency range
+    ($\backsim$1 Khz --- 10 Khz), then having a filterbank range that responds
+    to those harmonics may mean that potentially useful features could be
+    extracted from the harmonics and utilised by the model. In practice this
+    doesn't seem to be the case, with both mel and gammatone filterbanks that
+    range from $\backsim$1 Khz --- 10 Khz yielding the highest evaluation
+    metrics. The assumption may have been naive since when comparing birdsong to
+    human speech, as can be seen in Figure~\ref{fig:wren_vs_human}, we can see
+    that both bird and human vocalizations produce strong harmonics. Given that
+    MFCC with the default filterbank spacing has been shown to have excellent
+    results with human speech recognition~\cite{muda2010voice}, it stands to
+    reason that the default filter bank should have good results with birdsong
+    too.
 
-  \item multiclass
+    \begin{figure}[ht]
+      \centering
+      \includegraphics[width=\textwidth]{figures/wren_vs_human.png}
+      \caption{Spectrograms of a sample from a Eurasian wren birdsong and human
+      speech.}\label{fig:wren_vs_human}
+    \end{figure}
 
-  \item pretrained model
+    The other assumption with regards to filter bank range and spacing is that,
+    since birdsong typically resides at higher frequencies than human speech (as
+    can been seen in Figure~\ref{fig:wren_vs_human}), filter banks that are
+    spaced closer together at higher frequencies (such as anti-mel filter
+    banks), should offer more discriminatory power at higher frequencies and
+    thus yield better results at discriminating birdsong. However, the results
+    from the experiments performed in this work did not reinforce this claim and
+    it remains unclear why.
+
+  \item NN models can offer significantly improved metrics when compared to
+    simpler statistical models such as SVM\@. Even the lowest performing NN
+    model in this work (CRNN\_M\_2) trained on MFCC or GTCC posts metrics that
+    are superior to the majority of SVM models tested here. This is reasonably
+    unsurprising since NN models have considerably more learnable parameters and
+    are able to fit more complex decision boundaries. This of course comes at a
+    cost of higher computational demands and training time. While the RNN and
+    CRNN model results are encouraging, it's important to note though that the
+    models implemented here are quite simplistic. With some thorough tuning and
+    testing I'm confident that the RNN models, in particular CRNN models, can
+    achieve better evaluation metrics than plain CNN models. RNN models offer
+    the enticing prospect of making use of the temporal evolution of birdsong
+    and even learning from the gaps in between phrases, which may offer further
+    information which can aid with classification.
+
+  \item MRCG feature representations tested in this work have not performed as
+    well as expected. This is disappointing since the literature has shown
+    promising results when MRCG was used as a feature in audio classification
+    problems. One thing to note though is that the literature has often tested
+    MRCG at different SNR levels to determine its performance at classifying
+    audio in noisy situations, where it has often outperformed more traditional
+    feature representations (\cite{binti2020comparison,chen2014feature}). The
+    samples tested in this work have all been very clean samples with little or
+    no background noise, so it's possible that MRCG could start to become more
+    effective when different SNR levels are tested with birdsong
+    classification.
 
 \end{enumerate}
