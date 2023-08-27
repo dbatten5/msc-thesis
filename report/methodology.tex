@@ -74,10 +74,10 @@ birdsong.}\label{fig:detected_speech}
 \end{figure}
 
 A highpass filter is then applied to the recording with a passband frequency of
-450Hz. This value was chosen as most birdsong sits in the range of 1KHz ---
-10Khz, and so lower frequencies can be attributed to background noise and
+450 Hz. This value was chosen as most birdsong sits in the range of 1 kHz ---
+10 kHz, and so lower frequencies can be attributed to background noise and
 therefore their removal should reduce noise in the system without losing
-important information. The reason why frequencies above 10Khz are not removed
+important information. The reason why frequencies above 10 kHz are not removed
 is that, as can be seen from figure~\ref{fig:wren_call_song_spectrogram}, birds
 typically produce higher frequency harmonics when vocalizing, shown as vertical
 bands moving upwards from where syllables are located on the spectrogram. These
@@ -343,7 +343,7 @@ MFCC.}\label{table:h1_mfcc_experiments}
 \subsubsection{Comments on experiment setup}
 
 In the table, `fs' refers to the frequency sampling rate for a given audio file,
-usually 44.1 KHz or 48 KHz. $\text{fs}/2$ is the maximum possible value for the
+usually 44.1 kHz or 48 kHz. $\text{fs}/2$ is the maximum possible value for the
 \texttt{BandEdges} argument. `A-mel', short for anti-mel, denotes a set of mel
 filterbanks that have been inverted, such that the center frequencies are closer
 together at higher frequencies and further apart at lower frequencies. `Linear'
@@ -400,7 +400,7 @@ Like MFCC, GTCC has a potentially overlooked argument in
 maximum values in Hz of the gammatone filter bank used by the \texttt{gtcc}
 routine. The default value is \texttt{[50, fs/2]}, which could potentially be
 fine-tuned for birdsong related problems since birdsong frequencies do not
-typically go below 1Khz.
+typically go below 1 kHz.
 
 To test the \texttt{FrequencyRange} argument, 4 experiments were devised and
 evaluated in order to see if any improvements to binary bird classification
@@ -663,7 +663,7 @@ implemented and tested against these more complex designs.
 The proposed CNN architectures are listed in in
 Table~\ref{table:cnn_architectures}.
 
-\begin{table}[h!t]
+\begin{table}[ht]
 \begin{center}
 \begin{tabular}{l l l}
 \toprule
@@ -710,7 +710,7 @@ $0.0001$.}\label{table:cnn_architectures}
 \end{center}
 \end{table}
 
-\subsubsection{RNN}
+\subsubsection{RNN}\label{sssec:method:rnn}
 
 Unlike CNNs, RNNs can work with variable sized inputs. This makes them ideal for
 working with sequential data such as videos (comprised of sequential frames) and
@@ -767,7 +767,7 @@ as sequential vectors is presented in Figure~\ref{fig:mfcc_vector_sequence_2}.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{figures/mfcc_vector_sequence_labelled.png}
+  \includegraphics[width=\textwidth]{figures/mfcc_vector_sequence_labelled_2.png}
   \caption{MFCC representation of a VLS showing sequential vectors. The $13
   \times 12$ matrix can be thought of as a sequence of length 12 of 13
 dimensional vectors. The first two vectors are shown in the figure using
@@ -915,15 +915,3 @@ A = \frac{1}{N}\sum_{i=1}^{N} \mathbb{I}[\bar{y}_i = y_i]
 \end{equation}
 where $N$ is the number of test samples, $\bar{y}$ is a predicted label, $y$
 is the groundtruth label, and $\mathbb{I}$ is the indicator function.
-
-\section{Extensions of methodology}
-
-\begin{enumerate}
-
-  \item data augmentation
-
-  \item multiclass
-
-  \item pretrained model
-
-\end{enumerate}
