@@ -252,85 +252,6 @@ much better, it may be worthwhile exploring more complicated CNN model
 architectures with MRCG\@. Due to the high dimensionality of MRCG I was not able
 to perform training with more complicated models on my machine.
 
-\section{Further work \& extensions of methodology}
-
-The work carried out in this thesis is merely scratching the surface of birdsong
-binary classification problems. There is enormous scope for extending the
-methodologies used here in pre-processing, training and classification in order
-to improve results and broaden the problem. The following list is certainly not
-exhaustive but is intended to provide a quick overview of some key techniques
-and concepts that could be incorporated in future work.
-
-\subsubsection{Pre-processing}
-
-Pre-processing is a key stage in the process. A thorough and considered
-pre-processing pipeline can significantly improve classification accuracy and
-generalization performance. An easily accessible way to improve generalization
-is through data augmentation. This has been done in many research papers with
-promising results~\cite{kahl2017large}. \textit{MATLAB} provides inbuilt ways to
-augment audio data through \texttt{audioDataAugmenter} pipeline, which can
-enlarge datasets through techniques like pitch shifting, time-scale
-modification, and volume control. It would be interesting to apply these
-augmentations and see how it affects the performance of these models. The
-pipeline also offers noise addition. In practice, working with clean recordings
-of birdsong would be very unlikely since the recordings would likely be
-corrupted with all manner of background noise, from urban noise, rainforest
-noise, or ambient noise such as wind. While random noise addition through the
-pipeline would certainly be useful, it might be more informative to manually add
-noise at precise SNR levels and evaluate the performance of the different
-feature representations and models in this work.
-
-Another interesting extension of the methodology would be to consider a birdsong
-segment as a variable length sequence of images as mentioned in
-Section~\ref{sssec:method:rnn} where each syllable is transformed to some image
-representation. This would allow for a system whereby syllables extracted from
-birdsong could be fed into a RNN or CRNN with 2D convolutions. This could then
-be used for realtime classification of birdsong, as is done in the excellent
-Merlin\footnote{\url{https://merlin.allaboutbirds.org/}} app developed by
-Cornell University Lab of Ornithology.
-
-Lastly, a potential simplification of the pipeline could be to make more use of
-the \texttt{detectSpeech} function. This is used in this work to strip leading
-and trailing bits of background noise from recordings. With some experimentation
-of the arguments it could potentially be used to perform the syllable
-segmentation of the recording too.
-
-\subsubsection{Feature extraction \& training}
-
-An important concept missing in this thesis is combining features into stacks.
-Instead of looking at feature representations in isolation, combinations of
-features can be created and the model can be left to determine where the
-important patterns lie in the dimensions of the data. This has been done in many
-research papers~\cite{yan2021birdsong,ramashini2019bird,somervuo2006parametric}
-to great effect. Chen et al.~\cite{chen2014feature} conducted thorough research
-into a large number of feature representations in their work on speech
-separation. This could be used as a basis for feature stacking extension to this
-work.
-
-The RNN and CRNN models implemented in this work are fairly naive and were
-implemented to generate a baseline of the RNN method. With some experimenting of
-the hyperparameters available, such as kernel size, pooling size and number of
-convolutional layers, they could be shown to have improved performance.
-
-\subsubsection{Classification}
-
-Binary classification is a highly simplified version of the problem. In reality,
-birdsong classification systems would likely need to classify birdsong into
-hundreds or even thousands of classes. This could take the form of one sample
-being assigned to one of many classes, or one sample which contains
-vocalizations from different birds being able to accurately identify all the
-classes contained therein. The former can be tackled using SVMs by turning the
-problem into a one-versus-all classification, as mentioned in
-Section~\ref{sssec:multiclass}. For NN models the modification is more simple.
-The final dense layer can be modified to have the same number of output neurons
-as classes and the softmax output layer will take care of outputting a
-distribution over the classes. Identifying multiple birds within one sample
-poses more challenges but there has already been some interesting research
-conducted into it using encoder-decoder
-architectures~\cite{narasimhan2017simultaneous}. Indeed, in their paper they
-mention that future work includes adding recurrent layers to their network in
-order to take into account the temporal relation between bird syllables.
-
 \section{Comparison}
 
 In this section we collect the results from all experiments and compare them to
@@ -457,11 +378,11 @@ following discussion points arise:
     than one that is wider. This is strengthened by the results obtained from
     the experiments in H1. The initial assumption was that since birds produce
     higher frequency harmonics above the normal birdsong frequency range
-    ($\backsim$1 Khz --- 10 Khz), then having a filterbank range that responds
+    ($\backsim$1 kHz --- 10 kHz), then having a filterbank range that responds
     to those harmonics may mean that potentially useful features could be
     extracted from the harmonics and utilised by the model. In practice this
     doesn't seem to be the case, with both mel and gammatone filterbanks that
-    range from $\backsim$1 Khz --- 10 Khz yielding the highest evaluation
+    range from $\backsim$1 kHz --- 10 kHz yielding the highest evaluation
     metrics. The assumption may have been naive since when comparing birdsong to
     human speech, as can be seen in Figure~\ref{fig:wren_vs_human}, we can see
     that both bird and human vocalizations produce strong harmonics. Given that
@@ -514,3 +435,82 @@ following discussion points arise:
     classification.
 
 \end{enumerate}
+
+\section{Further work \& extensions of methodology}
+
+The work carried out in this thesis is merely scratching the surface of birdsong
+binary classification problems. There is enormous scope for extending the
+methodologies used here in pre-processing, training and classification in order
+to improve results and broaden the problem. The following list is certainly not
+exhaustive but is intended to provide a quick overview of some key techniques
+and concepts that could be incorporated in future work.
+
+\subsubsection{Pre-processing}
+
+Pre-processing is a key stage in the process. A thorough and considered
+pre-processing pipeline can significantly improve classification accuracy and
+generalization performance. An easily accessible way to improve generalization
+is through data augmentation. This has been done in many research papers with
+promising results~\cite{kahl2017large}. \textit{MATLAB} provides inbuilt ways to
+augment audio data through \texttt{audioDataAugmenter} pipeline, which can
+enlarge datasets through techniques like pitch shifting, time-scale
+modification, and volume control. It would be interesting to apply these
+augmentations and see how it affects the performance of these models. The
+pipeline also offers noise addition. In practice, working with clean recordings
+of birdsong would be very unlikely since the recordings would likely be
+corrupted with all manner of background noise, from urban noise, rainforest
+noise, or ambient noise such as wind. While random noise addition through the
+pipeline would certainly be useful, it might be more informative to manually add
+noise at precise SNR levels and evaluate the performance of the different
+feature representations and models in this work.
+
+Another interesting extension of the methodology would be to consider a birdsong
+segment as a variable length sequence of images as mentioned in
+Section~\ref{sssec:method:rnn} where each syllable is transformed to some image
+representation. This would allow for a system whereby syllables extracted from
+birdsong could be fed into a RNN or CRNN with 2D convolutions. This could then
+be used for realtime classification of birdsong, as is done in the excellent
+Merlin\footnote{\url{https://merlin.allaboutbirds.org/}} app developed by
+Cornell University Lab of Ornithology.
+
+Lastly, a potential simplification of the pipeline could be to make more use of
+the \texttt{detectSpeech} function. This is used in this work to strip leading
+and trailing bits of background noise from recordings. With some experimentation
+of the arguments it could potentially be used to perform the syllable
+segmentation of the recording too.
+
+\subsubsection{Feature extraction \& training}
+
+An important concept missing in this thesis is combining features into stacks.
+Instead of looking at feature representations in isolation, combinations of
+features can be created and the model can be left to determine where the
+important patterns lie in the dimensions of the data. This has been done in many
+research papers~\cite{yan2021birdsong,ramashini2019bird,somervuo2006parametric}
+to great effect. Chen et al.~\cite{chen2014feature} conducted thorough research
+into a large number of feature representations in their work on speech
+separation. This could be used as a basis for feature stacking extension to this
+work.
+
+The RNN and CRNN models implemented in this work are fairly naive and were
+implemented to generate a baseline of the RNN method. With some experimenting of
+the hyperparameters available, such as kernel size, pooling size and number of
+convolutional layers, they could be shown to have improved performance.
+
+\subsubsection{Classification}
+
+Binary classification is a highly simplified version of the problem. In reality,
+birdsong classification systems would likely need to classify birdsong into
+hundreds or even thousands of classes. This could take the form of one sample
+being assigned to one of many classes, or one sample which contains
+vocalizations from different birds being able to accurately identify all the
+classes contained therein. The former can be tackled using SVMs by turning the
+problem into a one-versus-all classification, as mentioned in
+Section~\ref{sssec:multiclass}. For NN models the modification is more simple.
+The final dense layer can be modified to have the same number of output neurons
+as classes and the softmax output layer will take care of outputting a
+distribution over the classes. Identifying multiple birds within one sample
+poses more challenges but there has already been some interesting research
+conducted into it using encoder-decoder
+architectures~\cite{narasimhan2017simultaneous}. Indeed, in their paper they
+mention that future work includes adding recurrent layers to their network in
+order to take into account the temporal relation between bird syllables.

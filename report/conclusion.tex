@@ -1,3 +1,21 @@
-Summarise what you have achieved and evaluate honestly if you feel the approach
-has been largely successful. Explain what could be improved still and perhaps
-why the method is not working well (if that is the case).
+In this work we have thoroughly investigated some important parameters when
+extracting classic features like MFCC and GTCC\@. We have shown that the
+parameters can have a significant effect on the overall classification accuracy
+and that the parameter values should be carefully considered for the problem at
+hand. During this investigation we have shown that MFCC usually outperforms GTCC
+when the sample recordings are clean.
+
+We have also investigated some more complex and modern architectures such as CNN
+and RNN and have confirmed that they can easily outperform more classical models
+like SVM\@. In doing so we have also proposed a novel method of generating
+training and testing samples by combining syllables, the elemental blocks of
+birdsong. We have also laid the theoretical groundwork for an alternative form
+of sample generation that can be used with CRNN in future work.
+
+The main contribution of this study is the application of MRCG to birdsong
+classification. While the results achieved here were less than desirable, it's
+unclear whether this is from the model design or the suitability of MRCG with
+birdsong as some concessions had to be made to allow for MRCG's significantly
+higher dimensionality compared to classic features such as MFCC\@. This could be
+verified by testing MRCG with some more complex CNN or CRNN model architectures
+on more powerful machines.
