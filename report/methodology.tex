@@ -4,8 +4,7 @@ In Section~\ref{sec:method:feat_extraction} we explore the different options for
 feature representation and lay out some experiments to be conducted. In
 Section~\ref{sec:training} we explore the structure of the models used for
 classification and discuss how training and/or optimization will be performed.
-We finish the chapter by commenting how the models will be evaluated and
-potential extensions of this work that could be performed in the future.
+We finish the chapter by commenting on how the models will be evaluated.
 
 All computational work for this thesis was performed in \textit{MATLAB vR2023a}
 unless stated otherwise.
@@ -78,7 +77,7 @@ A highpass filter is then applied to the recording with a passband frequency of
 10 kHz, and so lower frequencies can be attributed to background noise and
 therefore their removal should reduce noise in the system without losing
 important information. The reason why frequencies above 10 kHz are not removed
-is that, as can be seen from figure~\ref{fig:wren_call_song_spectrogram}, birds
+is that, as can be seen from Figure~\ref{fig:wren_call_song_spectrogram}, birds
 typically produce higher frequency harmonics when vocalizing, shown as vertical
 bands moving upwards from where syllables are located on the spectrogram. These
 harmonics may capture useful information for the model to utilise
@@ -104,16 +103,16 @@ roughly 50 training samples per individual was aimed for in this thesis.
 This leads to the question of how to generate samples. In the literature there
 seem to be two main ways of segmenting recordings into samples to be used for
 training. The first is segmenting a recording into overlapping segments of a
-certain length, typically in the range of 4 --- 11 seconds
-(\cite{yan2021birdsong},~\cite{crous2019polyphonic}). This has the advantage
-that all samples will be of fixed length and that the segmentation algorithm is
-very simple. However, it will likely mean that some samples will contain only
+certain length, typically in the range of 4 --- 11
+seconds~\cite{yan2021birdsong,crous2019polyphonic}. This has the advantage that
+all samples will be of fixed length and that the segmentation algorithm is very
+simple. However, it will likely mean that some samples will contain only
 background noise which, if used for training, will introduce noise into the
 system. These noise samples therefore may need to be removed, either
 manually~\cite{yan2021birdsong} or using an
 algorithm~\cite{narasimhan2017simultaneous}. The other method involves
-segmenting the recording into syllables
-(\cite{fagerlund2007bird},~\cite{ramashini2022robust}). This has the advantage
+segmenting the recording into
+syllables~\cite{fagerlund2007bird,ramashini2022robust}. This has the advantage
 that all training samples are likely to contain little or no noise. However the
 samples will be of variable length, so steps will be needed to be taken in order
 to compare the samples, such as adding padding or more advanced techniques like
@@ -129,13 +128,13 @@ detail.
 
 \subsection{Energy based syllable segmentation}\label{ssec:syllable_seg}
 
-This algorithm was first proposed by Fagerlund~\cite{fagerlund2004automatic}
-and has been used in various research papers since
-(\cite{somervuo2006parametric},~\cite{ramashini2022robust}). Note that Fagerlund
+This algorithm was first proposed by Fagerlund~\cite{fagerlund2004automatic} and
+has been used in various research papers
+since~\cite{somervuo2006parametric,ramashini2022robust}. Note that Fagerlund
 proposed two different segmentation methods in the paper. In this thesis we use
-the energy based segmentation method as it's relatively
-simple to implement and its performance can be superior to the other method
-proposed. The algorithm is computed in the following 3 phases:
+the energy based segmentation method as it's relatively simple to implement and
+its performance can be superior to the other method proposed. The algorithm is
+computed in the following 3 phases:
 
 \begin{enumerate}
 
@@ -279,12 +278,12 @@ dashed line.}\label{fig:syllable_sample_lengths}
 From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
 fall in the region $\left[ 265, 1236 \right]$ (the segmentation algorithm sets a
 minimum of 265 samples for candidate syllables). Therefore a sequence of fixed
-length about 14000 (denoted by the red dashed line) should contain between 10
-and 70 syllables. The fixed length, equating to about 300ms duration, also
-ensures that most sequences contain at least one full syllable. This approach
-ensures that the influence of background noise is kept to a minimum, while still
-maintaining information related to the temporal evolution of a particular
-birdsong.
+length about 14000 (denoted by the red dashed line) should contain between
+enough syllables to capture sufficient information about the vocalization. The
+fixed length, equating to about 300ms duration, also ensures that most sequences
+contain at least one full syllable. This approach ensures that the influence of
+background noise is kept to a minimum, while still maintaining information
+related to the temporal evolution of a particular birdsong.
 
 \section{Feature extraction}\label{sec:method:feat_extraction}
 
@@ -324,7 +323,7 @@ Table~\ref{table:h1_mfcc_experiments}.
 \begin{center}
 \begin{tabular}{c c c c}
 \toprule
-Number & Number of bands & Band type & Approximate frequency range (Hz) \\ [0.5ex]
+Experiment \# & Number of bands & Band type & Approximate frequency range (Hz) \\ [0.5ex]
 \midrule
 1 & 40 & Mel & 133 --- 6864 \\
 2 & 40 & Mel & 50 --- $\text{fs}/2$ \\
@@ -411,7 +410,7 @@ Table~\ref{table:h1_gtcc_experiments}.
 \begin{center}
 \begin{tabular}{c c}
 \toprule
-Number & Frequency range (Hz) \\ [0.5ex]
+Experiment number & Frequency range (Hz) \\ [0.5ex]
 \midrule
 1 & 50 --- $\text{fs}/2$ \\
 2 & 100 --- 7000 \\
@@ -506,8 +505,8 @@ classes.}\label{table:training_samples}
 \end{table}
 
 The training cell is formed by vertically concatenating the two cell arrays
-containing the training sequences to form a $2311 \times 1$ cell array. The
-training labels are contained in a $2311 \times 1$ categorical array with a
+containing the training sequences to form a $2307 \times 1$ cell array. The
+training labels are contained in a $2307 \times 1$ categorical array with a
 \textit{TURMER} category labelling a blackbird sequence and \textit{LUSMEG}
 labelling a nightingale sequence.
 
@@ -532,14 +531,14 @@ section requires no transformation.
 Linear SVMs are trained by supplying a \texttt{KernelFunction} argument set to
 \texttt{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
 simple to fit as they have fewer parameters than SVMs utilising other kernel
-functions. The key parameter to tune for here is the \texttt{BoxConstraint},
-which controls the trade-off between maximizing the margin between classes and
-minimizing the classification error. This is the constant $C$ in Equation
-(\ref{eq:svm_nonlinear_mapping_slack}). The \texttt{Standardize} parameter
-controls whether data is standardized before fitting, and can also affect the
-performance of the model. In this work, KFold cross-validation (KF) was selected
-to optimize the parameters, with $K=7$ folds. This is motivated by other
-research taking the same approach with promising
+functions. The key parameter to tune here is the \texttt{BoxConstraint}, which
+controls the trade-off between maximizing the margin between classes and
+minimizing the classification error. This corresponds is the constant $C$ in
+Equation (\ref{eq:svm_nonlinear_mapping_slack}). The \texttt{Standardize}
+parameter controls whether data is standardized before fitting, and can also
+affect the performance of the model. In this work, KFold cross-validation (KF)
+was selected to optimize the parameters, with $K=7$ folds. This is motivated by
+other research taking the same approach with promising
 results~\cite{ramashini2022robust}.
 
 Figure~\ref{fig:linear_optim} shows where the optimum values of
@@ -657,13 +656,13 @@ provide the motivation for the CNN architectures tested in this work.
 
 \end{enumerate}
 
-In order to test against baseline, a highly simplistic CNN architecture will be
-implemented and tested against these more complex designs. 
+In order to test against a baseline, a highly simplistic CNN architecture will
+be implemented and tested against these more complex designs. 
 
 The proposed CNN architectures are listed in in
 Table~\ref{table:cnn_architectures}.
 
-\begin{table}[ht]
+\begin{table}[hp]
 \begin{center}
 \begin{tabular}{l l l}
 \toprule
@@ -793,25 +792,25 @@ features. In other words, only 1 dimensional convolutions may be applied.
 This may mean that the network misses out on learning from potentially
 useful patterns in the signal.
 
-An alternative formulation would be to consider sequences of 2D images.
-Here, the MFCC representation is extracted for each of $n$ syllables in a
-sequence separately. They are then stacked together to form a sequence of $n
-\times$ 2D `images' (MFCC representations). This sequence can then be fed as
-input to the network. For this approach, the network expects a training input as
-a $h \times w \times c \times s$ numerical array where $h$, $w$, and $c$
-correspond to the height, width, and number of channels of the images,
-respectively, and $s$ is the sequence length. Here, $s=n$, $c=1$ since the
-images can be though of as greyscale and $h$ will be the number of MFCC
-coefficients. The big drawback of this method is that $w$ will need to be
-consistent across all images in the training input. In other words, all syllables
-will need to be the same length. This can be achieved with rudimentary processes
-like padding or looping a syllable until it is of a desired length, but to achieve
-less noisy results it's likely that this would require more advanced techniques
-like dynamic time warping. The large scope of this approach means that it will
-have to be tackled in future work. A big benefit of this approach is that the
-network will be able to learn cross dimensional features by applying 2D
-convolutions. This would complement the temporal features learned by
-recurrent layers of the network well.
+An alternative formulation would be to consider sequences of 2D images. Here,
+the MFCC representation is extracted for each of $n$ syllables in a sequence
+separately. They are then stacked together to form a sequence of $n \times$ 2D
+`images' (MFCC representations). This sequence can then be fed as input to the
+network. For this approach, the network expects a training input as a $h \times
+w \times c \times s$ numerical array where $h$, $w$, and $c$ correspond to the
+height, width, and number of channels of the images, respectively, and $s$ is
+the sequence length. Here, $s=n$, $c=1$ since the images can be though of as
+greyscale and $h$ will be the number of MFCC coefficients. The big drawback of
+this method is that $w$ will need to be consistent across all images in the
+training input. In other words, all syllables will need to be the same length.
+This can be achieved with rudimentary processes like padding or looping a
+syllable until it is of a desired length, but to achieve less noisy results it's
+likely that this would require more advanced techniques like dynamic time
+warping. The large scope of this approach means that it will be left to be
+tackled in future work. A big benefit of this approach is that the network will
+be able to learn cross dimensional features by applying 2D convolutions. This
+would complement the temporal features learned by recurrent layers of the
+network well.
 
 \subsubsection{Bidirectionality}
 
@@ -862,9 +861,9 @@ added by the software to each sequence in a mini-batch so that they are all of
 the same length, usually by padding sequences so that they are the same length
 as the longest sequence in the mini-batch. To that end, it's recommended to sort
 the sequences by length before passing them to the training routine and ensuring
-that the software doesn't shuffle the samples. This ensure that the amount of
+that the software doesn't shuffle the samples. This ensures that the amount of
 padding is kept to a minimum which is preferable since padding introduces noise
-to the network.
+to the network. A mini-batch size of 100 was used for all RNN models.
 
 \section{Evaluation}
 

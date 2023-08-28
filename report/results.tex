@@ -1,3 +1,9 @@
+In this chapter we first lay out the results obtained in the experiments across
+all 3 hypotheses, including some quick takeaways from the results. We then
+compare the results across all experiments and explore some deeper discussion
+points. We conclude the chapter by talking about future work and extensions to
+the current methodology.
+
 \section{Hypothesis 1}
 
 Hypothesis 1 (H1) is stated as follows:
@@ -212,6 +218,11 @@ identification.
 H3 was applied to a relatively novel feature representation, the MRCG, using
 CNN, RNN and CRNN\@. To the author's knowledge, this experiment has not been
 performed before with regards to birdsong classification.
+
+Based on the results from the GTCC experiments shown in
+Table~\ref{table:h1_gtcc_experiments}, we can see that a gammatone frequency
+bank range of about 50 --- 10000 Hz works well for this problem. This range is
+used in calculating the MRCG representation for all experiments.
 
 Due to the high dimensionality of the MRCG representation and considering the
 limited computational resources of the machine upon which training is performed,
@@ -428,7 +439,7 @@ following discussion points arise:
     problems. One thing to note though is that the literature has often tested
     MRCG at different SNR levels to determine its performance at classifying
     audio in noisy situations, where it has often outperformed more traditional
-    feature representations (\cite{binti2020comparison,chen2014feature}). The
+    feature representations~\cite{binti2020comparison,chen2014feature}. The
     samples tested in this work have all been very clean samples with little or
     no background noise, so it's possible that MRCG could start to become more
     effective when different SNR levels are tested with birdsong
@@ -452,15 +463,15 @@ pre-processing pipeline can significantly improve classification accuracy and
 generalization performance. An easily accessible way to improve generalization
 is through data augmentation. This has been done in many research papers with
 promising results~\cite{kahl2017large}. \textit{MATLAB} provides inbuilt ways to
-augment audio data through \texttt{audioDataAugmenter} pipeline, which can
+augment audio data through the \texttt{audioDataAugmenter} pipeline, which can
 enlarge datasets through techniques like pitch shifting, time-scale
 modification, and volume control. It would be interesting to apply these
 augmentations and see how it affects the performance of these models. The
 pipeline also offers noise addition. In practice, working with clean recordings
 of birdsong would be very unlikely since the recordings would likely be
 corrupted with all manner of background noise, from urban noise, rainforest
-noise, or ambient noise such as wind. While random noise addition through the
-pipeline would certainly be useful, it might be more informative to manually add
+noise, or ambient noise such as wind, and so adding random noise through the
+pipeline would certainly be useful. It might also be informative to manually add
 noise at precise SNR levels and evaluate the performance of the different
 feature representations and models in this work.
 

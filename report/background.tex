@@ -8,8 +8,8 @@ audio classification problems, both old and new.
 
 For multiclass classification problems, e.g.\ identifying a sample as a
 particular bird species from a list of $n > 2$ species, a simple classification
-accuracy is often used as an evaluation metric
-(\cite{chakraborty2016bird},~\cite{ramashini2022robust}). This is calculated as
+accuracy is often used as an evaluation
+metric~\cite{chakraborty2016bird,ramashini2022robust}. This is calculated as
 the percentage of correctly identified samples from a set of labelled samples
 previously unseen by the model.
 
@@ -24,10 +24,10 @@ where TP and FP are the numbers of true positives and false positives
 respectively, and P and N are the number of real positive and real negative
 classes in the data. This evaluation method is sometimes preferred when
 analysing long recordings which may include several different species to be
-classified. TP gives an indication as to how well the model correctly identifies
-species present in the recording. FP indicates how often the model erroneously
+classified. TPR gives an indication as to how well the model correctly identifies
+species present in the recording. FPR indicates how often the model erroneously
 identifies species absent in the recording. A high performing model will have
-high values for TP and low values for FP\@.
+high values for TPR and low values for FPR\@.
 
 Potamitis et al~\cite{potamitis2014automatic} used an alternative form of
 evaluation presented in terms of precision $(P)$ and recall $(R)$ which are
@@ -42,9 +42,10 @@ thought of as
   P = \frac{\text{relevant retrieved instances}}{\text{all \textbf{retrieved} instances}}, \hspace{1em}
   R = \frac{\text{relevant retrieved instances}}{\text{all \textbf{relevant} instances}}
 \end{equation}
-It's well known that there is usually a trade-off between $P$ and $R$, so
-usually the $F$-score is reported along with the $P$ and $R$ metrics. The
-$F$-score is defined as
+
+It's well known that there is a trade-off between $P$ and $R$, so usually the
+$F$-score is reported along with the $P$ and $R$ metrics. The $F$-score is
+defined as
 \begin{equation}
 F = \frac{(1+\beta^2)PR}{\beta^2P + R}
 \end{equation}
@@ -75,13 +76,12 @@ the blue curve.}\label{fig:roc}
 \section{Feature extraction}\label{sec:feat_extraction}
 
 As mentioned in Chapter~\ref{cp:intro}, birds use vocalizations as a way to
-communicate with others. Birds have evolved over many thousands of years to
-make this form of communication very efficient in that it can travel long
-distances and cut through local ambient noise frequencies so that it can be
-received by other birds clearly. Some birds have even adapted their
-vocalizations so that they can be heard in local environments that have rapidly
-changed over the past decades, such as urban areas with increasing anthropogenic
-noise~\cite{luther2010urban}.
+communicate with others. Birds have evolved over many thousands of years to make
+this form of communication very efficient in that it can travel long distances
+and cut through local ambient noise so that it can be received by other birds
+clearly. Some birds have even adapted their vocalizations so that they can be
+heard in local environments that have rapidly changed over the past decades,
+such as urban areas with increasing anthropogenic noise~\cite{luther2010urban}.
 
 Bird vocalizations can be broadly divided into two main categories, calls and
 songs. Calls are typically short vocalizations that carry some specific
@@ -183,8 +183,8 @@ MFCCs are used as feature representations since they are simple to compute and
 have been shown to have good performance in a wide range of audio classification
 tasks, such as speaker identification~\cite{muda2010voice} and emotion
 recognition~\cite{likitha2017speech}. MFCCs have also been shown to lead to good
-classification accuracy for birdsong identification problems
-(\cite{fagerlund2007bird},~\cite{ramashini2022robust}).
+classification accuracy for birdsong identification
+problems~\cite{fagerlund2007bird,ramashini2022robust}.
 
 \subsubsection{Gammatone cepstrum coefficients}
 
@@ -223,7 +223,7 @@ $0^{\text{th}}$ coefficient, denoted as $\log E$ in the figure.
 
 \subsubsection{Multi resolution cochleagram}
 
-Chen et al~\cite{chen2014feature} proposed a novel feature known as a
+Chen et al.~\cite{chen2014feature} proposed a novel feature known as a
 multi-resolution cochleagram (MRCG) that is formed by combining four
 cochleagrams at different resolutions, designed to capture both local and
 contextual information.
@@ -258,23 +258,23 @@ cochleagrams. A}\label{fig:mrcg_example}
 The MRCG feature has been shown to outperform both MFCC and GTCC at
 separating human speech at various SNR levels with different types of
 background noise~\cite{chen2014feature}. Abdullah et
-al~\cite{binti2020comparison} showed that the MRCG outperforms the Auditory
-Image Model (AIM) when classifying noise. Wang et al~\cite{wang2016joint} showed
+al.~\cite{binti2020comparison} showed that the MRCG outperforms the Auditory
+Image Model (AIM) when classifying noise. Wang et al.~\cite{wang2016joint} showed
 that improved speech enhancement for hearing impaired listeners was achieved
 when the MRCG feature was added to the feature set.
 
 One potential drawback when comparing the MRCG with MFCC and GTCC is the higher
 dimensionality of the MRCG feature. When including the $\Delta$ and
-$\Delta\Delta$ features, as is standard practice
-(\cite{binti2020comparison},~\cite{wang2016joint}), the MRCG feature vector for
-a single time frame has a dimensionality of 768. For MFCC or GTCC the equivalent
+$\Delta\Delta$ features, as is standard
+practice~\cite{binti2020comparison,wang2016joint}, the MRCG feature vector for a
+single time frame has a dimensionality of 768. For MFCC or GTCC the equivalent
 dimensionality is 24--39, depending on the number of the coefficients used.
 
 \subsection{Feature stacking}
 
-It has been shown that appropriate combining features to be used as training
-inputs can lead to improved classification accuracy in audio related problems
-such speech separation~\cite{wang2012exploring}. Ramashini et
+It has been shown that an appropriate combination of features to be used as
+training inputs can lead to improved classification accuracy in audio related
+problems such speech separation~\cite{wang2012exploring}. Ramashini et
 al~\cite{ramashini2022robust} showed that a combination of GTCC and MFCC yielded
 higher birdsong classification accuracy than MFCC alone. However, the
 combination did not improve on the accuracy of GTCC alone. Yan et
@@ -289,13 +289,13 @@ A consequence of feature stacking is that feature vectors will have increased
 size. This can lead to problems such as longer training times and overfitting,
 especially when used in conjunction with deep learning (DL) architectures. As a
 result, dimensionality reduction techniques such as Principal Component
-Analysis (PCA) or Linear Discriminant Analysis (LDA)~\cite{ramashini2019bird},
-are often used to lower the dimensionality of the feature vectors while still
+Analysis (PCA) or Linear Discriminant Analysis (LDA)~\cite{ramashini2019bird}
+are often used to reduce the dimensionality of the feature vectors while still
 capturing enough information to be able to train a model effectively.
 
 \section{Classification}\label{sec:classification}
 
-Once a suitable feature representation has been selected and performed, the
+Once a suitable feature representation has been selected and extracted, the
 remaining task is to pick an appropriate model and train the model using the set
 of training samples generated from the feature extraction.
 
@@ -305,7 +305,7 @@ the problem at hand must be selected, or indeed a selection of suitable models
 tested and the evaluated for performance.
 
 In the literature, birdsong classification has been tackled with a wide variety
-of models. Ramashini et al~\cite{ramashini2019bird} used the simple Nearest
+of models. Ramashini et al.~\cite{ramashini2019bird} used the simple Nearest
 Centroid (NC) classifier to assign birdsong samples to classes. It was compared
 to a K Nearest Neighbours (KNN) classifier and shown to have superior accuracy.
 Lasseck~\cite{lasseck2015improved} used decision trees with bagging to identify
@@ -420,12 +420,12 @@ positive semidefinite. Typical kernel functions include
 \subsubsection{Multiclass classification}\label{sssec:multiclass}
 
 SVMs can easily be extended to work with multiclass classification using
-standard procedures. One procedure which is optimal with respect to the Hamming
-Loss, which relates to the number of false positives or false negatives, is the
-one-versus-all technique. Here, multiple SVMs are trained, each one learning the
-hyperplane for samples belonging to one class versus samples belonging to all
-the other classes. A new sample can then be tested against all the models and
-predictions are made using the model that is most confident.
+standard procedures. One such procedure which is optimal with respect to the
+Hamming Loss, which relates to the number of false positives or false negatives,
+is the one-versus-all technique. Here, multiple SVMs are trained, each one
+learning the hyperplane for samples belonging to one class versus samples
+belonging to all the other classes. A new sample can then be tested against all
+the models and predictions are made using the model that is most confident.
 
 \subsection{Neural Networks}\label{ssec:nn}
 
@@ -452,14 +452,14 @@ enhancement~\cite{afouras2018conversation} and speech
 separation~\cite{ephrat2018looking} problems leveraging DL paradigms
 have also been shown to outperform more classical statistical models.
 
-The world of birdsong classification has also benefited from DL, but
-perhaps to a lesser extent than other audio related problems so far. Approaches
-have mainly focused on Convolutional Neural Networks (CNNs), applying
-convolutional layers to an image representation of an input signal, such as a
-(Mel-)spectrogram (\cite{berger2018bird},~\cite{mukherjee2018convolutional}).
-Further birdsong classification solutions have approached the problem in a
-similar fashion, but utilised transfer learning to fine-tune an existing model
-(\cite{disabato2021birdsong},~\cite{lasseck2018acoustic}), such as
+The world of birdsong classification has also benefited from DL, but perhaps to
+a lesser extent than other audio related problems so far. Approaches have mainly
+focused on Convolutional Neural Networks (CNNs), applying convolutional layers
+to an image representation of an input signal, such as a
+(Mel-)spectrogram~\cite{berger2018bird,mukherjee2018convolutional}. Further
+birdsong classification solutions have approached the problem in a similar
+fashion, but utilised transfer learning to fine-tune an existing
+model~\cite{disabato2021birdsong,lasseck2018acoustic}, such as
 ResNet~\cite{he2016deep} and ImageNet~\cite{deng2009imagenet}.
 
 Disabato et al.~\cite{disabato2021birdsong} went a step further with their
@@ -587,9 +587,8 @@ either the input size is variable and the output is fixed (e.g.\ with AI image
 generation tools like Dall-E~\cite{ramesh2021zero}), the input size is fixed and
 the output is variable (e.g.\ image captioning) or both the input size and
 output size are variable (e.g.\ language translation). RNNs solve this problem
-by allowing information in the network to flow in two different directions, both
-forward and backward, or more precisely, in directed cycles. This is done by
-feeding the output from a previous step as input to the current step, meaning
+by allowing information in the network to flow in directed cycles. This is done
+by feeding the output from a previous step as input to the current step, meaning
 that the state of the hidden units depends on the previous state of the network.
 This gives the network the ability to learn long term dependencies thanks to an
 unbounded previous history. The architecture of a vanilla RNN cell is shown in
@@ -613,16 +612,24 @@ sequential nature of the input data. The variation is known as backpropagation
 through time (BPTT). Here, in order to update the weights matrices, all weights
 are first treated as independent. The standard backpropagation algorithm is then
 run and all the corresponding gradients are averaged together. BPTT however
-suffers from a problem whereby gradients larger than $\mathbf{1}$ are multiplied
-together, which causes the gradient updates further back the network to
-exponentially increase, which may cause memory problems. This is known as the
-gradient exploding problem. The equivalent problem whereby gradients less than
-$\mathbf{1}$ vanish towards 0 is known as the gradient vanishing problem. This
-results in the model having no ability to learn long term dependencies. Both of
-these problems are compounded by RNNs learning from long sequences of inputs,
-causing longer multiplicative chains of updates. Two common approaches to
-dealing with these problems is to replace vanilla RNN cells with long short-term
-memory (LSTM) units or gated recurrent units (GRU).
+suffers from a problem whereby gradients larger than 1 are multiplied together,
+which causes the gradient updates further back the network to exponentially
+increase, which may cause numerical instability and memory problems during
+training. This is known as the gradient exploding problem. The equivalent
+problem whereby gradients less than 1 vanish towards 0 is known as the gradient
+vanishing problem. This results in the model having no ability to learn long
+term dependencies. Both of these problems are compounded by RNNs learning from
+long sequences of inputs, causing longer multiplicative chains of updates. The
+gradient exploding problem can be tackled using strategies such as gradient
+clipping, whereby the gradient is reset to a small number after it exceeds a
+threshold value using 
+\begin{equation} 
+  g = \frac{\text{threshold}}{\|g\|}g
+\end{equation}
+
+A common approach to dealing with the gradient vanishing problems is to replace
+vanilla RNN cells with long short-term memory (LSTM) units or gated recurrent
+units (GRU).
 
 \subsubsection{LSTM}
 
@@ -667,11 +674,7 @@ visualized in Figure~\ref{fig:lstm_cell_example}.
 
 The key conceptual difference between LSTM and RNN is that LSTM separates memory
 from the hidden state. LSTM deals with the gradient vanishing problem since the
-memory cells are additive with respect to time~\cite{daniluk2004automatic}. The
-gradient exploding problem can be tackled using strategies such as gradient
-clipping, whereby the gradient is reset to a small number after it exceeds a
-threshold value using \begin{equation} g = \frac{\text{threshold}}{\|g\|}g
-\end{equation}
+memory cells are additive with respect to time~\cite{daniluk2004automatic}. 
 
 \subsubsection{GRU}
 
@@ -704,14 +707,14 @@ Figure~\ref{fig:gru_cell}.
 The reduction in parameters and number of gates does mean that the GRU is less
 powerful than the LSTM and does not work for problems such as
 translation~\cite{britz2017massive}. However, it has been applied birdsong
-related problems with promising results
-(\cite{parrilla2022polyphonic},~\cite{adavanne2017stacked}).
+related problems with promising
+results~\cite{parrilla2022polyphonic,adavanne2017stacked}.
 
 While the usage of RNNs, LSTMs or GRUs alone for birdsong classification has
 been rare in the literature, there are several examples of experiments where
 convolutional layers and recurrent layers have been combined to form a
-Convolutional Recurrent Neural Network (CRNN)
-(\cite{yan2021birdsong},~\cite{mukherjee2018convolutional}) in order to leverage
+Convolutional Recurrent Neural Network
+(CRNN)~\cite{yan2021birdsong,mukherjee2018convolutional} in order to leverage
 the benefits of both architectures. A typical approach using a CRNN with regards
 to birdsong classification might look something like the
 following~\cite{crous2019polyphonic}:
