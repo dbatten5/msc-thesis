@@ -15,7 +15,7 @@ Since all the models described in Section~\ref{sec:classification} are trained
 in a supervised learning fashion, this requires a dataset of labelled training
 examples. The website xeno-canto\footnote{\url{http://xeno-canto.org}} (XC) houses the
 largest and most comprehensive publicly available collection of birdsong samples
-in the world. It has made an enormous impact in the field birdsong recognition
+in the world. It has made an enormous impact in the field of birdsong recognition
 since its inception in 2005 and has been the source of the datasets for the
 annual BirdCLEF challenge since 2014~\cite{vellinga2015xeno}. All samples
 available on XC are labelled with the bird species and contain rich metadata,
@@ -666,11 +666,12 @@ Table~\ref{table:cnn_architectures}.
 \begin{center}
 \begin{tabular}{l l l}
 \toprule
-Model 0 (Simple) & Model 1 (Ruff~\cite{ruff2020automated}) & Model 2 (Kahl~\cite{kahl2017large}) \\[0.5ex]
+Model 0 & Model 1 (Ruff~\cite{ruff2020automated}) & Model 2 (Kahl~\cite{kahl2017large}) \\[0.5ex]
 2 weighted layers & 6 weighted layers & 8 weighted layers \\[0.5ex]
 ReLU activation & ReLU activation & ELU activation \\[0.5ex]
 Glorot initialization & Glorot initialization & He initialization \\[0.5ex]
-$\sim$3s per epoch & $\sim$60s per epoch & $\sim$165s per epoch \\[0.5ex]
+32.5k parameters & 3.3m parameters & 23.6m parameters \\[0.5ex]
+% $\sim$3s per epoch & $\sim$60s per epoch & $\sim$165s per epoch \\[0.5ex]
 \midrule
 \textbf{Conv1, $20 \times 5 \times 5$} &
 \textbf{Conv1, $32 \times 3 \times 3$} &
@@ -832,7 +833,8 @@ baseline. The models can be seen in Table~\ref{table:rnn_seq_vector}.
 \toprule
 Model 1 & Model 2 & Model 3 \\ [0.5ex]
 2 weighted layers & 4 weighted layers & 4 weighted layers \\[0.5ex]
-$\sim$16s per epoch & $\sim$3s per epoch & $\sim$3s per epoch \\[0.5ex]
+112.4k parameters & 142.5k parameters & 59.8k parameters \\[0.5ex]
+% $\sim$16s per epoch & $\sim$3s per epoch & $\sim$3s per epoch \\[0.5ex]
 \midrule
 \textbf{BiLSTM, 100 Units} & \textbf{Conv1}, $32 \times 3$ & \textbf{Conv1}, $32 \times 3$ \\
 Dropout, $p=0.2$ & MaxPooling, Size 2 & MaxPooling, Size 2 \\
@@ -848,8 +850,8 @@ Softmax Output & Global Average Pooling & Global Average Pooling \\
 \end{tabular}
 \caption{Candidate RNN and CRNN architectures for sequential vector sequences.
   All models use batch normalization after each weighted layer and all
-convolutional layers use shape preserving padding. All models use the `Adam'
-optimizer with an $l_2$ regularization of $0.0001$, with Glorot initialization
+  convolutional layers use shape preserving padding. All models use the `Adam'
+  optimizer with an $l_2$ regularization of $0.0001$, with Glorot initialization
 and ReLU activation.}\label{table:rnn_seq_vector}
 \end{center}
 \end{table}
