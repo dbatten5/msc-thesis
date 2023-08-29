@@ -6,7 +6,7 @@ Section~\ref{sec:training} we explore the structure of the models used for
 classification and discuss how training and/or optimization will be performed.
 We finish the chapter by commenting on how the models will be evaluated.
 
-All computational work for this thesis was performed in \textit{MATLAB vR2023a}
+All computational work for this thesis was performed in MATLAB vR2023a
 unless stated otherwise.
 
 \section{Datasets}
@@ -44,7 +44,8 @@ acoustically similar and hence more difficult to distinguish resulting in more
 variable accuracy results, and the author's personal preference.
 
 Roughly 38 individuals from each class were downloaded, with 28 used for
-training and the remaining kept for testing.
+training and the remaining kept for testing. All samples were downloaded
+manually.
 
 \section{Pre-processing}
 
@@ -52,7 +53,7 @@ Some recordings available on XC are recorded in stereo sound, so in order to
 reduce dimensionality without losing too much information, all stereo recordings
 are first converted to mono by taking a mean average of both channels. Leading
 and trailing sections of background noise are then stripped from the recording
-using the \texttt{detectSpeech} function provided by \textit{MATLAB}. This
+using the \texttt{detectSpeech} function provided by MATLAB. This
 function uses a thresholding algorithm to detect onset and offset indices of
 speech~\cite{giannakopoulos2009method}. The function works for birdsong since
 birdsong frequencies reside in a similar range to that of human speech. The
@@ -73,15 +74,16 @@ birdsong.}\label{fig:detected_speech}
 \end{figure}
 
 A highpass filter is then applied to the recording with a passband frequency of
-450 Hz. This value was chosen as most birdsong sits in the range of 1 kHz ---
-10 kHz, and so lower frequencies can be attributed to background noise and
-therefore their removal should reduce noise in the system without losing
-important information. The reason why frequencies above 10 kHz are not removed
-is that, as can be seen from Figure~\ref{fig:wren_call_song_spectrogram}, birds
-typically produce higher frequency harmonics when vocalizing, shown as vertical
-bands moving upwards from where syllables are located on the spectrogram. These
-harmonics may capture useful information for the model to utilise
-and should therefore not be filtered out.
+450 Hz using MATLAB's \texttt{highpass} function. This value was chosen
+as most birdsong sits in the range of 1 kHz --- 10 kHz, and so lower frequencies
+can be attributed to background noise and therefore their removal should reduce
+noise in the system without losing important information. The reason why
+frequencies above 10 kHz are not removed is that, as can be seen from
+Figure~\ref{fig:wren_call_song_spectrogram}, birds typically produce higher
+frequency harmonics when vocalizing, shown as vertical bands moving upwards from
+where syllables are located on the spectrogram. These harmonics may capture
+useful information for the model to utilise and should therefore not be filtered
+out.
 
 After these pre-processing steps have been taken, the audio is ready for
 syllable segmentation.
@@ -133,8 +135,10 @@ has been used in various research papers
 since~\cite{somervuo2006parametric,ramashini2022robust}. Note that Fagerlund
 proposed two different segmentation methods in the paper. In this thesis we use
 the energy based segmentation method as it's relatively simple to implement and
-its performance can be superior to the other method proposed. The algorithm is
-computed in the following 3 phases:
+its performance can be superior to the other method proposed. At the time of
+writing there was no open source code available to perform this algorithm so it
+was written from scratch for this thesis. The algorithm is computed in the
+following 3 phases:
 
 \begin{enumerate}
 
@@ -294,7 +298,7 @@ in this work.
 \subsection{Cepstral coefficients}
 
 The cepstral coefficients on which this thesis focuses are the MFCC and GTCC\@.
-Both features are extracted using builtin \textit{MATLAB} functions
+Both features are extracted using builtin MATLAB functions
 \texttt{mfcc} and \texttt{gtcc} respectively. The functions accept arguments
 which affect how the routine processes input signals. To the best of the
 author's knowledge, these arguments have not been explored in the field of
@@ -303,7 +307,7 @@ birdsong classification problems.
 \subsubsection{MFCC}\label{sssec:mfcc}
 
 A potentially overlooked parameter of MFCC extraction with regards to birdsong
-classification using \textit{MATLAB} is the \texttt{BandEdges} argument. This
+classification using MATLAB is the \texttt{BandEdges} argument. This
 argument provides the basis of the half-overlapped triangular filters that
 \texttt{mfcc} uses. By default, \texttt{BandEdges} is a 42-element vector that
 results in a 40-band filter bank constructed using 13 linearly-spaced filters,
@@ -348,8 +352,20 @@ filterbanks that have been inverted, such that the center frequencies are closer
 together at higher frequencies and further apart at lower frequencies. `Linear'
 refers to a set of filterbanks that have been spaced linearly on the frequency
 scale. This has the effect of transforming the MFCC coefficients to Linear
-Frequency Cepstral Coefficients (LFCC). The different band types can be
-visualized in Figure~\ref{fig:filterbanks}.
+Frequency Cepstral Coefficients (LFCC). Mel band edges were generated by first
+converting a minimum and maximum frequency to the mel scale using
+\begin{equation}\label{eq:mel}
+m = 1127 \cdot \ln (1 + \frac{f}{700})
+\end{equation}
+where $m$ is the corresponding mel frequency for frequency in Hz $f$. A vector of band
+edges was created using MATLAB's \texttt{linspace} function with the minimum and
+maximum mel-frequency and desired number of bands. The vector was then converted
+back to the Hz scale using the inverse of Equation (\ref{eq:mel}) and passed to
+the \texttt{BandEdges} argument. Antimel band edges were created by doing the
+same process and then flipping the result. Linear band edges were created by
+simply applying a \texttt{linspace} function to a minimum and maximum frequency
+in Hz. The different band types can be visualized in
+Figure~\ref{fig:filterbanks}.
 
 \begin{figure}[ht]
   \centering
@@ -461,7 +477,7 @@ The experiment design was motivated as follows:
 
 \subsection{MRCG}
 
-\textit{MATLAB} provides no builtin functions for computing an MRCG, or even a
+MATLAB provides no builtin functions for computing an MRCG, or even a
 cochleagram, upon which the MRCG is based. To that end, custom code was
 developed based on the toolbox developed by Kim and Hahn~\cite{kim2018voice}
 which implements MRCG\@. The MRCG routine implemented in~\cite{kim2018voice}
@@ -473,7 +489,10 @@ frequency ranges for the gammatone filter bank.
 It's recommended to include the $\Delta$ and $\Delta\Delta$ values along with
 the MRCG feature~\cite{chen2014feature}, so hereafter the term MRCG shall refer to
 the base MRCG along with its $\Delta$ and $\Delta\Delta$ values. The same
-applies to MFCC and GTCC\@.
+applies to MFCC and GTCC\@. While the code from~\cite{kim2018voice} includes the
+delta calculation, in this thesis the \texttt{audioDelta} function was used due
+to it being a builtin function in MATLAB and therefore requiring no custom
+implementation.
 
 Due to the high dimensionality of the MRCG feature and considering the
 computational limitations of the machine upon which the training for this thesis
@@ -483,7 +502,7 @@ be used with SVMs in this work.
 
 \section{Training}\label{sec:training}
 
-To create the training \textit{MATLAB} cell array, sequences for each class are
+To create the training MATLAB cell array, sequences for each class are
 generated and stored in a cell array. A maximum limit of 40 sequences per
 individual is imposed to ensure enough variation while keeping training times to
 a minimum. The number of training sequences used for both classes can be seen in
@@ -515,7 +534,7 @@ All training is performed on an Apple MacBook Pro (late 2013) running OSX
 
 \subsection{SVMs}
 
-All SVM models are implemented using \textit{MATLAB's} \texttt{fitcsvm}
+All SVM models are implemented using MATLAB's \texttt{fitcsvm}
 function provided in the Statistics and Machine Learning Toolbox.
 
 SVMs require each training sample to be a row vector. To convert the training
@@ -539,7 +558,12 @@ parameter controls whether data is standardized before fitting, and can also
 affect the performance of the model. In this work, KFold cross-validation (KF)
 was selected to optimize the parameters, with $K=7$ folds. This is motivated by
 other research taking the same approach with promising
-results~\cite{ramashini2022robust}.
+results~\cite{ramashini2022robust}. MATLAB provides builtin ways to optimize
+hyperparameters, which can be achieved by passing a \texttt{cvpartition} to the
+\texttt{HyperparameterOptimizationOptions} argument and supplying a
+\texttt{OptimizeHyperparameters} argument set to the name of the desired
+hyperparameters to tune to \texttt{fitcsvm}, in this case a cell array of
+\texttt{BoxConstraint} and \texttt{Standardize}.
 
 Figure~\ref{fig:linear_optim} shows where the optimum values of
 \texttt{BoxConstraint} and \texttt{Standardize} lie for a linear SVM\@. As can
@@ -563,10 +587,11 @@ minimum.}\label{fig:linear_optim}
 RBF SVMs are able to fit more complex decision boundaries by projecting data
 into a higher dimensional space, which is controlled by the hyperparameter
 \texttt{KernelScale}. RBF SVMs are also sensitive to the \texttt{BoxConstraint}
-parameter. 7-fold cross validation was performed using a \texttt{cvpartition}
-and supplying a \texttt{OptimizeHyperparameters} argument set to \texttt{auto}
-to \texttt{fitcsvm}. A value of \texttt{auto} means that both
-\texttt{KernelScale} and \texttt{BoxConstraint} are optimised during training.
+parameter. 7-fold cross validation was performed using the same routine as the
+linear SVM but this time by supplying a \texttt{OptimizeHyperparameters}
+argument set to \texttt{auto} to \texttt{fitcsvm}. A value of \texttt{auto}
+means that both \texttt{KernelScale} and \texttt{BoxConstraint} are optimised
+during training.
 
 Figure~\ref{fig:rbf_optim} shows where the optimum values of
 \texttt{BoxConstraint} and \texttt{KernelScale} lie for a RBF SVM\@. Both
@@ -590,8 +615,14 @@ minimum.}\label{fig:rbf_optim}
 
 \subsection{Neural networks}
 
-All NN models are implemented using tools provided in \textit{MATLAB}'s Deep
-Learning Toolbox.
+All NN models are implemented using tools provided in MATLAB's Deep
+Learning Toolbox. NN models are trained by first generating an array of
+sequential layers that describe the network using builtin layer structures like
+\texttt{reulLayer} (which denotes a layer of ReLU activations), and
+\texttt{convolutional2dLayer} (which denotes a 2D convolutional layer). The
+layers are then passed to the \texttt{trainNetwork} function along with a set of
+options that describe parameters such as the mini-batch size and the optimizing
+algorithm used, as well as the training input and corresponding labels.
 
 The training input for NN models depends on the type of NN\@. Some can work
 directly on cell arrays whereas others require training data in numerical matrix
@@ -751,7 +782,7 @@ classes for VLS used for RNN.}\label{table:vls_training_samples}
 \end{center}
 \end{table}
 
-\textit{MATLAB} can receive sequential data in different input formats, such as
+MATLAB can receive sequential data in different input formats, such as
 vector sequences and 2D image sequences. The formulation of the VLS lends itself
 well to the vector sequence input format. To illustrate this, we will concern
 ourselves only with MFCC, but the concepts can easily be applied to other
@@ -782,7 +813,7 @@ dashed lines.}\label{fig:mfcc_vector_sequence}
 \end{figure}
 
 This approach has the benefit that the training cell needs little
-manipulation to be compatible with \textit{MATLAB's} \texttt{trainNetwork}
+manipulation to be compatible with MATLAB's \texttt{trainNetwork}
 function used to train a NN\@. The function can accept a training cell array
 where each cell is a $p \times s$ numerical matrix, where $s$ is the number
 of timesteps in the sequence, and $p$ is the number of features. In the
@@ -819,8 +850,8 @@ If the full sequences are known at prediction time, as is the case in this work,
 then the network can benefit from employing bidirectional RNN layers. This means
 that information can flow backward and forward through the network, meaning that
 predictions at a certain timestep can be influenced by future predictions. At
-the time of writing this work, bidirectional LSTM layers exist in
-\textit{MATLAB}, but bidirectional GRU layers do not.
+the time of writing this work, bidirectional LSTM layers exist in MATLAB
+(\texttt{bilstmLayer}), but bidirectional GRU layers do not.
 
 In order to test RNN architectures for sequential vectors, we propose 3 models.
 Given that the literature is reasonably thin in terms implementing RNN for
@@ -856,7 +887,7 @@ and ReLU activation.}\label{table:rnn_seq_vector}
 \end{center}
 \end{table}
 
-One thing to note with RNN in \textit{MATLAB} is that although the sequences can
+One thing to note with RNN in MATLAB is that although the sequences can
 be of varying length, the lengths of each sequence in each mini-batch provided
 to the training routine need to be the same length. Padding is automatically
 added by the software to each sequence in a mini-batch so that they are all of
