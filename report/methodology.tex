@@ -40,20 +40,20 @@ representations. To this end, we select the most simple form of classification
 experiment: binary classification. The two bird classes selected for all
 experiments herein are the common blackbird and the common nightingale
 (\textit{Luscinia megarhynchos}) due to the two birds' vocalizations being
-acoustically similar and hence more difficult to distinguish resulting in more
+acoustically similar and hence more difficult to differentiate resulting in more
 variable accuracy results, and the author's personal preference.
 
 Roughly 38 individuals from each class were downloaded, with 28 used for
-training and the remaining kept for testing. All samples were downloaded
-manually.
+training and the remaining kept for testing. All samples were checked for
+suitability and downloaded manually.
 
 \section{Pre-processing}
 
-Some recordings available on XC are recorded in stereo sound, so in order to
+Some recordings available on XC are recorded in stereo sound, so to
 reduce dimensionality without losing too much information, all stereo recordings
 are first converted to mono by taking a mean average of both channels. Leading
 and trailing sections of background noise are then stripped from the recording
-using the \texttt{detectSpeech} function provided by MATLAB. This
+using the \texttt{detectSpeech} function provided by MATLAB\@. This
 function uses a thresholding algorithm to detect onset and offset indices of
 speech~\cite{giannakopoulos2009method}. The function works for birdsong since
 birdsong frequencies reside in a similar range to that of human speech. The
@@ -116,7 +116,7 @@ algorithm~\cite{narasimhan2017simultaneous}. The other method involves
 segmenting the recording into
 syllables~\cite{fagerlund2007bird,ramashini2022robust}. This has the advantage
 that all training samples are likely to contain little or no noise. However the
-samples will be of variable length, so steps will be needed to be taken in order
+samples will be of variable length, so steps will be needed to be taken 
 to compare the samples, such as adding padding or more advanced techniques like
 dynamic time warping~\cite{somervuo2006parametric}. Syllable segmentation also
 has the enticing prospect of being able to identify a bird species from a very
@@ -172,7 +172,8 @@ distance between syllables can be as short as 20ms, the frame size needs to be
 small enough so that there are at least a few frames between candidates to be
 able to efficiently discriminate between syllables.
 
-Frames are first windowed using a Hanning window. The energy $E_i$ in the
+Frames are first windowed using a Hanning window, which minimizes the effects of
+the discontinuities at the edges of the frames. The energy $E_i$ in the
 decibel scale for frame $i$ is calculated as
 \begin{equation}
   E_i = 10 \log_{10} \sum_{j=1}^{K} x{(i)}_{j}^2
@@ -214,12 +215,12 @@ and merging can be seen in Figure~\ref{fig:syllable_segmentation_flow}.
   \caption{Figure showing the syllable detection algorithm. Top left shows the
     amplitude varying over time for a sample of Eurasian wren birdsong. Top
     right shows the detected onset (green triangle) and offset (red triangle)
-    markers overlaid on the energy envelope in the decibel scale
-    of the sample. The magenta line shows the final threshold for syllable
-    detection. Bottom left shows the markers after merging has been performed.
-    Bottom right shows the detected syllables, labelled from A --- G. Note that
-  the next step, removing syllables less than a minimum duration, would remove
-syllable candidate B since it is less than the minimum duration
+    markers overlaid on the energy envelope in the decibel scale of the sample.
+    The dashed magenta line shows the final threshold for syllable detection.
+    Bottom left shows the markers after merging has been performed. Bottom right
+    shows the detected segmented syllables, labelled from A --- G. Note that the
+    next step, removing syllables less than a minimum duration, would remove
+    syllable candidate B since it is less than the minimum duration
 threshold.}\label{fig:syllable_segmentation}
 \end{figure}
 
@@ -234,7 +235,7 @@ duration threshold are removed, as is the case with candidate B.
 
 Each segmented syllable is then stored as an individual \textit{wav} file in the
 same directory as the original recording with a filename in the format
-\textit{\{XCID\}\_i.wav} where \textit{XCID} is the XC id of the recording and
+\textit{\{XCID\}\_i.wav} where \textit{\{XCID\}} is the XC id of the recording and
 \textit{i} is the index of the syllable.
 
 \subsection{Sequence generation}\label{ssec:sequence_gen}
@@ -243,7 +244,7 @@ Once the syllables have been extracted, they are ready to be combined to form a
 sequence. This style of sequence generation will be used for all training in
 this work unless otherwise stated.
 
-We first start by grouping syllables by \textit{XCID}. Then, for each syllable
+We first start by grouping syllables by XC id. Then, for each syllable
 in each group, the following syllables are appended until a fixed sample length
 is reached. If a syllable is added which pushes the sample length over the
 limit then the sample is trimmed at the fixed length. If there aren't enough
@@ -253,7 +254,7 @@ can be visualized in Figure~\ref{fig:sequence_building}.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/sequence_building.png}
-  \caption{Figure demonstrating building sequences out of an input signals. The
+  \caption{Figure demonstrating building sequences out of an input signal. The
     top panel shows the input signal with syllables discovered during
     segmentation highlighted in colours. The bottom 3 panels show the first 3
     sequences generated from the input signal. The red dashed line indicates the
@@ -282,9 +283,9 @@ dashed line.}\label{fig:syllable_sample_lengths}
 From Figure~\ref{fig:syllable_sample_lengths}, we can see most syllable lengths
 fall in the region $\left[ 265, 1236 \right]$ (the segmentation algorithm sets a
 minimum of 265 samples for candidate syllables). Therefore a sequence of fixed
-length about 14000 (denoted by the red dashed line) should contain between
-enough syllables to capture sufficient information about the vocalization. The
-fixed length, equating to about 300ms duration, also ensures that most sequences
+length about 14000 (denoted by the red dashed line) should contain enough
+syllables to capture sufficient information about the vocalization. The fixed
+length, equating to about 300ms duration, also ensures that most sequences
 contain at least one full syllable. This approach ensures that the influence of
 background noise is kept to a minimum, while still maintaining information
 related to the temporal evolution of a particular birdsong.
@@ -311,15 +312,15 @@ classification using MATLAB is the \texttt{BandEdges} argument. This
 argument provides the basis of the half-overlapped triangular filters that
 \texttt{mfcc} uses. By default, \texttt{BandEdges} is a 42-element vector that
 results in a 40-band filter bank constructed using 13 linearly-spaced filters,
-with 133.3Hz separating their center frequencies, and 27 log-spaced filters,
+with 133.3 Hz separating their center frequencies, and 27 log-spaced filters,
 separated by a factor of 1.0711703 in frequency~\cite{slaney1998auditory}. This
-equates to a frequency range that spans approximately 133Hz to 6864Hz. This
+equates to a frequency range that spans approximately 133 Hz to 6864 Hz. This
 range is well suited to human speech, of which MFCC is often used as a feature,
 but may be less suitable for birdsong which can sometimes sit outside the normal
 frequency range of human speech.
 
 To test the \texttt{BandEdges} argument, 7 experiments were devised and
-evaluated in order to see if any improvements to binary bird classification
+evaluated to see if any improvements to binary bird classification
 models utilising MFCC could be made. The experiments are listed in
 Table~\ref{table:h1_mfcc_experiments}.
 
@@ -346,14 +347,15 @@ MFCC.}\label{table:h1_mfcc_experiments}
 \subsubsection{Comments on experiment setup}
 
 In the table, `fs' refers to the frequency sampling rate for a given audio file,
-usually 44.1 kHz or 48 kHz. $\text{fs}/2$ is the maximum possible value for the
-\texttt{BandEdges} argument. `A-mel', short for anti-mel, denotes a set of mel
-filterbanks that have been inverted, such that the center frequencies are closer
-together at higher frequencies and further apart at lower frequencies. `Linear'
-refers to a set of filterbanks that have been spaced linearly on the frequency
-scale. This has the effect of transforming the MFCC coefficients to Linear
-Frequency Cepstral Coefficients (LFCC). Mel band edges were generated by first
-converting a minimum and maximum frequency to the mel scale using
+usually 44.1 kHz or 48 kHz. $\text{fs}/2$ is the maximum possible value  of the
+vector supplied for the \texttt{BandEdges} argument. `A-mel', short for
+anti-mel, denotes a set of mel filterbanks that have been inverted, such that
+the center frequencies are closer together at higher frequencies and further
+apart at lower frequencies. `Linear' refers to a set of filterbanks that have
+been spaced linearly on the frequency scale. This has the effect of transforming
+the MFCC coefficients to Linear Frequency Cepstral Coefficients (LFCC). Mel band
+edges were generated by first converting a minimum and maximum frequency to the
+mel scale using
 \begin{equation}\label{eq:mel}
 m = 1127 \cdot \ln (1 + \frac{f}{700})
 \end{equation}
@@ -410,7 +412,7 @@ The experiment design was motivated as follows:
 
 \subsubsection{GTCC}\label{sssec:gtcc}
 
-Like MFCC, GTCC has a potentially overlooked argument in
+Like \texttt{mfcc}, \texttt{gtcc} has a potentially overlooked argument in
 \texttt{FrequencyRange}. This two-element row vector specifies the minimum and
 maximum values in Hz of the gammatone filter bank used by the \texttt{gtcc}
 routine. The default value is \texttt{[50, fs/2]}, which could potentially be
@@ -418,7 +420,7 @@ fine-tuned for birdsong related problems since birdsong frequencies do not
 typically go below 1 kHz.
 
 To test the \texttt{FrequencyRange} argument, 4 experiments were devised and
-evaluated in order to see if any improvements to binary bird classification
+evaluated to see if any improvements to binary bird classification
 models utilising GTCC could be made. The experiments are listed in
 Table~\ref{table:h1_gtcc_experiments}.
 
@@ -477,7 +479,7 @@ The experiment design was motivated as follows:
 
 \subsection{MRCG}
 
-MATLAB provides no builtin functions for computing an MRCG, or even a
+MATLAB provides no builtin functions for computing a MRCG, or even a
 cochleagram, upon which the MRCG is based. To that end, custom code was
 developed based on the toolbox developed by Kim and Hahn~\cite{kim2018voice}
 which implements MRCG\@. The MRCG routine implemented in~\cite{kim2018voice}
@@ -549,10 +551,10 @@ section requires no transformation.
 
 Linear SVMs are trained by supplying a \texttt{KernelFunction} argument set to
 \texttt{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
-simple to fit as they have fewer parameters than SVMs utilising other kernel
-functions. The key parameter to tune here is the \texttt{BoxConstraint}, which
+simple to fit as they have fewer hyperparameters than SVMs utilising other kernel
+functions. The key hyperparameter to tune here is the \texttt{BoxConstraint}, which
 controls the trade-off between maximizing the margin between classes and
-minimizing the classification error. This corresponds is the constant $C$ in
+minimizing the classification error. This corresponds to the constant $C$ in
 Equation (\ref{eq:svm_nonlinear_mapping_slack}). The \texttt{Standardize}
 parameter controls whether data is standardized before fitting, and can also
 affect the performance of the model. In this work, KFold cross-validation (KF)
@@ -560,7 +562,7 @@ was selected to optimize the parameters, with $K=7$ folds. This is motivated by
 other research taking the same approach with promising
 results~\cite{ramashini2022robust}. MATLAB provides builtin ways to optimize
 hyperparameters, which can be achieved by passing a \texttt{cvpartition} to the
-\texttt{HyperparameterOptimizationOptions} argument and supplying a
+\texttt{HyperparameterOptimizationOptions} argument and supplying an
 \texttt{OptimizeHyperparameters} argument set to the name of the desired
 hyperparameters to tune to \texttt{fitcsvm}, in this case a cell array of
 \texttt{BoxConstraint} and \texttt{Standardize}.
@@ -588,7 +590,7 @@ RBF SVMs are able to fit more complex decision boundaries by projecting data
 into a higher dimensional space, which is controlled by the hyperparameter
 \texttt{KernelScale}. RBF SVMs are also sensitive to the \texttt{BoxConstraint}
 parameter. 7-fold cross validation was performed using the same routine as the
-linear SVM but this time by supplying a \texttt{OptimizeHyperparameters}
+linear SVM but this time by supplying an \texttt{OptimizeHyperparameters}
 argument set to \texttt{auto} to \texttt{fitcsvm}. A value of \texttt{auto}
 means that both \texttt{KernelScale} and \texttt{BoxConstraint} are optimised
 during training.
@@ -599,7 +601,7 @@ parameters are shown to have an impact on the model performance, with high
 values of \texttt{BoxConstraint} and mid-range values of \texttt{KernelScale}
 preferred. The \texttt{KernelScale} controls the width of the kernel, with a
 lower value resulting in a narrow kernel which can be interpreted as a more
-`wiggly' decision boundary. Higher values of \texttt{KernelScale} correspond to
+`wiggly' decision boundary. Higher values of \texttt{KernelScale} result in
 a smoother decision boundary. This corresponds exactly to the bias-variance
 tradeoff, whereby training fit and generalization directly compete with each
 other.
@@ -621,7 +623,7 @@ sequential layers that describe the network using builtin layer structures like
 \texttt{reulLayer} (which denotes a layer of ReLU activations), and
 \texttt{convolutional2dLayer} (which denotes a 2D convolutional layer). The
 layers are then passed to the \texttt{trainNetwork} function along with a set of
-options that describe parameters such as the mini-batch size and the optimizing
+options that describe hyperparameters such as the mini-batch size and the optimizing
 algorithm used, as well as the training input and corresponding labels.
 
 The training input for NN models depends on the type of NN\@. Some can work
@@ -687,7 +689,7 @@ provide the motivation for the CNN architectures tested in this work.
 
 \end{enumerate}
 
-In order to test against a baseline, a highly simplistic CNN architecture will
+To test against a baseline, a highly simplistic CNN architecture will
 be implemented and tested against these more complex designs. 
 
 The proposed CNN architectures are listed in in
@@ -782,12 +784,18 @@ classes for VLS used for RNN.}\label{table:vls_training_samples}
 \end{center}
 \end{table}
 
-MATLAB can receive sequential data in different input formats, such as
-vector sequences and 2D image sequences. The formulation of the VLS lends itself
-well to the vector sequence input format. To illustrate this, we will concern
-ourselves only with MFCC, but the concepts can easily be applied to other
-representations in the frequency domain where each element can be thought of as
-a T-F unit, such as GTCC and MRCG\@.
+MATLAB can receive sequential data in different input formats, such as vector
+sequences and 2D image sequences. To trigger a sequence input, the first layer
+of the network must be a \texttt{sequenceInputLayer}. The layer accepts an
+\texttt{inputSize} argument, which determines the sequence format. For a vector
+sequence, \texttt{inputSize} is a scalar corresponding to the number of
+features. For 2D image sequences, \texttt{inputSize} is a vector of three
+elements $\begin{bmatrix} h & w & c \end{bmatrix} $, where $h$ is the image
+height, $w$ is the image width, and $c$ is the number of channels of the image.
+The formulation of the VLS lends itself well to the vector sequence input
+format. To illustrate this, we will concern ourselves only with MFCC, but the
+concepts can easily be applied to other representations in the frequency domain
+where each element can be thought of as a T-F unit, such as GTCC and MRCG\@.
 
 The MFCC for an entire sequence is first extracted. Supposing we extract 13 MFCC
 coefficients (ignoring $\Delta$ and $\Delta\Delta$ values for now), then the
@@ -853,7 +861,7 @@ predictions at a certain timestep can be influenced by future predictions. At
 the time of writing this work, bidirectional LSTM layers exist in MATLAB
 (\texttt{bilstmLayer}), but bidirectional GRU layers do not.
 
-In order to test RNN architectures for sequential vectors, we propose 3 models.
+To test RNN architectures for sequential vectors, we propose 3 models.
 Given that the literature is reasonably thin in terms implementing RNN for
 birdsong classification problems, we propose 3 simple models to establish a
 baseline. The models can be seen in Table~\ref{table:rnn_seq_vector}.
@@ -927,7 +935,7 @@ evaluating all models in this thesis.
 \subsection{AUC}
 
 As mentioned in Section~\ref{sec:eval_metrics}, the AUC metric is commonly used
-for binary classification problems, and has been frequently used as a metric in
+for binary classification problems and has been frequently used as a metric in
 birdsong classification problems. Further to the advantages listed previously,
 the AUC benefits from being unaffected from class imbalances. Although the
 positive and negative classes are only slightly imbalanced in this work (see

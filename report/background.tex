@@ -1,4 +1,4 @@
-In this chapter we first discuss the evaluation metrics typically used for
+In this chapter, we first discuss the evaluation metrics typically used for
 classification problems. In Section~\ref{sec:feat_extraction} we explore classic
 and novel forms of feature extraction and feature combinations for audio
 problems. Section~\ref{sec:classification} categorizes popular models used for
@@ -11,9 +11,9 @@ particular bird species from a list of $n > 2$ species, a simple classification
 accuracy is often used as an evaluation
 metric~\cite{chakraborty2016bird,ramashini2022robust}. This is calculated as
 the percentage of correctly identified samples from a set of labelled samples
-previously unseen by the model.
+previously unseen by the model. A high accuracy indicates a performant model.
 
-Acevedo et al~\cite{acevedo2009automated} used true positive rate (TPR) and false
+Acevedo et al.~\cite{acevedo2009automated} used true positive rate (TPR) and false
 positive rate (FPR) to evaluate their models used to classify bird and amphibian
 calls, defined as
 \begin{equation}
@@ -24,12 +24,12 @@ where TP and FP are the numbers of true positives and false positives
 respectively, and P and N are the number of real positive and real negative
 classes in the data. This evaluation method is sometimes preferred when
 analysing long recordings which may include several different species to be
-classified. TPR gives an indication as to how well the model correctly identifies
+classified. TPR indicates as to how well the model correctly identifies
 species present in the recording. FPR indicates how often the model erroneously
-identifies species absent in the recording. A high performing model will have
+identifies species absent in the recording. A high-performing model will have
 high values for TPR and low values for FPR\@.
 
-Potamitis et al~\cite{potamitis2014automatic} used an alternative form of
+Potamitis et al,~\cite{potamitis2014automatic} used an alternative form of
 evaluation presented in terms of precision $(P)$ and recall $(R)$ which are
 defined as
 \begin{equation}
@@ -43,14 +43,19 @@ thought of as
   R = \frac{\text{relevant retrieved instances}}{\text{all \textbf{relevant} instances}}
 \end{equation}
 
-It's well known that there is a trade-off between $P$ and $R$, so usually the
-$F$-score is reported along with the $P$ and $R$ metrics. The $F$-score is
-defined as
+$P$ and $R$ are unhelpful metrics when reported in isolation. For example, it's
+possible to achieve perfect recall in a multiclass birdsong classification
+problem by simply assigning a sample to all possible classes. Note that in this
+example the precision will be close to 0\@. It's therefore desirable to achieve
+a high precision and a high recall, however, it's well known that there is a
+trade-off between $P$ and $R$. Improving one metric often leads to a decrease in
+the other metric. Due to this, the $F$-score is often reported along with the
+$P$ and $R$ metrics. The $F$-score is defined as
 \begin{equation}
 F = \frac{(1+\beta^2)PR}{\beta^2P + R}
 \end{equation}
 for some $\beta \in \mathbb{R}$. The $\beta$ is chosen such that recall is
-considered $\beta$ times as important as precision. Usually the $F_1$ score is
+considered $\beta$ times as important as precision. Usually, the $F_1$ score is
 presented, where $\beta = 1$.
 
 For binary classification problems, i.e.\ classifying a sample as one of two
@@ -58,7 +63,7 @@ classes (bird species), the Area Under Curve (AUC) metric is sometimes
 preferred~\cite{leng2014multi}. It is calculated as the area under a receiver
 operating characteristic (ROC) curve, which plots TPR vs FPR at different
 classification thresholds, see Figure~\ref{fig:roc} for an example. The AUC
-ranges from 0 to 1, with a higher value indicating a better performing model.
+ranges from 0 to 1, with a higher value indicating a better-performing model.
 The AUC is sometimes desirable because it is scale-invariant (it measures how
 well predictions are ranked, rather than their absolute values) and
 classification-threshold-invariant (it measures the quality of the model's
@@ -85,11 +90,11 @@ such as urban areas with increasing anthropogenic noise~\cite{luther2010urban}.
 
 Bird vocalizations can be broadly divided into two main categories, calls and
 songs. Calls are typically short vocalizations that carry some specific
-function, such as warning others to the presence of a predator or calling others
+function, such as warning others of the presence of a predator or calling others
 to flight~\cite{MARLER2004132}. Songs are usually longer, more acoustically
-complex and occur more spontaneously. They are typically employed as breeding
+complex, and occur more spontaneously. They are typically employed as breeding
 calls or territorial defence. While all birds produce calls, in many species of
-birds only the males utilise songs and often only during breeding season. The
+birds only the males utilise songs and often only during the breeding season. The
 song and call of a Eurasian wren can be seen and contrasted in
 Figure~\ref{fig:wren_call_song_spectrogram}.
 
@@ -102,13 +107,13 @@ complex in terms of pitch and acoustic structure compared to the
 call.}\label{fig:wren_call_song_spectrogram}
 \end{figure}
 
-Doupe et al~\cite{birdsongspeech} showed that there were striking similarities
+Doupe et al.~\cite{birdsongspeech} showed that there were striking similarities
 between birdsong and human language. Similar to human language, birdsong can be
 thought of as comprised of hierarchical levels of phrases, syllables, and
 elements~\cite{catchpole2003bird}. The levels for a common chaffinch can be seen
 in Figure~\ref{fig:syllables}. Raw recordings of birdsong
 often contain periods of silence that occur between phrases which are unlikely
-to provide useful information in order to train a machine learning model.
+to provide useful information to train a machine learning model.
 Fagerlund~\cite{fagerlund2007bird} showed that a good level of accuracy can be
 achieved by training models on features extracted from segmented syllables which
 were used as training samples. An algorithm for robust syllable segmentation was
@@ -124,7 +129,7 @@ algorithm is described in more detail in Section~\ref{ssec:syllable_seg}.
 
 Once the syllables have been segmented, there exists an abundance of options to
 turn the raw syllable input signal into features that might be used as training
-samples. In the following sections some of the more popular feature
+samples. In the following sections, some of the more popular feature
 representations are described, along with some novel methods that have yet to be
 tried on birdsong. Note that the following list is certainly not exhaustive and
 emphasis has been placed on feature representations that are relevant to this
@@ -133,18 +138,18 @@ thesis.
 \subsection{Features inspired by the human auditory system}
 
 Research has shown that birdsong and human language share many similarities in
-terms of the neural mechanisms employed to form the language/song, the impact of
-social contact in learning the language/song, and so on~\cite{birdsongspeech}.
-Give that the human auditory system has evolved other thousands of years to best
-process human speech, it seems reasonable to suggest that using features based
-on the human auditory system may be effective when it comes to birdsong.
+terms of the neural mechanisms employed to form the language/song and the impact
+of social contact in learning the language/song~\cite{birdsongspeech}. Given that
+the human auditory system has evolved over thousands of years to best process
+human speech, it seems reasonable to suggest that using features based on the
+human auditory system may be effective when it comes to birdsong.
 
 At a high level, the human auditory system works by translating changes in air
 pressure originating from a source and reaching the outer ear of a listener
-into vibrations that travel along an internal organ known as a cochlear. The
+into vibrations that travel along an internal organ known as a cochlea. The
 vibrations trigger electric signals that move along auditory nerves to the
-brain, where they are interpreted as sounds. The physiology of the cochlear
-means that certain parts of it are more sensitive to certain frequencies
+brain, where they are interpreted as sounds. The physiology of the cochlea
+means that specific parts of it are more sensitive to specific frequencies
 of vibrations, so different frequencies will lead to different electrical
 signals moving to the brain. This allows the brain to learn to differentiate
 between frequencies.
@@ -161,7 +166,8 @@ The mel frequency cepstrum coefficients (MFCC) are part of a family of cepstrum
 coefficients that capture information about the rate of change in different
 spectrum bands. MFCC differs from other cepstrum coefficients in that it uses the
 mel scale to transform the spectrum of an input signal, thus utilising the human
-auditory system in the calculation of its coefficients.
+auditory system in the calculation of its coefficients. This is done by passing
+a signal through a bank of filters that are spaced according to the mel scale.
 
 The $i$-th mel cepstral coefficient is computed as~\cite{davis1980comparison}
 \begin{equation}
@@ -192,7 +198,7 @@ problems~\cite{fagerlund2007bird,ramashini2022robust}.
 Gammatone cepstrum coefficients (GTCCs) are similar to MFCCs except their
 calculation  uses gammatone filterbanks instead of mel scale filterbanks.
 Gammatone filterbanks are designed to simulate the motion of the membrane inside
-the cochlear, known as the basilar membrane, when it is exposed to vibrations
+the cochlea, known as the basilar membrane, when it is exposed to vibrations
 transmitted by the outer and middle ear~\cite{patterson1992complex}.
 
 A gammatone filter with a centre frequency $f_c$ is defined as
@@ -276,10 +282,10 @@ dimensionality is 24--39, depending on the number of the coefficients used.
 It has been shown that an appropriate combination of features to be used as
 training inputs can lead to improved classification accuracy in audio related
 problems such speech separation~\cite{wang2012exploring}. Ramashini et
-al~\cite{ramashini2022robust} showed that a combination of GTCC and MFCC yielded
+al.~\cite{ramashini2022robust} showed that a combination of GTCC and MFCC yielded
 higher birdsong classification accuracy than MFCC alone. However, the
 combination did not improve on the accuracy of GTCC alone. Yan et
-al~\cite{yan2021birdsong} demonstrated that a combination of MFCC with two other
+al.~\cite{yan2021birdsong} demonstrated that a combination of MFCC with two other
 feature types (Log-mel spectrogram and Chroma) yielded higher birdsong
 classification accuracy than combinations of two of the features alone.
 Fagerlund~\cite{fagerlund2007bird} showed that combining MFCC with spectral and
@@ -303,7 +309,7 @@ of training samples generated from the feature extraction.
 There exist many different options in terms of models, and no one model is
 superior to the others. Each problem must be considered and a model which fits
 the problem at hand must be selected, or indeed a selection of suitable models
-tested and the evaluated for performance.
+tested and then evaluated for performance.
 
 In the literature, birdsong classification has been tackled with a wide variety
 of models. Ramashini et al.~\cite{ramashini2019bird} used the simple Nearest
@@ -386,7 +392,7 @@ $K(\mathbf{x}_j,\mathbf{x}_i) = \left< \boldsymbol{\Phi}(\mathbf{x}_j) \cdot
 In practice, a hyperplane that separates the classes perfectly may suffer from
 poor generalization ability. To improve this, nonnegative slack variables
 $\xi_i$ are introduced to (\ref{eq:svm_nonlinear_mapping}) to allow for some
-missclassification of training samples in order to improve generalization
+missclassification of training samples to improve generalization
 ability. The slack variables are introduced like so
 \begin{equation}\label{eq:svm_nonlinear_mapping_slack}
 y_i\left( \left< \mathbf{w} \cdot \boldsymbol{\Phi}(\mathbf{x}_i) \right> + b
@@ -437,13 +443,13 @@ largely been due to remarkable progress being made thanks to deep neural
 networks in fields such as image classification~\cite{krizhevsky2012imagenet}
 and language models~\cite{mikolov2010recurrent}.
 
-Another reason for DL's increasing popularity in recent years is due
-to the availability of more performant hardware and software. The `deep' aspect
-to deep learning refers to the fact that the software architecture depends on
-large amounts of parameters and needs massive amounts of training data in order
-to learn. In order to run training routines in a reasonable time and store large
-amounts of data in memory, access to powerful hardware and/or machine
-parallelism tools can be an essential part of the process.
+Another reason for DL's increasing popularity in recent years is due to the
+availability of more performant hardware and software. The `deep' aspect to deep
+learning refers to the fact that the software architecture depends on large
+amounts of parameters and needs massive amounts of training data to learn. In
+order to run training routines in a reasonable time and store large amounts of
+data in memory, access to powerful hardware and/or machine parallelism tools can
+be an essential part of the process.
 
 The progress of audio related problems has also been accelerated due to deep
 neural networks. Hinton et al.~\cite{hinton2012deep} showed improved performance
@@ -494,7 +500,7 @@ organised in layers, where information flows in one direction only --- forward
 nodes. This differs fundamentally from e.g.\ a RNN, where information can flow
 forward and backward. However, both FNNs and its derivatives and RNNs share
 many similarities, such as learning using backpropagation, and using nonlinear
-activation functions in order to model nonlinear data.
+activation functions to model nonlinear data.
 
 A FNN in perhaps its most basic form while still being able to solve non-trivial
 problems is known as a multilayer perceptron (MLP). An MLP consists of at least
@@ -521,7 +527,7 @@ winning the International Conference on Machine Learning Bird Challenge 2013.
 
 \subsubsection{Convolutional Neural Network}
 
-CNNs have seen a huge surge in development and popularity over the last decade,
+CNNs have seen a big surge in development and popularity over the last decade,
 largely thanks to huge strides being made in fields like machine vision and
 image classification using architectures such as
 AlexNet~\cite{krizhevsky2012imagenet}. Since image and audio share many
@@ -540,14 +546,14 @@ A CNN is a feedforward neural network with at least one convolutional layer. A
 convolutional layer is so called because it performs a convolution on an input,
 usually an image, using a small matrix of weights, known as a filter or kernel.
 The output is considered as a matrix of activations. The activation is higher
-when the values in the corresponding area in the input are similar to those in
+when the values in the corresponding area of the input are similar to those in
 the kernel, meaning that the activation output encodes the location of where the
 input matches certain features. Usually, several kernels are applied at each
 layer, and so the output takes the shape of a 3D matrix, or a volume. As with
 all neural nets, the output is passed through a nonlinear activation function in
 order to allow for the network to be able to learn from nonlinear data. The
 weights in the kernel are learned through backpropagation. Usually a max
-pooling layer is added in order to downsample the activation volume and reduce
+pooling layer is added to downsample the activation volume and reduce
 the number of weights, or parameters, needed by the network. An example of a
 simple CNN can be seen in Figure~\ref{fig:cnn_example}.
 
@@ -559,8 +565,8 @@ simple CNN can be seen in Figure~\ref{fig:cnn_example}.
 from~\cite{sarvamangala2022convolutional}.}\label{fig:cnn_example}
 \end{figure}
 
-CNNs lend themselves well to image related problems since their structure
-allows them parse an image as a composition of meaningful elements rather than a
+CNNs lend themselves well to image related problems since their structure allows
+them to parse an image as a composition of meaningful elements rather than a
 collection of unrelated pixels~\cite{lecun2015deep}. This translates well to
 birdsong as e.g.\ a spectrogram of a sample of birdsong can conceptually be
 thought of as a composition of syllables, i.e.\ elements.
@@ -577,7 +583,7 @@ than human experts. Narasimhan et al.~\cite{narasimhan2017simultaneous} used a
 CNN with encoder-decoder architecture based on
 Segnet~\cite{badrinarayanan2017segnet} to simultaneously segment and classify
 birdsong spectrograms. This approach benefits from the fact that segmentation
-and classification are intuitively strongly interrelated, since when comparing
+and classification are intuitively strongly correlated, since when comparing
 two different segmentations, the one that leads to a higher classification
 accuracy will likely be a better segmentation.
 
@@ -610,7 +616,7 @@ Similar to FNNs, classification RNNs learn by minimizing a loss function,
 usually the cross-entropy loss~\cite{shore1980axiomatic}, by backpropagation.
 However, a slight variation on the algorithm is used to incorporate the
 sequential nature of the input data. The variation is known as backpropagation
-through time (BPTT). Here, in order to update the weights matrices, all weights
+through time (BPTT). Here, to update the weights matrices, all weights
 are first treated as independent. The standard backpropagation algorithm is then
 run and all the corresponding gradients are averaged together. BPTT however
 suffers from a problem whereby gradients larger than 1 are multiplied together,
@@ -639,7 +645,7 @@ and has seen excellent results in fields such as speech
 recognition~\cite{he2016exploiting} and acoustic
 modelling~\cite{qu2017syllable}. LSTM describes an alternative structure for RNN
 whereby the hidden units are replaced with a memory cell which can store
-information for extended periods of time. The flow of information in and out of
+information for extended periods. The flow of information in and out of
 the cell is controlled by three boolean gates: a forget gate (\ref{eq:lstm_f})
 which controls how information is lost from memory, an
 input gate (\ref{eq:lstm_i}) which controls how new information is stored in
@@ -707,7 +713,7 @@ Figure~\ref{fig:gru_cell}.
 
 The reduction in parameters and number of gates does mean that the GRU is less
 powerful than the LSTM and does not work for problems such as
-translation~\cite{britz2017massive}. However, it has been applied birdsong
+translation~\cite{britz2017massive}. However, it has been applied to birdsong
 related problems with promising
 results~\cite{parrilla2022polyphonic,adavanne2017stacked}.
 
@@ -715,7 +721,7 @@ While the usage of RNNs, LSTMs or GRUs alone for birdsong classification has
 been rare in the literature, there are several examples of experiments where
 convolutional layers and recurrent layers have been combined to form a
 Convolutional Recurrent Neural Network
-(CRNN)~\cite{yan2021birdsong,mukherjee2018convolutional} in order to leverage
+(CRNN)~\cite{yan2021birdsong,mukherjee2018convolutional} to leverage
 the benefits of both architectures. A typical approach using a CRNN with regards
 to birdsong classification might look something like the
 following~\cite{crous2019polyphonic}:
@@ -728,7 +734,7 @@ following~\cite{crous2019polyphonic}:
     on.
 
   \item Apply a convolutional layer (or layers) to each time step of the
-    representation in order to extract local features. A time step is defined as
+    representation to extract local features. A time step is defined as
     a single unit along the time axis of the spectrogram.
 
   \item Apply a recurrent layer to spread the local features of a single time

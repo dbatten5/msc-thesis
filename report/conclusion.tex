@@ -1,21 +1,23 @@
-In this work we have thoroughly investigated some important parameters when
-extracting classic features like MFCC and GTCC\@. We have shown that the
-parameters can have a significant effect on the overall classification accuracy
-and that the parameter values should be carefully considered for the problem at
-hand. During this investigation we have shown that MFCC usually outperforms GTCC
-when the sample recordings are clean.
+The main contribution of this study is the investigation of important
+hyperparameters used to extract classic features likes MFCC and GTCC, and the
+application of MRCG to birdsong classification. We have shown that the
+hyperparameters can have a significant effect on the overall classification
+accuracy and that the parameter values should be carefully considered for the
+problem at hand. In terms of birdsong, we have shown that designing filter banks
+that span a range of $\backsim$1 kHz --- 10 kHz to be used for MFCC and GTCC
+extraction yields higher model performance. During this investigation we have
+shown that MFCC usually outperforms GTCC when the sample recordings are clean.
 
-We have also investigated some more complex and modern architectures such as CNN
+While the MRCG results achieved here were less than desirable, it's unclear
+whether this is from the model design or the suitability of MRCG with birdsong
+as some concessions had to be made to allow for MRCG's significantly higher
+dimensionality compared to classic features such as MFCC\@. This could be
+verified by testing MRCG with some more complex CNN or CRNN model architectures
+on more powerful machines.
+
+We have also investigated some more flexible and modern architectures such as CNN
 and RNN and have confirmed that they can easily outperform more classical models
 like SVM\@. In doing so we have also proposed a novel method of generating
 training and testing samples by combining syllables, the elemental blocks of
 birdsong, into sequences. We have also laid the theoretical groundwork for an
 alternative form of sequence generation that can be used with CRNN in future work.
-
-The main contribution of this study is the application of MRCG to birdsong
-classification. While the results achieved here were less than desirable, it's
-unclear whether this is from the model design or the suitability of MRCG with
-birdsong as some concessions had to be made to allow for MRCG's significantly
-higher dimensionality compared to classic features such as MFCC\@. This could be
-verified by testing MRCG with some more complex CNN or CRNN model architectures
-on more powerful machines.

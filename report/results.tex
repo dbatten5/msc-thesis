@@ -257,7 +257,7 @@ training curve for the RNN models was still converging by the time that the
 maximum number of epochs (100) was reached so it's possible that the model may
 just need a longer time to train. However, during training the validation curve
 fluctuated around 50\% and so it's also possible that the sequential vector
-representation is inappropriate for an MRCG and so RNN with this type of
+representation is inappropriate for MRCG and so RNN with this type of
 sequence input for MRCG will never post good results. Since the CNN results are
 much better, it may be worthwhile exploring more complicated CNN model
 architectures with MRCG\@. Due to the high dimensionality of MRCG I was not able
@@ -462,18 +462,29 @@ Pre-processing is a key stage in the process. A thorough and considered
 pre-processing pipeline can significantly improve classification accuracy and
 generalization performance. An easily accessible way to improve generalization
 is through data augmentation. This has been done in many research papers with
-promising results~\cite{kahl2017large}. MATLAB provides inbuilt ways to
-augment audio data through the \texttt{audioDataAugmenter} pipeline, which can
-enlarge datasets through techniques like pitch shifting, time-scale
-modification, and volume control. It would be interesting to apply these
-augmentations and see how it affects the performance of these models. The
+promising results~\cite{kahl2017large}. MATLAB provides inbuilt ways to augment
+audio data through the \texttt{audioDataAugmenter} pipeline, which can
+synthetically enlarge datasets through techniques like pitch shifting,
+time-scale modification, and volume control. It would be interesting to apply
+these augmentations and see how it affects the performance of these models. The
 pipeline also offers noise addition. In practice, working with clean recordings
 of birdsong would be very unlikely since the recordings would likely be
-corrupted with all manner of background noise, from urban noise, rainforest
-noise, or ambient noise such as wind, and so adding random noise through the
+corrupted with all manner of background noise, such as urban noise, rainforest
+noise, or ambient noise e.g.\ wind, and so adding random noise through the
 pipeline would certainly be useful. It might also be informative to manually add
 noise at precise SNR levels and evaluate the performance of the different
 feature representations and models in this work.
+
+To help with managing training and testing audio data, it might be worthwhile
+making use of MATLAB's \texttt{audioDatastore}. The function needs one argument:
+a path to the location of the audio data to be used as training and testing
+samples. It allows for labels to be read from directory names which would
+mean not having to manage a separate structure of labels for the samples. It
+also helps with reducing memory load since samples from the collection are
+referenced by their location on disk rather than loading all samples into memory.
+Furthermore, the datastore object comes with builtin functions to split the store
+into a training and validation set and perform transformations on the audio
+data, amongst other things.
 
 Another interesting extension of the methodology would be to consider a birdsong
 segment as a variable length sequence of images as mentioned in
