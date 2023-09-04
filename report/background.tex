@@ -1,7 +1,7 @@
 In this chapter, we first discuss the evaluation metrics typically used for
 classification problems. In Section~\ref{sec:feat_extraction} we explore classic
 and novel forms of feature extraction and feature combinations for audio
-problems. Section~\ref{sec:classification} categorizes popular models used for
+problems. Section~\ref{sec:classification} categorises popular models used for
 audio classification problems, both old and new.
 
 \section{Evaluation metrics}\label{sec:eval_metrics}
@@ -24,7 +24,7 @@ where TP and FP are the numbers of true positives and false positives
 respectively, and P and N are the number of real positive and real negative
 classes in the data. This evaluation method is sometimes preferred when
 analysing long recordings which may include several different species to be
-classified. TPR indicates as to how well the model correctly identifies
+classified. TPR indicates how well the model correctly identifies
 species present in the recording. FPR indicates how often the model erroneously
 identifies species absent in the recording. A high-performing model will have
 high values for TPR and low values for FPR\@.
@@ -80,16 +80,16 @@ the blue curve.}\label{fig:roc}
 
 \section{Feature extraction}\label{sec:feat_extraction}
 
-As mentioned in Chapter~\ref{cp:intro}, birds use vocalizations as a way to
+As mentioned in Chapter~\ref{cp:intro}, birds use vocalisations as a way to
 communicate with others. Birds have evolved over many thousands of years to make
 this form of communication very efficient in that it can travel long distances
 and cut through local ambient noise so that it can be received by other birds
-clearly. Some birds have even adapted their vocalizations so that they can be
+clearly. Some birds have even adapted their vocalisations so that they can be
 heard in local environments that have rapidly changed over the past decades,
 such as urban areas with increasing anthropogenic noise~\cite{luther2010urban}.
 
-Bird vocalizations can be broadly divided into two main categories, calls and
-songs. Calls are typically short vocalizations that carry some specific
+Bird vocalisations can be broadly divided into two main categories, calls and
+songs. Calls are typically short vocalisations that carry some specific
 function, such as warning others of the presence of a predator or calling others
 to flight~\cite{MARLER2004132}. Songs are usually longer, more acoustically
 complex, and occur more spontaneously. They are typically employed as breeding
@@ -109,7 +109,7 @@ call.}\label{fig:wren_call_song_spectrogram}
 
 Doupe et al.~\cite{birdsongspeech} showed that there were striking similarities
 between birdsong and human language. Similar to human language, birdsong can be
-thought of as comprised of hierarchical levels of phrases, syllables, and
+thought of as consisting of hierarchical levels of phrases, syllables, and
 elements~\cite{catchpole2003bird}. The levels for a common chaffinch can be seen
 in Figure~\ref{fig:syllables}. Raw recordings of birdsong
 often contain periods of silence that occur between phrases which are unlikely
@@ -217,7 +217,7 @@ non-speech audio classification problems~\cite{valero2012gammatone}.
 
 For the Eurasian wren song shown in Figure~\ref{fig:wren_call_song_spectrogram},
 the MFCC and GTCC coefficients can be seen in
-Figure~\ref{fig:mfcc_gtcc_example}. Note that this visualization does not
+Figure~\ref{fig:mfcc_gtcc_example}. Note that this visualisation does not
 include the $\Delta$ and $\Delta\Delta$ values and also includes the
 $0^{\text{th}}$ coefficient, denoted as $\log E$ in the figure.
 
@@ -281,7 +281,7 @@ dimensionality is 24--39, depending on the number of the coefficients used.
 
 It has been shown that an appropriate combination of features to be used as
 training inputs can lead to improved classification accuracy in audio related
-problems such speech separation~\cite{wang2012exploring}. Ramashini et
+problems such as speech separation~\cite{wang2012exploring}. Ramashini et
 al.~\cite{ramashini2022robust} showed that a combination of GTCC and MFCC yielded
 higher birdsong classification accuracy than MFCC alone. However, the
 combination did not improve on the accuracy of GTCC alone. Yan et
@@ -317,7 +317,7 @@ Centroid (NC) classifier to assign birdsong samples to classes. It was compared
 to a K Nearest Neighbours (KNN) classifier and shown to have superior accuracy.
 Lasseck~\cite{lasseck2015improved} used decision trees with bagging to identify
 birds. Trifa et al.~\cite{trifa2008automated} used Hidden Markov Models (HMM) to
-identify species of birds based on their vocalizations. They considered each
+identify species of birds based on their vocalisations. They considered each
 sample as a discrete-time dynamical system, where an unobserved state generates
 observed features, such as pitch and MFCC\@. A different HMM can be learned for
 each class and a new sample can be assigned to a class by calculating which HMM
@@ -338,8 +338,8 @@ results~\cite{fagerlund2007bird} and relative simplicity to implement. Many
 implementations of SVMs also require little or no tuning of hyperparameters.
 
 At its core, a SVM is a binary classifier that separates two classes by finding
-a hyperplane that maximizes the margin from the nearest vectors in the feature
-space from both classes. Classifications are then made by computing in which
+a hyperplane that maximises the margin from the nearest vectors in the feature
+space from both classes. Classifications are then made by computing on which
 side of the hyperplane a test feature vector lies.
 
 \subsubsection{Binary classification}
@@ -363,14 +363,14 @@ feature vectors from each class is given by
                          &= \frac{2}{\|\mathbf{w}\|}. \label{eq:svm_margin}
 \end{align}
 
-The optimal hyperplane can now be found by maximizing (\ref{eq:svm_margin})
+The optimal hyperplane can now be found by maximising (\ref{eq:svm_margin})
 subject to (\ref{eq:svm_hyperplane}). This can be solved using Lagrange
 multipliers.
 
 Often with real world data, classes are not linearly separable. This can
-remedied by projecting the data using a nonlinear mapping into a new feature
+be remedied by projecting the data using a nonlinear mapping into a new feature
 space where the data are linearly separable. Equation (\ref{eq:svm_hyperplane})
-can then be re-written as
+can then be rewritten as
 \begin{equation}\label{eq:svm_nonlinear_mapping}
 y_i\left( \left< \mathbf{w} \cdot \boldsymbol{\Phi}(\mathbf{x}_i) \right> + b \right) \ge 1, \hspace{1em}
 i = 1,\ldots,n
@@ -390,9 +390,9 @@ $K(\mathbf{x}_j,\mathbf{x}_i) = \left< \boldsymbol{\Phi}(\mathbf{x}_j) \cdot
 \boldsymbol{\Phi}(\mathbf{x}_i) \right>$.
 
 In practice, a hyperplane that separates the classes perfectly may suffer from
-poor generalization ability. To improve this, nonnegative slack variables
+poor generalisation ability. To improve this, nonnegative slack variables
 $\xi_i$ are introduced to (\ref{eq:svm_nonlinear_mapping}) to allow for some
-missclassification of training samples to improve generalization
+missclassification of training samples to improve generalisation
 ability. The slack variables are introduced like so
 \begin{equation}\label{eq:svm_nonlinear_mapping_slack}
 y_i\left( \left< \mathbf{w} \cdot \boldsymbol{\Phi}(\mathbf{x}_i) \right> + b
@@ -400,7 +400,7 @@ y_i\left( \left< \mathbf{w} \cdot \boldsymbol{\Phi}(\mathbf{x}_i) \right> + b
 i = 1,\ldots,n
 \end{equation}
 The amount of regularization is controlled by the constant $C$ such that the
-maximization problem (\ref{eq:svm_margin}) becomes
+maximisation problem (\ref{eq:svm_margin}) becomes
 \begin{equation}
 \frac{2}{\|\mathbf{w}\|} - C \sum_{i=1}^{n} \xi_i
 \end{equation}
@@ -577,7 +577,7 @@ Kahl et al.~\cite{kahl2017large} achieved a remarkable mean average precision of
 spectrograms of 4 second samples. The spectrograms were pre-processed to reduce
 noise and augmented with a variety of augmentations, such as adding Gaussian
 noise and real noise samples from the original dataset. Ruff et
-al.~\cite{ruff2020automated} used CNNs to detect owl vocalizations in
+al.~\cite{ruff2020automated} used CNNs to detect owl vocalisations in
 spectrograms from unprocessed field recordings, performing as well or better
 than human experts. Narasimhan et al.~\cite{narasimhan2017simultaneous} used a
 CNN with encoder-decoder architecture based on
@@ -667,7 +667,7 @@ $W_{\{f,i,o,c\}}$ and $b_{\{f,i,o,c\}}$ are trained weights matrices and biases
 respectively. The above equations describe how an input vector $x(t)$ at time
 step $t$, the previous hidden state $h(t-1)$ and cell state $c(t-1)$ combine to
 compute the next hidden state $h(t)$ and cell state $c(t)$. This process can be
-visualized in Figure~\ref{fig:lstm_cell_example}.
+visualised in Figure~\ref{fig:lstm_cell_example}.
 
 \begin{figure}[ht]
   \centering
