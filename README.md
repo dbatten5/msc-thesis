@@ -15,6 +15,8 @@ masters' thesis.
 > as experimenting with recent research into wider audio classification problems
 > and evaluating them in a birdsong context.
 
+## Layout
+
 The following sections describe the schematic of this repo and the contents of
 each directory.
 
@@ -24,7 +26,7 @@ A collection of live scripts used to generate the results for each hypothesis.
 Each script handles preparing the feature representation of the training input
 and formatting it into the correct structure for the model at hand, as well as
 training the model and evaluating it against the test set. The results are
-stored in a cell array and saved for posterity.
+stored in a cell array and saved for posterity. All code therein is my own work.
 
 ### figures/
 
@@ -58,7 +60,24 @@ lists the most important functions used in this work in more detail:
 |`segmentSyllables.m`|Extract the syllables from a given input signal|☑️|Algorithm described in [^fn2]|
 |`stripSound.m`|Strip leading and training bits of background noise from an input signal|☑️||
 
-## References
+### tutorials/
+
+Some initial experimentation work to get up to speed with the field. None of the
+output from this directory was used in the final report.
+
+### variables/
+
+A directory of saved MATLAB variables.
+
+### work/
+
+A collection of live scripts for the pilot and feasibility studies. Very few
+scripts were used in their entirety for the final report but many provided the
+foundation work for the hypotheses experiments and were rewritten into cleaner
+scripts stored in the `experiments/` directory. All scripts are my own work. The
+`addSyllableSamples.mlx` script was used to generate extract the syllables from
+raw recordings and store them on disk to be used later. The `figureWork.mlx` is
+a script dedicated for generating figures used in the final report.
 
 [^fn1]: Kim, Juntae, and Minsoo Hahn. "Voice activity detection using an
   adaptive context attention model." IEEE Signal Processing Letters 25.8 (2018):
