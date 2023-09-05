@@ -9,7 +9,7 @@ We finish the chapter by commenting on how the models will be evaluated.
 All computational work for this thesis was performed in MATLAB vR2023a
 unless stated otherwise.
 
-\section{Datasets}
+\section{Collecting the datasets}
 
 Since all the models described in Section~\ref{sec:classification} are trained
 in a supervised learning fashion, this requires a dataset of labelled training
@@ -47,7 +47,7 @@ Roughly 38 individuals from each class were downloaded, with 28 used for
 training and the remaining kept for testing. All samples were checked for
 suitability and downloaded manually.
 
-\section{Pre-processing}
+\section{Pre-processing audio recordings}
 
 Some recordings available on XC are recorded in stereo sound, so to
 reduce dimensionality without losing too much information, all stereo recordings
@@ -88,7 +88,7 @@ out.
 After these pre-processing steps have been taken, the audio is ready for
 syllable segmentation.
 
-\section{Segmentation}\label{sec:segmentation}
+\section{Segmenting audio recordings}\label{sec:segmentation}
 
 Recordings downloaded from XC were also chosen based on their length. Recordings
 of duration 40 seconds to 120 seconds were preferred since they were likely to
@@ -238,7 +238,7 @@ same directory as the original recording with a filename in the format
 \textit{\{XCID\}\_i.wav} where \textit{\{XCID\}} is the XC id of the recording and
 \textit{i} is the index of the syllable.
 
-\subsection{Sequence generation}\label{ssec:sequence_gen}
+\subsection{Sequence sample generation}\label{ssec:sequence_gen}
 
 Once the syllables have been extracted, they are ready to be combined to form a
 sequence. This style of sequence generation will be used for all training in
@@ -290,7 +290,7 @@ contain at least one full syllable. This approach ensures that the influence of
 background noise is kept to a minimum, while still maintaining information
 related to the temporal evolution of a particular birdsong.
 
-\section{Feature extraction}\label{sec:method:feat_extraction}
+\section{Extracting features from samples}\label{sec:method:feat_extraction}
 
 Once the sequences have been generated, they are ready to be converted to
 features. The following sections describe the feature extraction processes used
@@ -502,7 +502,7 @@ was performed, the MRCG feature would be best suited to a classifier which is
 optimised for working with image data, such as CNNs\@. To that end, it won't
 be used with SVMs in this work.
 
-\section{Training}\label{sec:training}
+\section{Training models}\label{sec:training}
 
 To create the training MATLAB cell array, sequences for each class are
 generated and stored in a cell array. A maximum limit of 40 sequences per
@@ -906,7 +906,7 @@ that the software doesn't shuffle the samples. This ensures that the amount of
 padding is kept to a minimum which is preferable since padding introduces noise
 to the network. A mini-batch size of 100 was used for all RNN models.
 
-\section{Evaluation}
+\section{Evaluating models}
 
 After the recordings from each class reserved for testing have undergone
 pre-processing and segmentation, the segmented syllables undergo the same
@@ -955,3 +955,12 @@ A = \frac{1}{N}\sum_{i=1}^{N} \mathbb{I}[\bar{y}_i = y_i]
 \end{equation}
 where $N$ is the number of test samples, $\bar{y}$ is a predicted label, $y$
 is the groundtruth label, and $\mathbb{I}$ is the indicator function.
+
+\section{Chapter summary}
+
+In this chapter we started by describing ways in which audio recordings to be
+used for experiments in this thesis were collected and pre-processed. We
+described in detail the steps involved in segmenting the processed audio to be
+used as training inputs. The following section lists the experiments that are
+performed in this work related to feature extraction. Lastly, we explore the
+different models used herein and discuss how the models will be evaluated.

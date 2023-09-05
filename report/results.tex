@@ -263,7 +263,7 @@ much better, it may be worthwhile exploring more complicated CNN model
 architectures with MRCG\@. Due to the high dimensionality of MRCG I was not able
 to perform training with more complicated models on my machine.
 
-\section{Comparison}
+\section{Comparison of models}
 
 In this section we collect the results from all experiments and compare them to
 get a snapshot of the highest performing models. This may help to identify
@@ -411,7 +411,7 @@ following discussion points arise:
 
     The other assumption with regards to filter bank range and spacing is that,
     since birdsong typically resides at higher frequencies than human speech (as
-    can been seen in Figure~\ref{fig:wren_vs_human}), filter banks that are
+    can been seen in Figure~\ref{fig:wren_vs_human}), filterbanks that are
     spaced closer together at higher frequencies (such as anti-mel filter
     banks), should offer more discriminatory power at higher frequencies and
     thus yield better results at discriminating birdsong. However, the results
@@ -447,7 +447,7 @@ following discussion points arise:
 
 \end{enumerate}
 
-\section{Further work \& extensions of methodology}
+\section{Further work and extensions of methodology}
 
 The work carried out in this thesis is merely scratching the surface of birdsong
 binary classification problems. There is enormous scope for extending the
@@ -536,3 +536,12 @@ conducted into it using encoder-decoder
 architectures~\cite{narasimhan2017simultaneous}. Indeed, in their paper they
 mention that future work includes adding recurrent layers to their network in
 order to take into account the temporal relation between bird syllables.
+
+\section{Chapter summary}
+
+In this chapter we started displaying the evaluation metrics obtained for the
+three main hypotheses of this work. We then compare the metrics across all
+hypotheses to gain a high level view of how hypotheses relate to each other. We
+conclude the chapter by exploring the discussion points that arise from the
+results and examine extensions of the methodology used here that could be
+incorporated into future work.

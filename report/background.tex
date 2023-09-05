@@ -83,10 +83,10 @@ the blue curve.}\label{fig:roc}
 As mentioned in Chapter~\ref{cp:intro}, birds use vocalisations as a way to
 communicate with others. Birds have evolved over many thousands of years to make
 this form of communication very efficient in that it can travel long distances
-and cut through local ambient noise so that it can be received by other birds
-clearly. Some birds have even adapted their vocalisations so that they can be
-heard in local environments that have rapidly changed over the past decades,
-such as urban areas with increasing anthropogenic noise~\cite{luther2010urban}.
+and cut through local ambient noise to be received by other birds clearly. Some
+birds have even adapted their vocalisations so that they can be heard in local
+environments that have rapidly changed over the past decades, such as urban
+areas with increasing anthropogenic noise~\cite{luther2010urban}.
 
 Bird vocalisations can be broadly divided into two main categories, calls and
 songs. Calls are typically short vocalisations that carry some specific
@@ -107,7 +107,7 @@ complex in terms of pitch and acoustic structure compared to the
 call.}\label{fig:wren_call_song_spectrogram}
 \end{figure}
 
-Doupe et al.~\cite{birdsongspeech} showed that there were striking similarities
+Doupe et al.~\cite{birdsongspeech} showed that there are striking similarities
 between birdsong and human language. Similar to human language, birdsong can be
 thought of as consisting of hierarchical levels of phrases, syllables, and
 elements~\cite{catchpole2003bird}. The levels for a common chaffinch can be seen
@@ -147,7 +147,7 @@ human auditory system may be effective when it comes to birdsong.
 At a high level, the human auditory system works by translating changes in air
 pressure originating from a source and reaching the outer ear of a listener
 into vibrations that travel along an internal organ known as a cochlea. The
-vibrations trigger electric signals that move along auditory nerves to the
+vibrations trigger electrical signals that move along auditory nerves to the
 brain, where they are interpreted as sounds. The physiology of the cochlea
 means that specific parts of it are more sensitive to specific frequencies
 of vibrations, so different frequencies will lead to different electrical
@@ -300,7 +300,7 @@ Analysis (PCA) or Linear Discriminant Analysis (LDA)~\cite{ramashini2019bird}
 are often used to reduce the dimensionality of the feature vectors while still
 capturing enough information to be able to train a model effectively.
 
-\section{Classification}\label{sec:classification}
+\section{Classification of samples}\label{sec:classification}
 
 Once a suitable feature representation has been selected and extracted, the
 remaining task is to pick an appropriate model and train the model using the set
@@ -754,3 +754,12 @@ predicted a blackbird. Secondly, the network can learn to include moments of
 silence in a prediction. Note that this benefit is lost if just considering
 audio segments of isolated syllables as these segments should contain little or
 no silence.
+
+\section{Chapter summary}
+
+In this chapter we started by examining different ways of evaluating the
+performance of models used in the literature. We then discussed the structure of
+birdsong at a high level and used that as a motivation for examining popular
+features to be used in this thesis. We concluded the chapter by looking at in
+detail models commonly used to classify audio data and determining their
+suitability for this work.
