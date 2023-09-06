@@ -52,20 +52,20 @@ lists the most important functions used in this work in more detail:
 |Name|Description|Custom?|References|
 |---|---|---|---|
 |`cochleagram.m`|Generate a cochleagram from the output of a gammatone filterbank|❌|Copied from [^fn1]|
-|`createSequences.m`|Generate a sequence of samples from the syllables extracted from birdsong samples|☑️||
-|`evaluate{NN,RNN,SVM}.m`|Evaluate a trained neural network, recurrent neural network, and SVM model respectively for AUC and accuracy|☑️||
-|`mono.m`|Convert a stereo signal to mono|☑️||
+|`createSequences.m`|Generate a sequence of samples from the syllables extracted from birdsong samples|✅||
+|`evaluate{NN,RNN,SVM}.m`|Evaluate a trained neural network, recurrent neural network, and SVM model respectively for AUC and accuracy|✅||
+|`mono.m`|Convert a stereo signal to mono|✅|
 |`mrcg.m`|Generate an MRCG feature from the output of a gammatone filterbank|❌|Adapted from [^fn1]|
-|`retreiveSamples.m`|Retrieve syllables saved on disk and optionally append a given number of following syllables to each syllable. Used for generating samples for RNN.|☑️||
-|`segmentSyllables.m`|Extract the syllables from a given input signal|☑️|Algorithm described in [^fn2]|
-|`stripSound.m`|Strip leading and training bits of background noise from an input signal|☑️||
+|`retreiveSamples.m`|Retrieve syllables saved on disk and optionally append a given number of following syllables to each syllable. Used for generating samples for RNN.|✅||
+|`segmentSyllables.m`|Extract the syllables from a given input signal|✅|Algorithm described in [^fn2]|
+|`stripSound.m`|Strip leading and training bits of background noise from an input signal|✅||
 
 ### tutorials/
 
 Some initial experimentation work to get up to speed with the field. None of the
 output from this directory was used in the final report.
 
-### variables/
+### variables/
 
 A directory of saved MATLAB variables.
 
