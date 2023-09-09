@@ -1,7 +1,7 @@
 Birds play a crucial role in ecosystems around the world. They form an important
 link in the food chain, pollinate plants, and even plant
 trees~\cite{broughton2021long}. The quantity and diversity of birds observed in
-an area can therefore be seen as a key indicator of the strength of its
+an area can therefore often be regarded as a key indicator of the strength of its
 ecosystem.
 
 Aside from being important ecological agents, birds also colour our lives with
@@ -21,36 +21,36 @@ communication is done through distinctive vocalisations, known as birdsong, that
 are usually unique to an individual species. Due to this, birds are typically
 identified through their birdsong rather than their visual sighting. Birdsong
 used for identification is usually recorded on microphones that may be running
-for a long time and/or located in a place that isn't necessarily optimum to
+for a long time and/or are located in a place that isn't necessarily optimum to
 capture the vocalisation. The recordings may be corrupted from a wide range of
-sources, such as ambient background noise, large changes in birdsong amplitude,
-long periods of silence, and vocalisations from other birds or animals.
-Recordings captured by microphones may be several hours in duration so it would
-be impractical to have a human expert identify the birds manually. There is
+sources, such as ambient noise, large changes in birdsong amplitude, long
+periods of silence, and vocalisations from other birds or animals. Recordings
+captured by microphones may also be several hours in duration so it would be
+impractical to have a human expert identify the birds manually. There is
 therefore a need for robust birdsong identification tools that can handle these
 corruptions and that require minimal human intervention in order to classify
-unknown birdsong. 
+unknown birdsong.
 
 Modern solutions to this problem are increasingly relying on machine learning
 and as with most machine learning classification problems, the work boils down
 to two key components. The first is feature extraction, that is, given an input
-signal usually in the form of an amplitude varying over time, how can it be
-transformed to a vector or matrix representation that captures the key
-information of the signal. The second is classification, i.e.~given this
-representation in the feature space, how can it be used to train a model that
-can then perform classification on unseen samples of birdsong. There are further
-steps that can be taken to improve this process, such as pre-processing the
-signal in order to remove or reduce the influence of background
+signal in the form of an amplitude varying over time, how can it be transformed
+to a vector or matrix representation that captures the key information of the
+signal. The second is classification, i.e.~given this representation in the
+feature space, how can it be used to train a model that can then perform
+classification on unseen samples of birdsong. There are further steps that can
+be taken to improve this process, such as pre-processing the signal in order to
+remove or reduce the influence of background
 noise~\cite{potamitis2014automatic}.
 
 There has been a lot of research into audio classification problems both in
 birdsong and in other types of audio, such as speaker identification from human
 speech~\cite{KUDO19991103}. However, there remain novel methods that have been
-tested and have been shown to have good results in wider audio classification
-problems that have yet to be tried out in birdsong identification problems.
-These methods include both feature extraction and classification. The
-broad aim of this thesis is to attempt to evaluate these methods. In more
-detail, the aims of this thesis can be summarised as follows:
+shown to have good results in wider audio classification problems that have yet
+to be tried out in birdsong identification problems. These methods include both
+feature extraction and classification. The broad aim of this thesis is to
+attempt to evaluate these methods. In more detail, the aims of this thesis can
+be summarised as follows:
 
 \begin{enumerate}
 
@@ -63,7 +63,8 @@ detail, the aims of this thesis can be summarised as follows:
     Neural Networks (RNN) and Convolutional Neural Networks (CNN) and compare
     the results with simpler statistical models. The hypothesis is that more
     complex and flexible architectures such as these will have superior
-    performance when compared to simpler statistical models, such as SVMs.
+    performance when compared to simpler statistical models, such as support
+    vector machines (SVM).
 
   \item Explore the birdsong classification performance of feature
     representations shown to have promising results for non-birdsong related

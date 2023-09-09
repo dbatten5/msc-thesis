@@ -104,11 +104,11 @@ remain largely similar across different frequency ranges.
 Hypothesis 2 (H2) is stated as follows:
 
 \begin{quote}
-Explore the performance of deep learning architectures such as Recurrent Neural
-Networks (RNN) and Convolutional Neural Networks (CNN) and compare the results
-with simpler statistical models. The hypothesis is that more complex and
-flexible architectures such as these will have superior performance when
-compared to simpler statistical models, such as SVMs.
+  Explore the performance of deep learning architectures such as Recurrent
+  Neural Networks (RNN) and Convolutional Neural Networks (CNN) and compare the
+  results with simpler statistical models. The hypothesis is that more complex
+  and flexible architectures such as these will have superior performance when
+  compared to simpler statistical models, such as support vector machines (SVM).
 \end{quote}
 
 For all experiments related to H2 we use the highest performing feature
@@ -453,7 +453,7 @@ following discussion points arise:
 
 The work carried out in this thesis is merely scratching the surface of birdsong
 binary classification problems. There is enormous scope for extending the
-methodologies used here in pre-processing, training and classification in order
+methodologies used here in pre-processing, training, and classification in order
 to improve results and broaden the problem. The following list is certainly not
 exhaustive but is intended to provide a quick overview of some key techniques
 and concepts that could be incorporated in future work.
@@ -473,9 +473,9 @@ pipeline also offers noise addition. In practice, working with clean recordings
 of birdsong would be very unlikely since the recordings would likely be
 corrupted with all manner of background noise, such as urban noise, rainforest
 noise, or ambient noise e.g.\ wind, and so adding random noise through the
-pipeline would certainly be useful. It might also be informative to manually add
-noise at precise SNR levels and evaluate the performance of the different
-feature representations and models in this work.
+pipeline could be useful. It might also be informative to manually add noise at
+precise SNR levels and evaluate the performance of the different feature
+representations and models in this work.
 
 To help with managing training and testing audio data, it might be worthwhile
 making use of MATLAB's \texttt{audioDatastore}. The function needs one argument:

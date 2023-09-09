@@ -11,7 +11,12 @@ particular bird species from a list of $n > 2$ species, a simple classification
 accuracy is often used as an evaluation
 metric~\cite{chakraborty2016bird,ramashini2022robust}. This is calculated as
 the percentage of correctly identified samples from a set of labelled samples
-previously unseen by the model. A high accuracy indicates a performant model.
+previously unseen by the model. A high accuracy usually indicates a performant
+model, although it should be noted that this metric can be misleading if there is
+a large imbalance of classes in the test set. For example, consider a test set
+of 200 samples of class A and 10 each of classes B and C. For a model that
+always predicts class A, an accuracy of $91\%$ is achieved, however, this model
+would likely be unsuitable since it will never predict classes B and C.
 
 Acevedo et al.~\cite{acevedo2009automated} used true positive rate (TPR) and false
 positive rate (FPR) to evaluate their models used to classify bird and amphibian
@@ -67,7 +72,7 @@ ranges from 0 to 1, with a higher value indicating a better-performing model.
 The AUC is sometimes desirable because it is scale-invariant (it measures how
 well predictions are ranked, rather than their absolute values) and
 classification-threshold-invariant (it measures the quality of the model's
-predictions regardless of what classification threshold is chosen.)
+predictions regardless of what classification threshold is chosen).
 
 \begin{figure}[ht]
   \centering
@@ -180,11 +185,9 @@ is the total number of the mel-spectrum bands. Usually 8--13 MFCC coefficients
 are used as the feature vector representing one time frame of the signal. The
 0$^{th}$ coefficient is often excluded as it represents the average log energy
 of the signal and is unlikely to carry any relevant information to help with
-classification.
-
-MFCCs are often presented with their delta ($\Delta$) and double-delta
-($\Delta\Delta$) values that capture the local temporal dynamics and temporal
-changes of the delta values respectively.
+classification. MFCCs are often presented with their delta ($\Delta$) and
+double-delta ($\Delta\Delta$) values that capture the local temporal dynamics
+and temporal changes of the delta values respectively.
 
 MFCCs are used as feature representations since they are simple to compute and
 have been shown to have good performance in a wide range of audio classification
@@ -247,7 +250,7 @@ operation is applied to each time-frequency (T-F) unit of the output
 cochleagram, denoted CG1. CG2 is calculated in the same way, but with a frame
 length of 200ms and the same frame shift. CG3 is calculated by averaging CG1
 across a square window of 11 frequency channels and 11 time frames centred at
-the given T-F unit. Zero padding is used here. CG4 is calculated in the same way
+the given T-F unit using zero padding. CG4 is calculated in the same way
 as CG3, but with a $23 \times 23$ square window. CG1--4 are then stacked
 vertically to obtain the full MRCG feature, which will be a $256 \times p$
 matrix, where $p$ is the number of time frames. The MRCG for the Eurasian wren
@@ -328,7 +331,7 @@ new sample was then classified according to whichever class best describes the
 new sample.
 
 The following sections describe some models that are relevant to this thesis in
-more detail
+more detail.
 
 \subsection{SVMs}
 
@@ -487,10 +490,9 @@ distribution over the classes. The softmax function is defined as
 \sigma{(\mathbf{z})}_i = \frac{e^{z_i}}
   {\sum_{j=1}^{K} e^{z_j}}, \hspace{1em} i = 1,\ldots,K
 \end{equation}
-where $K$ is the number of classes.
-
-A classification of an unseen sample can then be performed by assigning the
-sample to the class with the highest corresponding probability.
+where $K$ is the number of classes. A classification of an unseen sample can
+then be performed by assigning the sample to the class with the highest
+corresponding probability.
 
 \subsubsection{Feedforward Neural Network}
 

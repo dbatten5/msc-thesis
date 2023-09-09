@@ -80,7 +80,7 @@ can be attributed to background noise and therefore their removal should reduce
 noise in the system without losing important information. The reason why
 frequencies above 10 kHz are not removed is that, as can be seen from
 Figure~\ref{fig:wren_call_song_spectrogram}, birds typically produce higher
-frequency harmonics when vocalizing, shown as vertical bands moving upwards from
+frequency harmonics when vocalising, shown as vertical bands moving upwards from
 where syllables are located on the spectrogram. These harmonics may capture
 useful information for the model to utilise and should therefore not be filtered
 out.
@@ -234,9 +234,9 @@ the figure. This shouldn't pose an issue since candidates less than the minimum
 duration threshold are removed, as is the case with candidate B.
 
 Each segmented syllable is then stored as an individual \textit{wav} file in the
-same directory as the original recording with a filename in the format
-\textit{\{XCID\}\_i.wav} where \textit{\{XCID\}} is the XC id of the recording and
-\textit{i} is the index of the syllable.
+same parent directory as the original recording with a filename in the format
+\textit{\{XCID\}\_i.wav} where \textit{\{XCID\}} is the XC id of the recording
+and \textit{i} is the index of the syllable.
 
 \subsection{Sequence sample generation}\label{ssec:sequence_gen}
 
@@ -299,10 +299,10 @@ in this work.
 \subsection{Cepstral coefficients}
 
 The cepstral coefficients on which this thesis focuses are the MFCC and GTCC\@.
-Both features are extracted using builtin MATLAB functions
-\texttt{mfcc} and \texttt{gtcc} respectively. The functions accept arguments
-which affect how the routine processes input signals. To the best of the
-author's knowledge, these arguments have not been explored in the field of
+Both features are extracted using builtin MATLAB functions \texttt{mfcc} and
+\texttt{gtcc} respectively. The functions accept arguments which affect how the
+routine processes input signals to calculate the coefficients. To the best of
+the author's knowledge, these arguments have not been explored in the field of
 birdsong classification problems.
 
 \subsubsection{MFCC}\label{sssec:mfcc}
@@ -443,7 +443,7 @@ GTCC.}\label{table:h1_gtcc_experiments}
 
 \subsubsection{Comments on experiment setup}
 
-As with the MFCC experiment, `fs' refers to the frequency sampling rate for a
+As with the MFCC experiments, `fs' refers to the frequency sampling rate for a
 given audio file. $\text{fs}/2$ is the maximum possible value for the
 \texttt{FrequencyRange} argument. By default the filter bank is a gammatone
 filter bank, which can be visualised in Figure~\ref{fig:gammatone_filterbank}.
@@ -464,9 +464,8 @@ The experiment design was motivated as follows:
     and acts as a control experiment.
 
   \item [Exp 2:] This more closely matches the effective frequency range for the
-    control experiment for \texttt{mfcc}, which obtained the best evaluation
-    metrics. This range matches human speech and contains most birdsong
-    frequencies.
+    control experiment for \texttt{mfcc}. This range matches human speech and
+    contains most birdsong frequencies.
 
   \item [Exp 3:] Similar to Experiment 2, but widens the range to account for
     frequencies outside of Experiment 2's range.
@@ -475,7 +474,6 @@ The experiment design was motivated as follows:
     discriminatory power.
 
 \end{itemize}
-
 
 \subsection{MRCG}
 
@@ -489,12 +487,12 @@ the toolbox for this thesis extends the implementation to work with alternative
 frequency ranges for the gammatone filter bank.
 
 It's recommended to include the $\Delta$ and $\Delta\Delta$ values along with
-the MRCG feature~\cite{chen2014feature}, so hereafter the term MRCG shall refer to
-the base MRCG along with its $\Delta$ and $\Delta\Delta$ values. The same
-applies to MFCC and GTCC\@. While the code from~\cite{kim2018voice} includes the
-delta calculation, in this thesis the \texttt{audioDelta} function was used due
-to it being a builtin function in MATLAB and therefore requiring no custom
-implementation.
+the MRCG feature~\cite{chen2014feature}, so hereafter the term MRCG shall refer
+to the base MRCG along with its $\Delta$ and $\Delta\Delta$ values. The same
+applies to MFCC and GTCC\@. While the code from~\cite{kim2018voice} includes a
+custom implementation of the delta calculation, in this thesis the
+\texttt{audioDelta} function was used due to it being a builtin function in
+MATLAB and therefore requiring no customisation.
 
 Due to the high dimensionality of the MRCG feature and considering the
 computational limitations of the machine upon which the training for this thesis
@@ -552,7 +550,7 @@ section requires no transformation.
 Linear SVMs are trained by supplying a \texttt{KernelFunction} argument set to
 \texttt{linear} to the \texttt{fitcsvm} function. Linear SVMs are reasonably
 simple to fit as they have fewer hyperparameters than SVMs utilising other kernel
-functions. The key hyperparameter to tune here is the \texttt{BoxConstraint}, which
+functions. The key hyperparameter to tune here is \texttt{BoxConstraint}, which
 controls the trade-off between maximising the margin between classes and
 minimise the classification error. This corresponds to the constant $C$ in
 Equation (\ref{eq:svm_nonlinear_mapping_slack}). The \texttt{Standardize}
@@ -617,15 +615,15 @@ minimum.}\label{fig:rbf_optim}
 
 \subsection{Neural networks}
 
-All NN models are implemented using tools provided in MATLAB's Deep
-Learning Toolbox. NN models are trained by first generating an array of
-sequential layers that describe the network using builtin layer structures like
+All NN models are implemented using tools provided in MATLAB's Deep Learning
+Toolbox. NN models are trained by first generating an array of sequential layers
+that describe the network using builtin layer structures such as
 \texttt{reulLayer} (which denotes a layer of ReLU activations), and
 \texttt{convolutional2dLayer} (which denotes a 2D convolutional layer). The
 layers are then passed to the \texttt{trainNetwork} function along with a set of
 options that describe hyperparameters such as the mini-batch size and the
-optimising
-algorithm used, as well as the training input and corresponding labels.
+optimisation algorithm used, as well as the training input and corresponding
+labels.
 
 The training input for NN models depends on the type of NN\@. Some can work
 directly on cell arrays whereas others require training data in numerical matrix
@@ -648,7 +646,7 @@ Section~\ref{sec:segmentation}, this equates to an input of dimensions $28
 \times 39 \times 1$ for the MFCC representation.
 
 The key hyperparameters regarding NNs relate to model architecture, such as
-number of hidden layers, and activation function. CNNs have further
+number of hidden layers and activation function. CNNs have further
 hyperparameters to tune, such as kernel size and stride, padding type, and
 pooling size. Optimising hyperparameters for CNNs can take a
 considerable amount of time and computational resources, so we look to the
@@ -690,10 +688,9 @@ provide the motivation for the CNN architectures tested in this work.
 
 \end{enumerate}
 
-To test against a baseline, a highly simplistic CNN architecture will
-be implemented and tested against these more complex designs. 
-
-The proposed CNN architectures are listed in Table~\ref{table:cnn_architectures}.
+To test against a baseline, a highly simplistic CNN architecture will be
+implemented and tested against these more complex designs. The proposed CNN
+architectures are listed in Table~\ref{table:cnn_architectures}.
 
 \begin{table}[hp]
 \begin{center}
@@ -948,8 +945,8 @@ class prediction scores returned by the model against the true labels.
 \subsection{Classification accuracy}
 
 Since the classes are only slightly imbalanced, the classification accuracy
-provides a reasonably unbiased, quick, and easily interpretable snapshot at how
-well a model has performed. It is calculated as
+provides a reasonably unbiased, quick, and easily interpretable snapshot as to
+how well a model has performed. It is calculated as
 \begin{equation}
 A = \frac{1}{N}\sum_{i=1}^{N} \mathbb{I}[\bar{y}_i = y_i]
 \end{equation}
