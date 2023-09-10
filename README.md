@@ -3,24 +3,26 @@
 In this repo lives all the code used for the computational work as part of my
 masters' thesis.
 
-## Abstract
+---
 
-> Automated or semi-automated birdsong classification plays a key role in a
-> wide range of important fields, such as ecological surveying, climate modelling,
-> and birdwatching for pleasure. With a recent surge in popularity of machine
-> learning techniques and a wealth of of publicly available datasets, these
-> problems are increasingly being tackled using state-of-the-art machine learning
-> approaches with better and better results. This work will focus on investigating
-> and evaluating popular approaches to birdsong classification problems, as well
-> as experimenting with recent research into wider audio classification problems
-> and evaluating them in a birdsong context.
+### Two Little Birds: A Study in Birdsong Binary Classification Problems
+
+Automated or semi-automated birdsong classification plays a key role in a
+wide range of important fields, such as ecological surveying, climate modelling,
+and birdwatching for pleasure. With a recent surge in popularity of machine
+learning techniques and a wealth of of publicly available datasets, these
+problems are increasingly being tackled using state-of-the-art machine learning
+approaches with better and better results. This work will focus on investigating
+and evaluating popular approaches to birdsong classification problems, as well
+as experimenting with recent research into wider audio classification problems
+and evaluating them in a birdsong context.
 
 ## Layout
 
 The following sections describe the schematic of this repo and the contents of
 each directory.
 
-### experiments/
+#### experiments/
 
 A collection of live scripts used to generate the results for each hypothesis.
 Each script handles preparing the feature representation of the training input
@@ -28,15 +30,15 @@ and formatting it into the correct structure for the model at hand, as well as
 training the model and evaluating it against the test set. The results are
 stored in a cell array and saved for posterity. All code therein is my own work.
 
-### figures/
+#### figures/
 
 A directory of saved figures used in the report.
 
-### report/
+#### report/
 
 All the LaTeX code used writing the report.
 
-### samples/
+#### samples/
 
 A directory of audio recordings used for this work, both the raw recordings
 downloaded from [xeno-canto](xeno-canto.org) and the syllables extracted from
@@ -44,7 +46,7 @@ the recordings. Note that this directory is git-ignored due to its size. The
 folder of noise recordings was downloaded with the intention of adding noise to
 the birdsong samples but this was never used.
 
-### tools/
+#### tools/
 
 A folder of MATLAB functions developed for this thesis. The following table
 lists the most important functions used in this work in more detail:
@@ -60,16 +62,16 @@ lists the most important functions used in this work in more detail:
 |`segmentSyllables.m`|Extract the syllables from a given input signal|✅|Algorithm described in [^fn2]|
 |`stripSound.m`|Strip leading and training bits of background noise from an input signal|✅||
 
-### tutorials/
+#### tutorials/
 
 Some initial experimentation work to get up to speed with the field. None of the
 output from this directory was used in the final report.
 
-### variables/
+#### variables/
 
 A directory of saved MATLAB variables.
 
-### work/
+#### work/
 
 A collection of live scripts for the pilot and feasibility studies. Very few
 scripts were used in their entirety for the final report but many provided the
