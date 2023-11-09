@@ -4,6 +4,8 @@ variables/comparingModels.mat
 PhysionetData.mat
 example_reports
 # backups/variables
+variables
+figures
 samples
 training2017
 *.asv
